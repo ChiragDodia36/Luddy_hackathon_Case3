@@ -73,6 +73,11 @@ sdk.dir=/Users/YOUR_USERNAME/Library/Android/sdk
 
 # Your Google Maps API key (see Prerequisite above)
 MAPS_API_KEY=YOUR_GOOGLE_MAPS_API_KEY_HERE
+
+# URL of the bt-ml FastAPI inference service (AI integration).
+# Emulator → host machine uses 10.0.2.2. Physical devices on LAN use the
+# machine's IP. If pointing at a deployed service, use the https URL.
+BACKEND_BASE_URL=http://10.0.2.2:8000/
 ```
 
 > **Note:** `local.properties` is in `.gitignore` — never commit it. Each developer has their own.
@@ -198,17 +203,50 @@ app/src/main/java/com/luddy/bloomington_transit/
 
 ## Architecture
 
-**Clean Architecture + MVVM**
+This app follows **Clean Architecture + MVVM** with an additional AI-inference layer.
 
 ```
-UI Layer (Compose + ViewModel)
-    ↓ collects StateFlow
-Domain Layer (Repository interface + Use Cases)
-    ↓ implements
-Data Layer (Room + DataStore + Retrofit)
+┌────────────────────────────────────────────────────────────────────┐
+│                         UI Layer (MVVM)                            │
+│   Composables  ←→  @HiltViewModel                                  │
+│   ├─ screens/{home, map, ai, schedule, favourites, diagnostics,    │
+│   │            trip}                                               │
+│   └─ components/{CountdownChip, ArrivalRow, AiArrivalRow,          │
+│                  ConfidenceBadge, BunchingBanner, ServiceAlertBanner}│
+└──────────────────┬────────────────────────┬────────────────────────┘
+                   │                        │
+                   │ Use Cases              │ AI calls
+                   ▼                        ▼
+┌──────────────────────────────┐  ┌──────────────────────────────────┐
+│         Domain Layer         │  │       data/ai/ (new)             │
+│  Models | Repository (intf)  │  │  BtAiApi    (Retrofit)           │
+│  Use Cases (pure Kotlin)     │  │  BtAiRepository (AiResult<T>)    │
+└──────────────────┬───────────┘  │  dto/ @Serializable              │
+                   │              │  BtAiModule (@Named OkHttp +     │
+                   │              │               kotlinx-serialization)│
+                   │              └──────────────────────────────────┘
+                   │ Implementation                │
+┌──────────────────▼───────────┐                   │ HTTPS
+│        Data Layer            │                   ▼
+│  Room DB | DataStore |       │    ┌──────────────────────────────┐
+│  Retrofit (GTFS-RT .pb)      │    │  bt-ml FastAPI service       │
+│  GtfsStaticParser            │    │  (separate repo, Ayan-owned) │
+└──────────────────────────────┘    │  /predictions  /stats        │
+                                    │  /detections/bunching  /nlq  │
+                                    └──────────────────────────────┘
 ```
 
-Dependency injection via **Hilt** wires all layers at compile time.
+### Dependency Injection
+Hilt (`@HiltAndroidApp`, `@AndroidEntryPoint`, `@HiltViewModel`) wires all layers. The AI layer has its own `@Named("bt_ai_okhttp")` OkHttpClient and a dedicated Retrofit instance keyed on `BuildConfig.BACKEND_BASE_URL`, so AI-backed features don't touch the GTFS-RT path.
+
+### AI-backed features (wired via `data/ai/` + `ui/screens/ai/`)
+
+- **Per-stop delay correction (A1 + A2)** — the FastAPI service returns `Scheduled / BT / Ours` for each arrival at a stop, with a per-prediction `confidence` tier (high/medium/low). Rendered by `ui/components/AiArrivalRow.kt` + `ConfidenceBadge.kt`, on `ui/screens/ai/AiStopScreen.kt`.
+- **Bunching detection (B1)** — 15 s polled `BunchingBanner` composable; appears on the Home screen when two same-route buses are within 200 m.
+- **Stale-vehicle flag (B2)** — the `VehicleDto.isStale` field from the backend is surfaced on the Diagnostics screen.
+- **Diagnostics dashboard (D1)** — `ui/screens/diagnostics/DiagnosticsScreen.kt`, reachable from the Home top-bar action. Shows live BT vs. our A1 CV MAE, fleet size, stale vehicle count, last feed refresh.
+- **Trip ETA propagation (B3)** — tap any AI arrival row → `ui/screens/trip/TripEtaScreen.kt` shows per-stop adjusted ETAs across the remaining stops of that trip.
+- **Natural-language query (C2)** — `BtAiRepository.nlq(query)` is called in parallel with stop-search; recognised intents (e.g. "next 6", "route 3E") show a hint chip under the search bar. Backend uses regex first and an optional Claude Haiku 4.5 fallback.
 
 ---
 
