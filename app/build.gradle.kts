@@ -36,6 +36,7 @@ android {
         val backendBaseUrl = localProperties.getProperty("BACKEND_BASE_URL")
             ?: "http://10.0.2.2:8000/"
         buildConfigField("String", "BACKEND_BASE_URL", "\"$backendBaseUrl\"")
+        buildConfigField("String", "MAPS_API_KEY", "\"${mapsApiKey}\"")
     }
 
     buildTypes {
@@ -100,6 +101,8 @@ dependencies {
     // Networking
     implementation(libs.retrofit)
     implementation(libs.retrofit.scalars)
+    implementation(libs.retrofit.gson)
+    implementation(libs.gson)
     implementation(libs.okhttp)
     implementation(libs.okhttp.logging)
 
@@ -128,6 +131,9 @@ dependencies {
     implementation(libs.androidx.work.runtime)
     implementation(libs.hilt.work)
     ksp(libs.hilt.work.compiler)
+
+    // Google Places
+    implementation(libs.places.sdk)
 
     debugImplementation(libs.androidx.ui.tooling)
 }

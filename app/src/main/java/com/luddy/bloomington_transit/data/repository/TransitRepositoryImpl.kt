@@ -1,23 +1,25 @@
 package com.luddy.bloomington_transit.data.repository
 
 import android.util.Log
-import com.google.transit.realtime.GtfsRealtime
-import com.luddy.bloomington_transit.data.api.GtfsRealtimeApi
+import com.luddy.bloomington_transit.data.api.BtBackendApi
+import com.luddy.bloomington_transit.data.api.DirectionsApi
 import com.luddy.bloomington_transit.data.api.GtfsStaticParser
+import com.luddy.bloomington_transit.data.api.decodePolyline
+import com.luddy.bloomington_transit.BuildConfig
 import com.luddy.bloomington_transit.data.local.*
 import com.luddy.bloomington_transit.domain.model.*
 import com.luddy.bloomington_transit.domain.repository.TransitRepository
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
-import java.util.*
 import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
 class TransitRepositoryImpl @Inject constructor(
     private val db: AppDatabase,
-    private val realtimeApi: GtfsRealtimeApi,
+    private val backendApi: BtBackendApi,
+    private val directionsApi: DirectionsApi,
     private val staticParser: GtfsStaticParser,
     private val prefs: UserPreferencesDataStore
 ) : TransitRepository {
@@ -30,6 +32,11 @@ class TransitRepositoryImpl @Inject constructor(
     private val initMutex = Mutex()
     private var isInitialized = false
 
+    // trip_id → route_id — populated on first init; used to resolve routeId when RT feed omits it
+    @Volatile private var tripToRouteCache: Map<String, String> = emptyMap()
+    // route_id → RouteEntity — used to look up color in getArrivalsForStop
+    @Volatile private var routeEntityCache: Map<String, com.luddy.bloomington_transit.data.local.entity.RouteEntity> = emptyMap()
+
     override suspend fun initStaticData() {
         // Mutex prevents concurrent calls from HomeViewModel + MapViewModel both downloading
         initMutex.withLock {
@@ -41,6 +48,13 @@ class TransitRepositoryImpl @Inject constructor(
 
             if (!isEmpty && !isStale) {
                 Log.d(TAG, "GTFS static data is fresh (${db.routeDao().count()} routes in DB)")
+                if (tripToRouteCache.isEmpty()) {
+                    tripToRouteCache = db.tripDao().getAllTrips().associate { it.tripId to it.routeId }
+                    Log.d(TAG, "Trip→route cache built from DB: ${tripToRouteCache.size} trips")
+                }
+                if (routeEntityCache.isEmpty()) {
+                    routeEntityCache = db.routeDao().getAllRoutesList().associateBy { it.id }
+                }
                 isInitialized = true
                 return
             }
@@ -56,6 +70,11 @@ class TransitRepositoryImpl @Inject constructor(
                 db.tripDao().deleteAllTrips()
                 db.tripDao().deleteAllStopTimes()
                 db.tripDao().deleteAllRouteStops()
+
+                // Build in-memory caches from parsed data
+                tripToRouteCache = data.trips.associate { it.tripId to it.routeId }
+                routeEntityCache = data.routes.associateBy { it.id }
+                Log.d(TAG, "Trip→route cache built: ${tripToRouteCache.size} trips")
 
                 // Insert core data first (routes + stops appear immediately in UI)
                 db.routeDao().insertAll(data.routes)
@@ -105,25 +124,23 @@ class TransitRepositoryImpl @Inject constructor(
 
     override suspend fun getLiveBuses(): List<Bus> {
         return try {
-            val body = realtimeApi.getVehiclePositions()
-            val feed = GtfsRealtime.FeedMessage.parseFrom(body.byteStream())
-            feed.entityList.mapNotNull { entity ->
-                if (!entity.hasVehicle()) return@mapNotNull null
-                val v = entity.vehicle
-                if (!v.hasPosition()) return@mapNotNull null
+            val dtos = backendApi.getBuses()
+            val buses = dtos.map { dto ->
                 Bus(
-                    vehicleId = v.vehicle?.id ?: entity.id,
-                    tripId = v.trip?.tripId ?: "",
-                    routeId = v.trip?.routeId ?: "",
-                    lat = v.position.latitude.toDouble(),
-                    lon = v.position.longitude.toDouble(),
-                    bearing = v.position.bearing,
-                    speed = v.position.speed,
-                    timestamp = v.timestamp,
-                    currentStopSequence = v.currentStopSequence,
-                    label = v.vehicle?.label ?: ""
+                    vehicleId = dto.vehicleId,
+                    tripId = dto.tripId,
+                    routeId = dto.routeId,
+                    lat = dto.lat,
+                    lon = dto.lon,
+                    bearing = dto.bearing,
+                    speed = dto.speed,
+                    timestamp = dto.timestamp,
+                    currentStopSequence = dto.currentStopSequence,
+                    label = dto.label
                 )
             }
+            Log.d(TAG, "getLiveBuses: ${buses.size} buses, routeIds=${buses.map { it.routeId }.distinct()}")
+            buses
         } catch (e: Exception) {
             Log.e(TAG, "Failed to fetch vehicle positions", e)
             emptyList()
@@ -132,61 +149,25 @@ class TransitRepositoryImpl @Inject constructor(
 
     override suspend fun getArrivalsForStop(stopId: String): List<Arrival> {
         return try {
-            // Get realtime trip updates
-            val body = realtimeApi.getTripUpdates()
-            val feed = GtfsRealtime.FeedMessage.parseFrom(body.byteStream())
-
-            val realtimeMap = mutableMapOf<String, Long>() // tripId -> predicted arrival ms
-
-            feed.entityList.forEach { entity ->
-                if (!entity.hasTripUpdate()) return@forEach
-                val tu = entity.tripUpdate
-                val tripId = tu.trip?.tripId ?: return@forEach
-                tu.stopTimeUpdateList.forEach { stu ->
-                    if (stu.stopId == stopId) {
-                        val arrivalTime = if (stu.hasArrival()) stu.arrival.time else
-                            if (stu.hasDeparture()) stu.departure.time else 0L
-                        if (arrivalTime > 0) realtimeMap[tripId] = arrivalTime * 1000L
-                    }
-                }
-            }
-
-            // Get static schedule for today
-            val staticTimes = db.tripDao().getStopTimesForStop(stopId)
-            val todayMs = getTodayBaseMs()
-
-            val arrivals = mutableListOf<Arrival>()
-
-            staticTimes.forEach { st ->
-                val trip = db.tripDao().getTripById(st.tripId) ?: return@forEach
-                val route = db.routeDao().getAllRoutes().first()
-                    .find { it.id == trip.routeId } ?: return@forEach
-
-                val scheduledMs = parseGtfsTimeToMs(st.arrivalTime, todayMs)
-                    .takeIf { it > 0 } ?: return@forEach
-
-                // Only show upcoming arrivals (within next 2 hours)
-                val now = System.currentTimeMillis()
-                if (scheduledMs < now - 60_000 || scheduledMs > now + 2 * 3600_000) return@forEach
-
-                val stop = db.stopDao().getStopById(stopId)
-
-                arrivals.add(
-                    Arrival(
-                        routeId = trip.routeId,
-                        routeShortName = route.shortName,
-                        routeColor = route.color,
-                        headsign = trip.headsign,
-                        stopId = stopId,
-                        stopName = stop?.name ?: stopId,
-                        predictedArrivalMs = realtimeMap[st.tripId] ?: -1L,
-                        scheduledArrivalMs = scheduledMs,
-                        tripId = st.tripId
-                    )
+            val dtos = backendApi.getArrivals(stopId)
+            val stop = db.stopDao().getStopById(stopId)
+            val now = System.currentTimeMillis()
+            dtos.map { dto ->
+                val route = routeEntityCache[dto.routeId]
+                val scheduledMs = dto.scheduledUnix
+                val displayMs = now + dto.etaSeconds * 1000
+                Arrival(
+                    routeId = dto.routeId,
+                    routeShortName = dto.routeShortName.ifBlank { route?.shortName ?: dto.routeId },
+                    routeColor = route?.color ?: "0057A8",
+                    headsign = dto.headsign,
+                    stopId = stopId,
+                    stopName = stop?.name ?: stopId,
+                    predictedArrivalMs = if (dto.isRealtime) displayMs else -1L,
+                    scheduledArrivalMs = scheduledMs,
+                    tripId = dto.tripId
                 )
             }
-
-            arrivals.sortedBy { it.displayArrivalMs }
         } catch (e: Exception) {
             Log.e(TAG, "Failed to get arrivals for stop $stopId", e)
             emptyList()
@@ -198,22 +179,45 @@ class TransitRepositoryImpl @Inject constructor(
 
     override suspend fun getServiceAlerts(): List<ServiceAlert> {
         return try {
-            val body = realtimeApi.getAlerts()
-            val feed = GtfsRealtime.FeedMessage.parseFrom(body.byteStream())
-            feed.entityList.mapNotNull { entity ->
-                if (!entity.hasAlert()) return@mapNotNull null
-                val alert = entity.alert
-                val header = alert.headerTextOrBuilder.translationList
-                    .firstOrNull()?.text ?: return@mapNotNull null
-                val desc = alert.descriptionTextOrBuilder.translationList
-                    .firstOrNull()?.text ?: ""
-                val routeIds = alert.informedEntityList
-                    .mapNotNull { it.routeId.takeIf { r -> r.isNotBlank() } }
-                ServiceAlert(entity.id, header, desc, routeIds)
+            backendApi.getAlerts().map { dto ->
+                ServiceAlert(dto.id, dto.header, dto.description, dto.routeIds)
             }
         } catch (e: Exception) {
             Log.e(TAG, "Failed to get service alerts", e)
             emptyList()
+        }
+    }
+
+    override suspend fun getReachability(
+        userLat: Double, userLon: Double,
+        stop: Stop,
+        arrivals: List<Arrival>
+    ): Reachability? {
+        return try {
+            val origin = "$userLat,$userLon"
+            val dest = "${stop.lat},${stop.lon}"
+            val resp = directionsApi.getWalkingDirections(origin, dest, key = BuildConfig.MAPS_API_KEY)
+            if (resp.status != "OK" || resp.routes.isEmpty()) return null
+
+            val leg = resp.routes[0].legs[0]
+            val walkSeconds = leg.duration.value
+            val polyline = decodePolyline(resp.routes[0].overviewPolyline.points)
+
+            val nextArrival = arrivals.firstOrNull() ?: return null
+            val nextBusSeconds = maxOf(0L, nextArrival.displayArrivalMs - System.currentTimeMillis()) / 1000L
+            val spareSeconds = nextBusSeconds - walkSeconds
+
+            Reachability(
+                walkSeconds = walkSeconds,
+                nextBusSeconds = nextBusSeconds,
+                routeShortName = nextArrival.routeShortName,
+                canMakeIt = spareSeconds >= 0,
+                spareSeconds = spareSeconds,
+                walkPolyline = polyline
+            )
+        } catch (e: Exception) {
+            Log.e(TAG, "getReachability failed", e)
+            null
         }
     }
 
@@ -251,25 +255,4 @@ class TransitRepositoryImpl @Inject constructor(
         return r * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a))
     }
 
-    private fun getTodayBaseMs(): Long {
-        val cal = Calendar.getInstance()
-        cal.set(Calendar.HOUR_OF_DAY, 0)
-        cal.set(Calendar.MINUTE, 0)
-        cal.set(Calendar.SECOND, 0)
-        cal.set(Calendar.MILLISECOND, 0)
-        return cal.timeInMillis
-    }
-
-    // GTFS times can exceed 24h (e.g. "25:30:00" for next-day trips)
-    private fun parseGtfsTimeToMs(timeStr: String, todayBaseMs: Long): Long {
-        return try {
-            val parts = timeStr.split(":").map { it.toInt() }
-            val hours = parts[0]
-            val minutes = parts[1]
-            val seconds = parts[2]
-            todayBaseMs + (hours * 3600L + minutes * 60L + seconds) * 1000L
-        } catch (e: Exception) {
-            -1L
-        }
-    }
 }
