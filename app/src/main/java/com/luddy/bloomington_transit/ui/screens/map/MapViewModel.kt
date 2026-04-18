@@ -10,6 +10,7 @@ import com.google.android.libraries.places.api.net.FetchPlaceRequest
 import com.google.android.libraries.places.api.net.FindAutocompletePredictionsRequest
 import com.google.android.libraries.places.api.net.PlacesClient
 import com.luddy.bloomington_transit.domain.model.*
+import com.luddy.bloomington_transit.domain.model.Reachability
 import com.luddy.bloomington_transit.domain.repository.TransitRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
@@ -90,6 +91,8 @@ data class MapUiState(
     val trackedBusIds: Set<String> = emptySet(),
     val shapesByRoute: Map<String, List<List<LatLng>>> = emptyMap(),
     val isLoadingArrivals: Boolean = false,
+    val reachability: Reachability? = null,
+    val isLoadingReachability: Boolean = false,
     val isInitializing: Boolean = true,
     // Search
     val searchQuery: String = "",
@@ -168,6 +171,9 @@ class MapViewModel @Inject constructor(
             while (true) {
                 val buses = repository.getLiveBuses()
                 _uiState.update { it.copy(buses = buses) }
+                val sel = _uiState.value.selectedRouteIds
+                val visible = buses.count { it.routeId in sel }
+                Log.d("MapVM", "Poll: ${buses.size} buses total, $visible visible (selectedRoutes=$sel)")
                 refreshAllPlanEtas()
                 delay(10_000L)
             }
@@ -216,13 +222,27 @@ class MapViewModel @Inject constructor(
 
     fun selectBus(bus: Bus)  { _uiState.update { it.copy(selectedBus = bus, selectedStop = null) } }
     fun selectStop(stop: Stop) {
-        _uiState.update { it.copy(selectedStop = stop, selectedBus = null, isLoadingArrivals = true) }
+        _uiState.update {
+            it.copy(
+                selectedStop = stop, selectedBus = null,
+                isLoadingArrivals = true, reachability = null, isLoadingReachability = false
+            )
+        }
         viewModelScope.launch {
             val arrivals = repository.getArrivalsForStop(stop.id)
             _uiState.update { it.copy(stopArrivals = arrivals, isLoadingArrivals = false) }
+            // Load reachability if we already have user location
+            val loc = _uiState.value.userLocation
+            if (loc != null && arrivals.isNotEmpty()) {
+                _uiState.update { it.copy(isLoadingReachability = true) }
+                val reach = repository.getReachability(loc.latitude, loc.longitude, stop, arrivals)
+                _uiState.update { it.copy(reachability = reach, isLoadingReachability = false) }
+            }
         }
     }
-    fun dismissBottomSheet() { _uiState.update { it.copy(selectedBus = null, selectedStop = null) } }
+    fun dismissBottomSheet() {
+        _uiState.update { it.copy(selectedBus = null, selectedStop = null, reachability = null) }
+    }
     fun trackBus(vehicleId: String)   { viewModelScope.launch { repository.addTrackedBus(vehicleId) } }
     fun untrackBus(vehicleId: String) { viewModelScope.launch { repository.removeTrackedBus(vehicleId) } }
 

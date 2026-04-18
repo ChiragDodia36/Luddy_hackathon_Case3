@@ -7,6 +7,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.*
@@ -193,6 +194,17 @@ fun MapScreen(
                 }
             }
 
+            // Walking route polyline (reachability feature)
+            val walkPoly = uiState.reachability?.walkPolyline ?: emptyList()
+            if (walkPoly.size >= 2) {
+                Polyline(
+                    points = walkPoly,
+                    color = Color(0xFF1565C0),
+                    width = 8f,
+                    pattern = listOf(Dot(), Gap(12f))
+                )
+            }
+
             // Bus markers — suggested route gets the info box (CP5)
             uiState.buses
                 .filter { it.routeId in uiState.selectedRouteIds }
@@ -362,6 +374,8 @@ fun MapScreen(
                         stop = uiState.selectedStop!!,
                         arrivals = uiState.stopArrivals,
                         isLoading = uiState.isLoadingArrivals,
+                        reachability = uiState.reachability,
+                        isLoadingReachability = uiState.isLoadingReachability,
                         onDismiss = { viewModel.dismissBottomSheet() }
                     )
                     else -> {
@@ -1049,9 +1063,11 @@ private fun StopDetailPanel(
     stop: Stop,
     arrivals: List<Arrival>,
     isLoading: Boolean,
+    reachability: com.luddy.bloomington_transit.domain.model.Reachability?,
+    isLoadingReachability: Boolean,
     onDismiss: () -> Unit
 ) {
-    Column(modifier = Modifier.heightIn(max = 360.dp)) {
+    Column(modifier = Modifier.heightIn(max = 420.dp)) {
         Row(
             modifier = Modifier.padding(start = 16.dp, end = 8.dp, top = 14.dp, bottom = 10.dp),
             verticalAlignment = Alignment.CenterVertically
@@ -1068,6 +1084,21 @@ private fun StopDetailPanel(
                 Text("Bus Stop · Tap a bus for its full route", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
             }
             IconButton(onClick = onDismiss) { Icon(Icons.Filled.Close, contentDescription = "Dismiss") }
+        }
+
+        // ── Reachability card ──────────────────────────────────────────────────
+        when {
+            isLoadingReachability -> {
+                Row(
+                    modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 10.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    CircularProgressIndicator(modifier = Modifier.size(16.dp), strokeWidth = 2.dp, color = BtBlue)
+                    Spacer(Modifier.width(10.dp))
+                    Text("Calculating walking time…", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                }
+            }
+            reachability != null -> ReachabilityCard(reachability)
         }
         HorizontalDivider(color = Color.Gray.copy(alpha = 0.12f))
         if (isLoading) {
@@ -1134,5 +1165,58 @@ private fun DepartureBoardRow(arrival: Arrival) {
             }
         }
         CountdownChip(arrivalMs = arrival.displayArrivalMs, isRealtime = arrival.isRealtime)
+    }
+}
+
+// ── Reachability verdict card ─────────────────────────────────────────────────
+
+@Composable
+private fun ReachabilityCard(r: com.luddy.bloomington_transit.domain.model.Reachability) {
+    val canMakeIt = r.canMakeIt
+    val bgColor = if (canMakeIt) Color(0xFFE8F5E9) else Color(0xFFFFEBEE)
+    val borderColor = if (canMakeIt) Color(0xFF388E3C) else Color(0xFFC62828)
+    val iconTint = if (canMakeIt) Color(0xFF2E7D32) else Color(0xFFC62828)
+    val walkMins = (r.walkSeconds / 60)
+    val walkSecs = r.walkSeconds % 60
+    val busMins = (r.nextBusSeconds / 60)
+    val spareMins = kotlin.math.abs(r.spareSeconds / 60)
+
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 12.dp, vertical = 6.dp)
+            .clip(RoundedCornerShape(12.dp))
+            .background(bgColor)
+            .border(BorderStroke(1.dp, borderColor), RoundedCornerShape(12.dp))
+            .padding(horizontal = 14.dp, vertical = 10.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Icon(
+            imageVector = if (canMakeIt) Icons.Filled.DirectionsWalk else Icons.Filled.Warning,
+            contentDescription = null,
+            tint = iconTint,
+            modifier = Modifier.size(28.dp)
+        )
+        Spacer(Modifier.width(12.dp))
+        Column(modifier = Modifier.weight(1f)) {
+            Text(
+                text = if (canMakeIt)
+                    "You'll make it! $spareMins min${if (spareMins != 1L) "s" else ""} to spare"
+                else
+                    "Might be tight — $spareMins min${if (spareMins != 1L) "s" else ""} short",
+                style = MaterialTheme.typography.bodyMedium,
+                fontWeight = FontWeight.Bold,
+                color = iconTint
+            )
+            Spacer(Modifier.height(2.dp))
+            Text(
+                text = buildString {
+                    append("Walk: ${walkMins}m ${walkSecs}s  ·  ")
+                    append("Route ${r.routeShortName} in ${busMins}m")
+                },
+                style = MaterialTheme.typography.bodySmall,
+                color = iconTint.copy(alpha = 0.75f)
+            )
+        }
     }
 }

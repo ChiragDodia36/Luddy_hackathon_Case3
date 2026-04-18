@@ -20,6 +20,13 @@ interface TransitRepository {
     suspend fun getArrivalsForRoute(routeId: String, stopId: String): List<Arrival>
     suspend fun getServiceAlerts(): List<ServiceAlert>
 
+    // Walking reachability
+    suspend fun getReachability(
+        userLat: Double, userLon: Double,
+        stop: Stop,
+        arrivals: List<Arrival>
+    ): Reachability?
+
     // Favourites (persisted via DataStore)
     fun getFavouriteStopIds(): Flow<Set<String>>
     suspend fun addFavouriteStop(stopId: String)

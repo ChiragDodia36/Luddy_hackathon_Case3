@@ -17,4 +17,7 @@ interface RouteDao {
 
     @Query("SELECT COUNT(*) FROM routes")
     suspend fun count(): Int
+
+    @Query("SELECT * FROM routes")
+    suspend fun getAllRoutesList(): List<RouteEntity>
 }
