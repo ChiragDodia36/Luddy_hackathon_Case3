@@ -633,6 +633,7 @@ private fun PlanOptionRow(plan: RoutePlan, isSelected: Boolean, onClick: () -> U
     val secondColor = plan.secondRoute?.color?.let { routeColor(it) } ?: BtBlue
     val totalMin    = plan.estimatedTotalMinutes
     val busMin      = plan.nextBusMinutes
+    val aiPred      = plan.aiBoardingPredictions.firstOrNull()
 
     Row(
         modifier = Modifier
@@ -669,6 +670,26 @@ private fun PlanOptionRow(plan: RoutePlan, isSelected: Boolean, onClick: () -> U
                 "Walk ${plan.walkInMinutes}min → ${plan.boardingStop.name.take(22)}",
                 style = MaterialTheme.typography.labelSmall, color = Color.Gray, maxLines = 1
             )
+            // Inline AI summary — visible on the row without expanding into the detail panel.
+            aiPred?.let { p ->
+                val corr = p.correctionSeconds.toInt()
+                val label = when {
+                    corr == 0 -> "AI: matches BT"
+                    corr > 0 -> "AI: +${corr}s vs BT"
+                    else -> "AI: ${corr}s vs BT"
+                }
+                Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(top = 1.dp)) {
+                    Icon(Icons.Filled.AutoAwesome, null, tint = firstColor, modifier = Modifier.size(10.dp))
+                    Spacer(Modifier.width(3.dp))
+                    Text(
+                        "$label · ${p.confidence}",
+                        style = MaterialTheme.typography.labelSmall,
+                        fontWeight = FontWeight.Medium,
+                        color = firstColor,
+                        maxLines = 1,
+                    )
+                }
+            }
         }
         // Bus ETA chip
         Column(horizontalAlignment = Alignment.End) {
@@ -756,6 +777,35 @@ private fun RouteSuggestionPanel(
             HorizontalDivider(color = Color.Gray.copy(alpha = 0.12f))
         }
         Spacer(Modifier.height(8.dp))
+
+        // Storytelling pill: Route 6 is BT's most-biased route per our audit.
+        // A2 applies a −154 s intercept on top of BT's prediction. Surface that
+        // to the judge so the "we fix BT's worst case" claim is concrete.
+        if (firstRoute?.id == "6") {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clip(RoundedCornerShape(8.dp))
+                    .background(Color(0xFFFFE9D6))
+                    .padding(horizontal = 10.dp, vertical = 6.dp),
+            ) {
+                Icon(
+                    Icons.Filled.Warning,
+                    contentDescription = null,
+                    tint = Color(0xFF8E4F00),
+                    modifier = Modifier.size(14.dp),
+                )
+                Spacer(Modifier.width(6.dp))
+                Text(
+                    "Route 6 bias correction: −154 s baked in (BT over-predicts lateness here)",
+                    style = MaterialTheme.typography.labelSmall,
+                    fontWeight = FontWeight.Medium,
+                    color = Color(0xFF8E4F00),
+                )
+            }
+            Spacer(Modifier.height(8.dp))
+        }
 
         // Walk to stop
         if (walkInMeters != null) {

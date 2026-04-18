@@ -4,7 +4,7 @@ _IU Luddy Hacks, 2026-04-18. One-pager for the team to glance at before the pitc
 
 ## The one-liner
 
-We rebuilt Bloomington Transit's rider app with a live AI layer that **beats BT's own arrival predictions by ~11 %** (MAE 84.1 s vs 94.3 s on the 3–5 min horizon) and exposes that improvement as a deployed public API any client can hit.
+We rebuilt Bloomington Transit's rider app with a live AI layer that **beats BT's own arrival predictions by 14.5 %** (MAE **80.6 s vs 94.3 s** on the 3–5 min horizon, 5-fold CV on 29,706 live predictions) and exposes that improvement as a deployed public API any client can hit.
 
 ---
 
@@ -12,16 +12,18 @@ We rebuilt Bloomington Transit's rider app with a live AI layer that **beats BT'
 
 | Metric | Value | How measured |
 |---|---|---|
-| **Baseline (BT) MAE at 3–5 min horizon** | **94.3 s** (n = 3,862 predictions) | Measured in `BASELINE_REPORT.md` — derived from 46 min of live `position_updates.pb` + `trip_updates.pb` snapshots, ground-truthed via `current_status == STOPPED_AT` + midpoint fallback |
-| **Our A1 LightGBM residual model MAE at 3–5 min horizon** | **84.1 s** — **+10.8 % improvement** | 5-fold GroupKFold on `trip_id` (no within-trip leakage), evaluated against the same 3,862 labelled predictions |
+| **Baseline (BT) MAE at 3–5 min horizon** | **94.3 s** | Measured in `BASELINE_REPORT.md` — derived from live `position_updates.pb` + `trip_updates.pb` snapshots, ground-truthed via `current_status == STOPPED_AT` + midpoint fallback |
+| **Our A1 LightGBM residual model MAE at 3–5 min horizon** | **80.6 s — +14.5 % improvement** | 5-fold GroupKFold on `trip_id` (no within-trip leakage), 29,706 labelled predictions |
+| **Overall MAE across all horizons** | **86.8 s** vs BT passthrough 114.2 s | Same CV, all horizon buckets |
 | **Bias correction for Route 6** | **−154 s** | `models/route_intercepts.json` — median `(actual − BT_predicted)` over 2,220 samples. Route 6 was the most-biased route we observed (BT over-predicted lateness by ~2.5 min on average) |
-| **Training window** | 46 min of live GTFS-RT, Fri evening | 994 ground-truth labels (112 HIGH confidence `STOPPED_AT`, 323 MEDIUM midpoint) |
-| **Ground-truth trip coverage** | 12 of 16 BT routes | 37 unique `(trip_id, vehicle_id)` instances |
+| **Top single-route improvement** | Route 2W: passthrough 138.7 s → A1 58.1 s (**+80.6 s / 58 % better**) | Retrained 5-fold OOF |
+| **Training window** | 7 hours of live GTFS-RT, Friday night → Saturday morning | 1,011 ground-truth labels (122 HIGH confidence `STOPPED_AT`, 339 MEDIUM midpoint) |
+| **Ground-truth trip coverage** | 12 of 16 BT routes | 39 unique `(trip_id, vehicle_id)` instances |
 | **Inference model** | LightGBM regressor, 13 features | Model trained on Ayan's laptop CPU in <5 min — no GPU/Colab |
 
 ### Why LightGBM residual, not a full transformer?
 
-- Data size: 994 labels, ~30 trip-instances. Anything bigger would overfit.
+- Data size: ~1,000 labels across 39 trip-instances. Anything bigger would overfit.
 - BT already has the hard part (scheduling + vehicle state). Learning the **residual** (actual − BT_predicted) preserves their baseline and refines it.
 - Explainability: feature importance is exactly the story we want to tell — top 3 are `trip_progress_fraction`, `route_id`, `bt_trip_delay_seconds`.
 
@@ -93,7 +95,7 @@ curl -s $BASE/healthz | python3 -m json.tool
 
 # Headline accuracy number (updates as model retrains)
 curl -s $BASE/stats | python3 -m json.tool
-#  → bt_headline_mae_s: 94.3, a1_cv_headline_mae_s: 84.1, a1_cv_improvement_pct: 10.8
+#  → bt_headline_mae_s: 94.3, a1_cv_headline_mae_s: 80.6, a1_cv_improvement_pct: 14.5
 
 # All 16 BT routes
 curl -s $BASE/routes | python3 -c "import json,sys;print(len(json.load(sys.stdin)),'routes')"
@@ -147,7 +149,7 @@ Latency:
    - Natural-language hint chip: type "next 6" or "route 3E" → server returns an intent you can act on.
 
 4. **Diagnostics** (bug-report icon in the Home top bar):
-   - Live BT MAE vs our A1 CV MAE with the +10.8 % delta.
+   - Live BT MAE vs our A1 CV MAE with the +14.5 % delta.
    - Fleet health: active vehicle count, how many are stale (>90 s since last `vehicle.timestamp` update).
    - Per-vehicle staleness list.
    - This is the "we know BT's feed better than BT does" card.

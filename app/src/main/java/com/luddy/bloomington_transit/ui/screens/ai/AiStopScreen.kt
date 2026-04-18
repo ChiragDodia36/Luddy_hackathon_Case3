@@ -68,6 +68,63 @@ fun AiStopScreen(
             ),
         )
 
+        // Live scoreboard — BT vs Us (headline number from /stats).
+        uiState.stats?.let { stats ->
+            val bt = stats.btHeadlineMaeS
+            val us = stats.a1CvHeadlineMaeS
+            val pct = stats.a1CvImprovementPct
+            val routes = stats.routesWithIntercept
+            Card(
+                modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp),
+                shape = RoundedCornerShape(12.dp),
+                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.secondaryContainer),
+            ) {
+                Row(
+                    modifier = Modifier.fillMaxWidth().padding(12.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    Column(modifier = Modifier.weight(1f)) {
+                        Text(
+                            "Live: BT vs Us",
+                            style = MaterialTheme.typography.labelMedium,
+                            color = MaterialTheme.colorScheme.onSecondaryContainer,
+                        )
+                        Row(verticalAlignment = Alignment.Bottom) {
+                            Text(
+                                "${us?.let { "%.0f".format(it) } ?: "—"} s",
+                                style = MaterialTheme.typography.headlineSmall,
+                                fontWeight = FontWeight.Bold,
+                                color = MaterialTheme.colorScheme.primary,
+                            )
+                            Spacer(Modifier.width(6.dp))
+                            Text(
+                                "vs BT ${"%.0f".format(bt)} s",
+                                style = MaterialTheme.typography.labelMedium,
+                                color = MaterialTheme.colorScheme.onSecondaryContainer,
+                                modifier = Modifier.padding(bottom = 3.dp),
+                            )
+                        }
+                    }
+                    Column(horizontalAlignment = Alignment.End) {
+                        Text(
+                            pct?.let { p ->
+                                if (p > 0) "+%.1f%% better".format(p) else "%.1f%% worse".format(p)
+                            } ?: "—",
+                            style = MaterialTheme.typography.titleMedium,
+                            fontWeight = FontWeight.Bold,
+                            color = if ((pct ?: 0.0) > 0.0) MaterialTheme.colorScheme.primary
+                                    else MaterialTheme.colorScheme.error,
+                        )
+                        Text(
+                            "$routes routes corrected",
+                            style = MaterialTheme.typography.labelSmall,
+                            color = MaterialTheme.colorScheme.onSecondaryContainer,
+                        )
+                    }
+                }
+            }
+        }
+
         // Search bar
         Column(modifier = Modifier.padding(16.dp)) {
             OutlinedTextField(
