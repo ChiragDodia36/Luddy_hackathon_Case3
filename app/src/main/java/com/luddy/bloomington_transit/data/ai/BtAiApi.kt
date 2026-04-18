@@ -9,6 +9,7 @@ import com.luddy.bloomington_transit.data.ai.dto.RouteDto
 import com.luddy.bloomington_transit.data.ai.dto.StatsResponseDto
 import com.luddy.bloomington_transit.data.ai.dto.StopDto
 import com.luddy.bloomington_transit.data.ai.dto.TripEtaTrajectoryResponseDto
+import com.luddy.bloomington_transit.data.ai.dto.TripPlanResponseDto
 import com.luddy.bloomington_transit.data.ai.dto.VehicleDto
 import retrofit2.http.GET
 import retrofit2.http.Path
@@ -52,4 +53,14 @@ interface BtAiApi {
 
     @GET("nlq")
     suspend fun nlq(@Query("q") query: String): NlqResponseDto
+
+    /** Google Directions (transit) with AI-enriched boarding ETAs. */
+    @GET("plan")
+    suspend fun plan(
+        @Query("origin_lat") originLat: Double,
+        @Query("origin_lng") originLng: Double,
+        @Query("dest_lat") destLat: Double,
+        @Query("dest_lng") destLng: Double,
+        @Query("departure_time") departureTimeEpochSec: Long? = null,
+    ): TripPlanResponseDto
 }
