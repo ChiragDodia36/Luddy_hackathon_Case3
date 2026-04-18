@@ -33,10 +33,13 @@ android {
         // Exposed as BuildConfig for client-side Maps/Places/Directions calls.
         buildConfigField("String", "MAPS_API_KEY", "\"$mapsApiKey\"")
 
-        // AI inference backend base URL (override via local.properties: BACKEND_BASE_URL=...)
-        // Default: Android emulator can reach host machine at 10.0.2.2
+        // AI inference backend base URL.
+        // Default: the deployed Railway service (works on any network, no laptop
+        // required). Override in local.properties with BACKEND_BASE_URL=... to
+        // point at a locally-running FastAPI service during development (e.g.
+        // http://10.0.2.2:8000/ for the emulator → host loopback).
         val backendBaseUrl = localProperties.getProperty("BACKEND_BASE_URL")
-            ?: "http://10.0.2.2:8000/"
+            ?: "https://bt-ml-production.up.railway.app/"
         buildConfigField("String", "BACKEND_BASE_URL", "\"$backendBaseUrl\"")
     }
 
