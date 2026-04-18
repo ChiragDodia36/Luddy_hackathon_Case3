@@ -151,42 +151,45 @@ class TransitRepositoryImpl @Inject constructor(
                 }
             }
 
-            // Get static schedule for today
             val staticTimes = db.tripDao().getStopTimesForStop(stopId)
-            val todayMs = getTodayBaseMs()
+            val now = System.currentTimeMillis()
+            val stop = db.stopDao().getStopById(stopId)
+            val allRoutes = db.routeDao().getAllRoutes().first()
+            // Pre-fetch all trips so the helper doesn't need to suspend
+            val tripIds = staticTimes.map { it.tripId }.distinct()
+            val tripMap = tripIds.mapNotNull { db.tripDao().getTripById(it) }
+                .associateBy { it.tripId }
 
-            val arrivals = mutableListOf<Arrival>()
-
-            staticTimes.forEach { st ->
-                val trip = db.tripDao().getTripById(st.tripId) ?: return@forEach
-                val route = db.routeDao().getAllRoutes().first()
-                    .find { it.id == trip.routeId } ?: return@forEach
-
-                val scheduledMs = parseGtfsTimeToMs(st.arrivalTime, todayMs)
-                    .takeIf { it > 0 } ?: return@forEach
-
-                // Only show upcoming arrivals (within next 2 hours)
-                val now = System.currentTimeMillis()
-                if (scheduledMs < now - 60_000 || scheduledMs > now + 2 * 3600_000) return@forEach
-
-                val stop = db.stopDao().getStopById(stopId)
-
-                arrivals.add(
-                    Arrival(
-                        routeId = trip.routeId,
-                        routeShortName = route.shortName,
-                        routeColor = route.color,
-                        headsign = trip.headsign,
-                        stopId = stopId,
-                        stopName = stop?.name ?: stopId,
-                        predictedArrivalMs = realtimeMap[st.tripId] ?: -1L,
-                        scheduledArrivalMs = scheduledMs,
-                        tripId = st.tripId
+            fun buildArrivals(baseMs: Long): List<Arrival> {
+                val result = mutableListOf<Arrival>()
+                staticTimes.forEach { st ->
+                    val trip = tripMap[st.tripId] ?: return@forEach
+                    val route = allRoutes.find { it.id == trip.routeId } ?: return@forEach
+                    val scheduledMs = parseGtfsTimeToMs(st.arrivalTime, baseMs)
+                        .takeIf { it > 0 } ?: return@forEach
+                    if (scheduledMs < now - 60_000) return@forEach
+                    result.add(
+                        Arrival(
+                            routeId = trip.routeId,
+                            routeShortName = route.shortName,
+                            routeColor = route.color,
+                            headsign = trip.headsign,
+                            stopId = stopId,
+                            stopName = stop?.name ?: stopId,
+                            predictedArrivalMs = realtimeMap[st.tripId] ?: -1L,
+                            scheduledArrivalMs = scheduledMs,
+                            tripId = st.tripId
+                        )
                     )
-                )
+                }
+                return result.sortedBy { it.displayArrivalMs }
             }
 
-            arrivals.sortedBy { it.displayArrivalMs }
+            // Try today's schedule; if service has ended for today, show tomorrow's first buses
+            val todayMs = getTodayBaseMs()
+            val todayArrivals = buildArrivals(todayMs)
+            if (todayArrivals.isNotEmpty()) todayArrivals
+            else buildArrivals(todayMs + 24 * 3600_000L)
         } catch (e: Exception) {
             Log.e(TAG, "Failed to get arrivals for stop $stopId", e)
             emptyList()
