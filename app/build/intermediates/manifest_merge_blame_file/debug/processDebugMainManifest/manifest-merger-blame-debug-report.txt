@@ -46,35 +46,35 @@
 28-->/Users/chiragdodia/Desktop/luddy_hackathon_case3/app/src/main/AndroidManifest.xml:21:22-78
 29
 30    <uses-feature
-30-->[com.google.android.gms:play-services-maps:19.0.0] /Users/chiragdodia/.gradle/caches/9.3.1/transforms/cfddc4207c877d28828df8034c744afa/transformed/play-services-maps-19.0.0/AndroidManifest.xml:26:5-28:35
+30-->[com.google.android.gms:play-services-maps:19.0.0] /Users/chiragdodia/.gradle/caches/transforms-4/430080e210b00581714fdd8b6964842e/transformed/play-services-maps-19.0.0/AndroidManifest.xml:26:5-28:35
 31        android:glEsVersion="0x00020000"
-31-->[com.google.android.gms:play-services-maps:19.0.0] /Users/chiragdodia/.gradle/caches/9.3.1/transforms/cfddc4207c877d28828df8034c744afa/transformed/play-services-maps-19.0.0/AndroidManifest.xml:27:9-41
+31-->[com.google.android.gms:play-services-maps:19.0.0] /Users/chiragdodia/.gradle/caches/transforms-4/430080e210b00581714fdd8b6964842e/transformed/play-services-maps-19.0.0/AndroidManifest.xml:27:9-41
 32        android:required="true" />
-32-->[com.google.android.gms:play-services-maps:19.0.0] /Users/chiragdodia/.gradle/caches/9.3.1/transforms/cfddc4207c877d28828df8034c744afa/transformed/play-services-maps-19.0.0/AndroidManifest.xml:28:9-32
+32-->[com.google.android.gms:play-services-maps:19.0.0] /Users/chiragdodia/.gradle/caches/transforms-4/430080e210b00581714fdd8b6964842e/transformed/play-services-maps-19.0.0/AndroidManifest.xml:28:9-32
 33
 34    <queries>
-34-->[com.google.android.gms:play-services-maps:19.0.0] /Users/chiragdodia/.gradle/caches/9.3.1/transforms/cfddc4207c877d28828df8034c744afa/transformed/play-services-maps-19.0.0/AndroidManifest.xml:30:5-34:15
+34-->[com.google.android.gms:play-services-maps:19.0.0] /Users/chiragdodia/.gradle/caches/transforms-4/430080e210b00581714fdd8b6964842e/transformed/play-services-maps-19.0.0/AndroidManifest.xml:30:5-34:15
 35
 36        <!-- Needs to be explicitly declared on Android R+ -->
 37        <package android:name="com.google.android.apps.maps" />
-37-->[com.google.android.gms:play-services-maps:19.0.0] /Users/chiragdodia/.gradle/caches/9.3.1/transforms/cfddc4207c877d28828df8034c744afa/transformed/play-services-maps-19.0.0/AndroidManifest.xml:33:9-64
-37-->[com.google.android.gms:play-services-maps:19.0.0] /Users/chiragdodia/.gradle/caches/9.3.1/transforms/cfddc4207c877d28828df8034c744afa/transformed/play-services-maps-19.0.0/AndroidManifest.xml:33:18-61
+37-->[com.google.android.gms:play-services-maps:19.0.0] /Users/chiragdodia/.gradle/caches/transforms-4/430080e210b00581714fdd8b6964842e/transformed/play-services-maps-19.0.0/AndroidManifest.xml:33:9-64
+37-->[com.google.android.gms:play-services-maps:19.0.0] /Users/chiragdodia/.gradle/caches/transforms-4/430080e210b00581714fdd8b6964842e/transformed/play-services-maps-19.0.0/AndroidManifest.xml:33:18-61
 38    </queries>
 39
 40    <uses-permission android:name="android.permission.WAKE_LOCK" />
-40-->[androidx.work:work-runtime:2.9.1] /Users/chiragdodia/.gradle/caches/9.3.1/transforms/362d085f87ab095a10f89d9828654e35/transformed/work-runtime-2.9.1/AndroidManifest.xml:23:5-68
-40-->[androidx.work:work-runtime:2.9.1] /Users/chiragdodia/.gradle/caches/9.3.1/transforms/362d085f87ab095a10f89d9828654e35/transformed/work-runtime-2.9.1/AndroidManifest.xml:23:22-65
+40-->[androidx.work:work-runtime:2.9.1] /Users/chiragdodia/.gradle/caches/transforms-4/5e456d57c614095578c91a830b63c4aa/transformed/work-runtime-2.9.1/AndroidManifest.xml:23:5-68
+40-->[androidx.work:work-runtime:2.9.1] /Users/chiragdodia/.gradle/caches/transforms-4/5e456d57c614095578c91a830b63c4aa/transformed/work-runtime-2.9.1/AndroidManifest.xml:23:22-65
 41
 42    <permission
-42-->[androidx.core:core:1.13.1] /Users/chiragdodia/.gradle/caches/9.3.1/transforms/af99e3324d22d5a7c181d5eaba08d375/transformed/core-1.13.1/AndroidManifest.xml:22:5-24:47
+42-->[androidx.core:core:1.13.1] /Users/chiragdodia/.gradle/caches/transforms-4/000cd5e671767391c1fa9a674882ab47/transformed/core-1.13.1/AndroidManifest.xml:22:5-24:47
 43        android:name="com.luddy.bloomington_transit.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION"
-43-->[androidx.core:core:1.13.1] /Users/chiragdodia/.gradle/caches/9.3.1/transforms/af99e3324d22d5a7c181d5eaba08d375/transformed/core-1.13.1/AndroidManifest.xml:23:9-81
+43-->[androidx.core:core:1.13.1] /Users/chiragdodia/.gradle/caches/transforms-4/000cd5e671767391c1fa9a674882ab47/transformed/core-1.13.1/AndroidManifest.xml:23:9-81
 44        android:protectionLevel="signature" />
-44-->[androidx.core:core:1.13.1] /Users/chiragdodia/.gradle/caches/9.3.1/transforms/af99e3324d22d5a7c181d5eaba08d375/transformed/core-1.13.1/AndroidManifest.xml:24:9-44
+44-->[androidx.core:core:1.13.1] /Users/chiragdodia/.gradle/caches/transforms-4/000cd5e671767391c1fa9a674882ab47/transformed/core-1.13.1/AndroidManifest.xml:24:9-44
 45
 46    <uses-permission android:name="com.luddy.bloomington_transit.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION" />
-46-->[androidx.core:core:1.13.1] /Users/chiragdodia/.gradle/caches/9.3.1/transforms/af99e3324d22d5a7c181d5eaba08d375/transformed/core-1.13.1/AndroidManifest.xml:26:5-97
-46-->[androidx.core:core:1.13.1] /Users/chiragdodia/.gradle/caches/9.3.1/transforms/af99e3324d22d5a7c181d5eaba08d375/transformed/core-1.13.1/AndroidManifest.xml:26:22-94
+46-->[androidx.core:core:1.13.1] /Users/chiragdodia/.gradle/caches/transforms-4/000cd5e671767391c1fa9a674882ab47/transformed/core-1.13.1/AndroidManifest.xml:26:5-97
+46-->[androidx.core:core:1.13.1] /Users/chiragdodia/.gradle/caches/transforms-4/000cd5e671767391c1fa9a674882ab47/transformed/core-1.13.1/AndroidManifest.xml:26:22-94
 47
 48    <application
 48-->/Users/chiragdodia/Desktop/luddy_hackathon_case3/app/src/main/AndroidManifest.xml:23:5-81:19
@@ -83,7 +83,7 @@
 50        android:allowBackup="true"
 50-->/Users/chiragdodia/Desktop/luddy_hackathon_case3/app/src/main/AndroidManifest.xml:25:9-35
 51        android:appComponentFactory="androidx.core.app.CoreComponentFactory"
-51-->[androidx.core:core:1.13.1] /Users/chiragdodia/.gradle/caches/9.3.1/transforms/af99e3324d22d5a7c181d5eaba08d375/transformed/core-1.13.1/AndroidManifest.xml:28:18-86
+51-->[androidx.core:core:1.13.1] /Users/chiragdodia/.gradle/caches/transforms-4/000cd5e671767391c1fa9a674882ab47/transformed/core-1.13.1/AndroidManifest.xml:28:18-86
 52        android:debuggable="true"
 53        android:extractNativeLibs="false"
 54        android:icon="@mipmap/ic_launcher"
@@ -94,451 +94,452 @@
 56-->/Users/chiragdodia/Desktop/luddy_hackathon_case3/app/src/main/AndroidManifest.xml:28:9-54
 57        android:supportsRtl="true"
 57-->/Users/chiragdodia/Desktop/luddy_hackathon_case3/app/src/main/AndroidManifest.xml:29:9-35
-58        android:theme="@style/Theme.BloomingtonTransit" >
-58-->/Users/chiragdodia/Desktop/luddy_hackathon_case3/app/src/main/AndroidManifest.xml:30:9-56
-59
-60        <!-- Google Maps API Key -->
-61        <meta-data
-62            android:name="com.google.android.geo.API_KEY"
-62-->/Users/chiragdodia/Desktop/luddy_hackathon_case3/app/src/main/AndroidManifest.xml:34:13-58
-63            android:value="AIzaSyBc69POE4YRcKnAEjXgzdCBhlh61YBdQ8E" />
-63-->/Users/chiragdodia/Desktop/luddy_hackathon_case3/app/src/main/AndroidManifest.xml:35:13-44
-64
-65        <activity
-65-->/Users/chiragdodia/Desktop/luddy_hackathon_case3/app/src/main/AndroidManifest.xml:37:9-51:20
-66            android:name="com.luddy.bloomington_transit.MainActivity"
-66-->/Users/chiragdodia/Desktop/luddy_hackathon_case3/app/src/main/AndroidManifest.xml:38:13-41
-67            android:exported="true"
-67-->/Users/chiragdodia/Desktop/luddy_hackathon_case3/app/src/main/AndroidManifest.xml:39:13-36
-68            android:theme="@style/Theme.BloomingtonTransit" >
-68-->/Users/chiragdodia/Desktop/luddy_hackathon_case3/app/src/main/AndroidManifest.xml:40:13-60
-69            <intent-filter>
-69-->/Users/chiragdodia/Desktop/luddy_hackathon_case3/app/src/main/AndroidManifest.xml:41:13-44:29
-70                <action android:name="android.intent.action.MAIN" />
-70-->/Users/chiragdodia/Desktop/luddy_hackathon_case3/app/src/main/AndroidManifest.xml:42:17-69
-70-->/Users/chiragdodia/Desktop/luddy_hackathon_case3/app/src/main/AndroidManifest.xml:42:25-66
-71
-72                <category android:name="android.intent.category.LAUNCHER" />
-72-->/Users/chiragdodia/Desktop/luddy_hackathon_case3/app/src/main/AndroidManifest.xml:43:17-77
-72-->/Users/chiragdodia/Desktop/luddy_hackathon_case3/app/src/main/AndroidManifest.xml:43:27-74
-73            </intent-filter>
-74            <!-- Deep link from widget tap -->
-75            <intent-filter>
-75-->/Users/chiragdodia/Desktop/luddy_hackathon_case3/app/src/main/AndroidManifest.xml:46:13-50:29
-76                <action android:name="android.intent.action.VIEW" />
-76-->/Users/chiragdodia/Desktop/luddy_hackathon_case3/app/src/main/AndroidManifest.xml:47:17-69
-76-->/Users/chiragdodia/Desktop/luddy_hackathon_case3/app/src/main/AndroidManifest.xml:47:25-66
-77
-78                <category android:name="android.intent.category.DEFAULT" />
-78-->/Users/chiragdodia/Desktop/luddy_hackathon_case3/app/src/main/AndroidManifest.xml:48:17-76
-78-->/Users/chiragdodia/Desktop/luddy_hackathon_case3/app/src/main/AndroidManifest.xml:48:27-73
-79
-80                <data
-80-->/Users/chiragdodia/Desktop/luddy_hackathon_case3/app/src/main/AndroidManifest.xml:49:17-73
-81                    android:host="bus"
-81-->/Users/chiragdodia/Desktop/luddy_hackathon_case3/app/src/main/AndroidManifest.xml:49:52-70
-82                    android:scheme="bloomington" />
-82-->/Users/chiragdodia/Desktop/luddy_hackathon_case3/app/src/main/AndroidManifest.xml:49:23-51
-83            </intent-filter>
-84        </activity>
-85
-86        <!-- Bus tracking foreground service -->
-87        <service
-87-->/Users/chiragdodia/Desktop/luddy_hackathon_case3/app/src/main/AndroidManifest.xml:54:9-57:40
-88            android:name="com.luddy.bloomington_transit.service.BusTrackingService"
-88-->/Users/chiragdodia/Desktop/luddy_hackathon_case3/app/src/main/AndroidManifest.xml:55:13-55
-89            android:exported="false"
-89-->/Users/chiragdodia/Desktop/luddy_hackathon_case3/app/src/main/AndroidManifest.xml:57:13-37
-90            android:foregroundServiceType="location" />
-90-->/Users/chiragdodia/Desktop/luddy_hackathon_case3/app/src/main/AndroidManifest.xml:56:13-53
-91
-92        <!-- Home screen widget -->
-93        <receiver
-93-->/Users/chiragdodia/Desktop/luddy_hackathon_case3/app/src/main/AndroidManifest.xml:60:9-69:20
-94            android:name="com.luddy.bloomington_transit.widget.BusWidgetReceiver"
-94-->/Users/chiragdodia/Desktop/luddy_hackathon_case3/app/src/main/AndroidManifest.xml:61:13-53
-95            android:exported="true" >
-95-->/Users/chiragdodia/Desktop/luddy_hackathon_case3/app/src/main/AndroidManifest.xml:62:13-36
-96            <intent-filter>
-96-->/Users/chiragdodia/Desktop/luddy_hackathon_case3/app/src/main/AndroidManifest.xml:63:13-65:29
-97                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
-97-->/Users/chiragdodia/Desktop/luddy_hackathon_case3/app/src/main/AndroidManifest.xml:64:17-84
-97-->/Users/chiragdodia/Desktop/luddy_hackathon_case3/app/src/main/AndroidManifest.xml:64:25-81
-98            </intent-filter>
-99
-100            <meta-data
-100-->/Users/chiragdodia/Desktop/luddy_hackathon_case3/app/src/main/AndroidManifest.xml:66:13-68:59
-101                android:name="android.appwidget.provider"
-101-->/Users/chiragdodia/Desktop/luddy_hackathon_case3/app/src/main/AndroidManifest.xml:67:17-58
-102                android:resource="@xml/bus_widget_info" />
-102-->/Users/chiragdodia/Desktop/luddy_hackathon_case3/app/src/main/AndroidManifest.xml:68:17-56
-103        </receiver>
-104
-105        <!-- WorkManager for widget refresh -->
-106        <provider
-107            android:name="androidx.startup.InitializationProvider"
-107-->/Users/chiragdodia/Desktop/luddy_hackathon_case3/app/src/main/AndroidManifest.xml:73:13-67
-108            android:authorities="com.luddy.bloomington_transit.androidx-startup"
-108-->/Users/chiragdodia/Desktop/luddy_hackathon_case3/app/src/main/AndroidManifest.xml:74:13-68
-109            android:exported="false" >
-109-->/Users/chiragdodia/Desktop/luddy_hackathon_case3/app/src/main/AndroidManifest.xml:75:13-37
-110            <meta-data
-110-->/Users/chiragdodia/Desktop/luddy_hackathon_case3/app/src/main/AndroidManifest.xml:76:13-78:52
-111                android:name="androidx.work.WorkManagerInitializer"
-111-->/Users/chiragdodia/Desktop/luddy_hackathon_case3/app/src/main/AndroidManifest.xml:77:17-68
-112                android:value="androidx.startup" />
-112-->/Users/chiragdodia/Desktop/luddy_hackathon_case3/app/src/main/AndroidManifest.xml:78:17-49
-113            <meta-data
-113-->[androidx.emoji2:emoji2:1.3.0] /Users/chiragdodia/.gradle/caches/9.3.1/transforms/6c27971100905af5eb688ea48cf24514/transformed/emoji2-1.3.0/AndroidManifest.xml:29:13-31:52
-114                android:name="androidx.emoji2.text.EmojiCompatInitializer"
-114-->[androidx.emoji2:emoji2:1.3.0] /Users/chiragdodia/.gradle/caches/9.3.1/transforms/6c27971100905af5eb688ea48cf24514/transformed/emoji2-1.3.0/AndroidManifest.xml:30:17-75
-115                android:value="androidx.startup" />
-115-->[androidx.emoji2:emoji2:1.3.0] /Users/chiragdodia/.gradle/caches/9.3.1/transforms/6c27971100905af5eb688ea48cf24514/transformed/emoji2-1.3.0/AndroidManifest.xml:31:17-49
-116            <meta-data
-116-->[androidx.lifecycle:lifecycle-process:2.8.6] /Users/chiragdodia/.gradle/caches/9.3.1/transforms/f374bde0440686c1f68fc58e63536770/transformed/lifecycle-process-2.8.6/AndroidManifest.xml:29:13-31:52
-117                android:name="androidx.lifecycle.ProcessLifecycleInitializer"
-117-->[androidx.lifecycle:lifecycle-process:2.8.6] /Users/chiragdodia/.gradle/caches/9.3.1/transforms/f374bde0440686c1f68fc58e63536770/transformed/lifecycle-process-2.8.6/AndroidManifest.xml:30:17-78
-118                android:value="androidx.startup" />
-118-->[androidx.lifecycle:lifecycle-process:2.8.6] /Users/chiragdodia/.gradle/caches/9.3.1/transforms/f374bde0440686c1f68fc58e63536770/transformed/lifecycle-process-2.8.6/AndroidManifest.xml:31:17-49
-119            <meta-data
-119-->[androidx.profileinstaller:profileinstaller:1.3.1] /Users/chiragdodia/.gradle/caches/9.3.1/transforms/a104c33c9fed9ee3a0aef1fcb3a38b4d/transformed/profileinstaller-1.3.1/AndroidManifest.xml:29:13-31:52
-120                android:name="androidx.profileinstaller.ProfileInstallerInitializer"
-120-->[androidx.profileinstaller:profileinstaller:1.3.1] /Users/chiragdodia/.gradle/caches/9.3.1/transforms/a104c33c9fed9ee3a0aef1fcb3a38b4d/transformed/profileinstaller-1.3.1/AndroidManifest.xml:30:17-85
-121                android:value="androidx.startup" />
-121-->[androidx.profileinstaller:profileinstaller:1.3.1] /Users/chiragdodia/.gradle/caches/9.3.1/transforms/a104c33c9fed9ee3a0aef1fcb3a38b4d/transformed/profileinstaller-1.3.1/AndroidManifest.xml:31:17-49
-122        </provider>
-123
-124        <activity
-124-->[androidx.glance:glance-appwidget:1.1.0] /Users/chiragdodia/.gradle/caches/9.3.1/transforms/7bb4fb8a5f185957a9c7e772f0e21ccf/transformed/glance-appwidget-1.1.0/AndroidManifest.xml:23:9-28:62
-125            android:name="androidx.glance.appwidget.action.ActionTrampolineActivity"
-125-->[androidx.glance:glance-appwidget:1.1.0] /Users/chiragdodia/.gradle/caches/9.3.1/transforms/7bb4fb8a5f185957a9c7e772f0e21ccf/transformed/glance-appwidget-1.1.0/AndroidManifest.xml:24:13-85
-126            android:enabled="true"
-126-->[androidx.glance:glance-appwidget:1.1.0] /Users/chiragdodia/.gradle/caches/9.3.1/transforms/7bb4fb8a5f185957a9c7e772f0e21ccf/transformed/glance-appwidget-1.1.0/AndroidManifest.xml:25:13-35
-127            android:excludeFromRecents="true"
-127-->[androidx.glance:glance-appwidget:1.1.0] /Users/chiragdodia/.gradle/caches/9.3.1/transforms/7bb4fb8a5f185957a9c7e772f0e21ccf/transformed/glance-appwidget-1.1.0/AndroidManifest.xml:26:13-46
-128            android:exported="false"
-128-->[androidx.glance:glance-appwidget:1.1.0] /Users/chiragdodia/.gradle/caches/9.3.1/transforms/7bb4fb8a5f185957a9c7e772f0e21ccf/transformed/glance-appwidget-1.1.0/AndroidManifest.xml:27:13-37
-129            android:theme="@android:style/Theme.NoDisplay" />
-129-->[androidx.glance:glance-appwidget:1.1.0] /Users/chiragdodia/.gradle/caches/9.3.1/transforms/7bb4fb8a5f185957a9c7e772f0e21ccf/transformed/glance-appwidget-1.1.0/AndroidManifest.xml:28:13-59
-130        <activity
-130-->[androidx.glance:glance-appwidget:1.1.0] /Users/chiragdodia/.gradle/caches/9.3.1/transforms/7bb4fb8a5f185957a9c7e772f0e21ccf/transformed/glance-appwidget-1.1.0/AndroidManifest.xml:29:9-36:81
-131            android:name="androidx.glance.appwidget.action.InvisibleActionTrampolineActivity"
-131-->[androidx.glance:glance-appwidget:1.1.0] /Users/chiragdodia/.gradle/caches/9.3.1/transforms/7bb4fb8a5f185957a9c7e772f0e21ccf/transformed/glance-appwidget-1.1.0/AndroidManifest.xml:30:13-94
-132            android:enabled="true"
-132-->[androidx.glance:glance-appwidget:1.1.0] /Users/chiragdodia/.gradle/caches/9.3.1/transforms/7bb4fb8a5f185957a9c7e772f0e21ccf/transformed/glance-appwidget-1.1.0/AndroidManifest.xml:31:13-35
-133            android:exported="false"
-133-->[androidx.glance:glance-appwidget:1.1.0] /Users/chiragdodia/.gradle/caches/9.3.1/transforms/7bb4fb8a5f185957a9c7e772f0e21ccf/transformed/glance-appwidget-1.1.0/AndroidManifest.xml:32:13-37
-134            android:launchMode="singleInstance"
-134-->[androidx.glance:glance-appwidget:1.1.0] /Users/chiragdodia/.gradle/caches/9.3.1/transforms/7bb4fb8a5f185957a9c7e772f0e21ccf/transformed/glance-appwidget-1.1.0/AndroidManifest.xml:33:13-48
-135            android:noHistory="true"
-135-->[androidx.glance:glance-appwidget:1.1.0] /Users/chiragdodia/.gradle/caches/9.3.1/transforms/7bb4fb8a5f185957a9c7e772f0e21ccf/transformed/glance-appwidget-1.1.0/AndroidManifest.xml:34:13-37
-136            android:taskAffinity="androidx.glance.appwidget.ListAdapterCallbackTrampoline"
-136-->[androidx.glance:glance-appwidget:1.1.0] /Users/chiragdodia/.gradle/caches/9.3.1/transforms/7bb4fb8a5f185957a9c7e772f0e21ccf/transformed/glance-appwidget-1.1.0/AndroidManifest.xml:35:13-91
-137            android:theme="@style/Widget.Glance.AppWidget.CallbackTrampoline" />
-137-->[androidx.glance:glance-appwidget:1.1.0] /Users/chiragdodia/.gradle/caches/9.3.1/transforms/7bb4fb8a5f185957a9c7e772f0e21ccf/transformed/glance-appwidget-1.1.0/AndroidManifest.xml:36:13-78
-138
-139        <receiver
-139-->[androidx.glance:glance-appwidget:1.1.0] /Users/chiragdodia/.gradle/caches/9.3.1/transforms/7bb4fb8a5f185957a9c7e772f0e21ccf/transformed/glance-appwidget-1.1.0/AndroidManifest.xml:38:9-41:40
-140            android:name="androidx.glance.appwidget.action.ActionCallbackBroadcastReceiver"
-140-->[androidx.glance:glance-appwidget:1.1.0] /Users/chiragdodia/.gradle/caches/9.3.1/transforms/7bb4fb8a5f185957a9c7e772f0e21ccf/transformed/glance-appwidget-1.1.0/AndroidManifest.xml:39:13-92
-141            android:enabled="true"
-141-->[androidx.glance:glance-appwidget:1.1.0] /Users/chiragdodia/.gradle/caches/9.3.1/transforms/7bb4fb8a5f185957a9c7e772f0e21ccf/transformed/glance-appwidget-1.1.0/AndroidManifest.xml:40:13-35
-142            android:exported="false" />
-142-->[androidx.glance:glance-appwidget:1.1.0] /Users/chiragdodia/.gradle/caches/9.3.1/transforms/7bb4fb8a5f185957a9c7e772f0e21ccf/transformed/glance-appwidget-1.1.0/AndroidManifest.xml:41:13-37
-143        <receiver
-143-->[androidx.glance:glance-appwidget:1.1.0] /Users/chiragdodia/.gradle/caches/9.3.1/transforms/7bb4fb8a5f185957a9c7e772f0e21ccf/transformed/glance-appwidget-1.1.0/AndroidManifest.xml:42:9-45:40
-144            android:name="androidx.glance.appwidget.UnmanagedSessionReceiver"
-144-->[androidx.glance:glance-appwidget:1.1.0] /Users/chiragdodia/.gradle/caches/9.3.1/transforms/7bb4fb8a5f185957a9c7e772f0e21ccf/transformed/glance-appwidget-1.1.0/AndroidManifest.xml:43:13-78
-145            android:enabled="true"
-145-->[androidx.glance:glance-appwidget:1.1.0] /Users/chiragdodia/.gradle/caches/9.3.1/transforms/7bb4fb8a5f185957a9c7e772f0e21ccf/transformed/glance-appwidget-1.1.0/AndroidManifest.xml:44:13-35
-146            android:exported="false" />
-146-->[androidx.glance:glance-appwidget:1.1.0] /Users/chiragdodia/.gradle/caches/9.3.1/transforms/7bb4fb8a5f185957a9c7e772f0e21ccf/transformed/glance-appwidget-1.1.0/AndroidManifest.xml:45:13-37
-147        <receiver
-147-->[androidx.glance:glance-appwidget:1.1.0] /Users/chiragdodia/.gradle/caches/9.3.1/transforms/7bb4fb8a5f185957a9c7e772f0e21ccf/transformed/glance-appwidget-1.1.0/AndroidManifest.xml:46:9-53:20
-148            android:name="androidx.glance.appwidget.MyPackageReplacedReceiver"
-148-->[androidx.glance:glance-appwidget:1.1.0] /Users/chiragdodia/.gradle/caches/9.3.1/transforms/7bb4fb8a5f185957a9c7e772f0e21ccf/transformed/glance-appwidget-1.1.0/AndroidManifest.xml:47:13-79
-149            android:enabled="true"
-149-->[androidx.glance:glance-appwidget:1.1.0] /Users/chiragdodia/.gradle/caches/9.3.1/transforms/7bb4fb8a5f185957a9c7e772f0e21ccf/transformed/glance-appwidget-1.1.0/AndroidManifest.xml:48:13-35
-150            android:exported="false" >
-150-->[androidx.glance:glance-appwidget:1.1.0] /Users/chiragdodia/.gradle/caches/9.3.1/transforms/7bb4fb8a5f185957a9c7e772f0e21ccf/transformed/glance-appwidget-1.1.0/AndroidManifest.xml:49:13-37
-151            <intent-filter>
-151-->[androidx.glance:glance-appwidget:1.1.0] /Users/chiragdodia/.gradle/caches/9.3.1/transforms/7bb4fb8a5f185957a9c7e772f0e21ccf/transformed/glance-appwidget-1.1.0/AndroidManifest.xml:50:13-52:29
-152                <action android:name="android.intent.action.MY_PACKAGE_REPLACED" />
-152-->[androidx.glance:glance-appwidget:1.1.0] /Users/chiragdodia/.gradle/caches/9.3.1/transforms/7bb4fb8a5f185957a9c7e772f0e21ccf/transformed/glance-appwidget-1.1.0/AndroidManifest.xml:51:17-84
-152-->[androidx.glance:glance-appwidget:1.1.0] /Users/chiragdodia/.gradle/caches/9.3.1/transforms/7bb4fb8a5f185957a9c7e772f0e21ccf/transformed/glance-appwidget-1.1.0/AndroidManifest.xml:51:25-81
-153            </intent-filter>
-154        </receiver>
-155
-156        <service
-156-->[androidx.glance:glance-appwidget:1.1.0] /Users/chiragdodia/.gradle/caches/9.3.1/transforms/7bb4fb8a5f185957a9c7e772f0e21ccf/transformed/glance-appwidget-1.1.0/AndroidManifest.xml:55:9-58:72
-157            android:name="androidx.glance.appwidget.GlanceRemoteViewsService"
-157-->[androidx.glance:glance-appwidget:1.1.0] /Users/chiragdodia/.gradle/caches/9.3.1/transforms/7bb4fb8a5f185957a9c7e772f0e21ccf/transformed/glance-appwidget-1.1.0/AndroidManifest.xml:56:13-78
-158            android:exported="true"
-158-->[androidx.glance:glance-appwidget:1.1.0] /Users/chiragdodia/.gradle/caches/9.3.1/transforms/7bb4fb8a5f185957a9c7e772f0e21ccf/transformed/glance-appwidget-1.1.0/AndroidManifest.xml:57:13-36
-159            android:permission="android.permission.BIND_REMOTEVIEWS" /> <!-- Needs to be explicitly declared on P+ -->
-159-->[androidx.glance:glance-appwidget:1.1.0] /Users/chiragdodia/.gradle/caches/9.3.1/transforms/7bb4fb8a5f185957a9c7e772f0e21ccf/transformed/glance-appwidget-1.1.0/AndroidManifest.xml:58:13-69
-160        <uses-library
-160-->[com.google.android.gms:play-services-maps:19.0.0] /Users/chiragdodia/.gradle/caches/9.3.1/transforms/cfddc4207c877d28828df8034c744afa/transformed/play-services-maps-19.0.0/AndroidManifest.xml:39:9-41:40
-161            android:name="org.apache.http.legacy"
-161-->[com.google.android.gms:play-services-maps:19.0.0] /Users/chiragdodia/.gradle/caches/9.3.1/transforms/cfddc4207c877d28828df8034c744afa/transformed/play-services-maps-19.0.0/AndroidManifest.xml:40:13-50
-162            android:required="false" />
-162-->[com.google.android.gms:play-services-maps:19.0.0] /Users/chiragdodia/.gradle/caches/9.3.1/transforms/cfddc4207c877d28828df8034c744afa/transformed/play-services-maps-19.0.0/AndroidManifest.xml:41:13-37
-163
-164        <activity
-164-->[com.google.android.gms:play-services-base:18.5.0] /Users/chiragdodia/.gradle/caches/9.3.1/transforms/047b280cd35872471fa87584c627f955/transformed/play-services-base-18.5.0/AndroidManifest.xml:5:9-173
-165            android:name="com.google.android.gms.common.api.GoogleApiActivity"
-165-->[com.google.android.gms:play-services-base:18.5.0] /Users/chiragdodia/.gradle/caches/9.3.1/transforms/047b280cd35872471fa87584c627f955/transformed/play-services-base-18.5.0/AndroidManifest.xml:5:19-85
-166            android:exported="false"
-166-->[com.google.android.gms:play-services-base:18.5.0] /Users/chiragdodia/.gradle/caches/9.3.1/transforms/047b280cd35872471fa87584c627f955/transformed/play-services-base-18.5.0/AndroidManifest.xml:5:146-170
-167            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
-167-->[com.google.android.gms:play-services-base:18.5.0] /Users/chiragdodia/.gradle/caches/9.3.1/transforms/047b280cd35872471fa87584c627f955/transformed/play-services-base-18.5.0/AndroidManifest.xml:5:86-145
-168
-169        <service
-169-->[androidx.room:room-runtime:2.6.1] /Users/chiragdodia/.gradle/caches/9.3.1/transforms/bc51f7b66875490d95c00972c810d65e/transformed/room-runtime-2.6.1/AndroidManifest.xml:24:9-28:63
-170            android:name="androidx.room.MultiInstanceInvalidationService"
-170-->[androidx.room:room-runtime:2.6.1] /Users/chiragdodia/.gradle/caches/9.3.1/transforms/bc51f7b66875490d95c00972c810d65e/transformed/room-runtime-2.6.1/AndroidManifest.xml:25:13-74
-171            android:directBootAware="true"
-171-->[androidx.room:room-runtime:2.6.1] /Users/chiragdodia/.gradle/caches/9.3.1/transforms/bc51f7b66875490d95c00972c810d65e/transformed/room-runtime-2.6.1/AndroidManifest.xml:26:13-43
-172            android:exported="false" />
-172-->[androidx.room:room-runtime:2.6.1] /Users/chiragdodia/.gradle/caches/9.3.1/transforms/bc51f7b66875490d95c00972c810d65e/transformed/room-runtime-2.6.1/AndroidManifest.xml:27:13-37
-173        <service
-173-->[androidx.work:work-runtime:2.9.1] /Users/chiragdodia/.gradle/caches/9.3.1/transforms/362d085f87ab095a10f89d9828654e35/transformed/work-runtime-2.9.1/AndroidManifest.xml:39:9-45:35
-174            android:name="androidx.work.impl.background.systemalarm.SystemAlarmService"
-174-->[androidx.work:work-runtime:2.9.1] /Users/chiragdodia/.gradle/caches/9.3.1/transforms/362d085f87ab095a10f89d9828654e35/transformed/work-runtime-2.9.1/AndroidManifest.xml:40:13-88
-175            android:directBootAware="false"
-175-->[androidx.work:work-runtime:2.9.1] /Users/chiragdodia/.gradle/caches/9.3.1/transforms/362d085f87ab095a10f89d9828654e35/transformed/work-runtime-2.9.1/AndroidManifest.xml:41:13-44
-176            android:enabled="@bool/enable_system_alarm_service_default"
-176-->[androidx.work:work-runtime:2.9.1] /Users/chiragdodia/.gradle/caches/9.3.1/transforms/362d085f87ab095a10f89d9828654e35/transformed/work-runtime-2.9.1/AndroidManifest.xml:42:13-72
-177            android:exported="false" />
-177-->[androidx.work:work-runtime:2.9.1] /Users/chiragdodia/.gradle/caches/9.3.1/transforms/362d085f87ab095a10f89d9828654e35/transformed/work-runtime-2.9.1/AndroidManifest.xml:43:13-37
-178        <service
-178-->[androidx.work:work-runtime:2.9.1] /Users/chiragdodia/.gradle/caches/9.3.1/transforms/362d085f87ab095a10f89d9828654e35/transformed/work-runtime-2.9.1/AndroidManifest.xml:46:9-52:35
-179            android:name="androidx.work.impl.background.systemjob.SystemJobService"
-179-->[androidx.work:work-runtime:2.9.1] /Users/chiragdodia/.gradle/caches/9.3.1/transforms/362d085f87ab095a10f89d9828654e35/transformed/work-runtime-2.9.1/AndroidManifest.xml:47:13-84
-180            android:directBootAware="false"
-180-->[androidx.work:work-runtime:2.9.1] /Users/chiragdodia/.gradle/caches/9.3.1/transforms/362d085f87ab095a10f89d9828654e35/transformed/work-runtime-2.9.1/AndroidManifest.xml:48:13-44
-181            android:enabled="@bool/enable_system_job_service_default"
-181-->[androidx.work:work-runtime:2.9.1] /Users/chiragdodia/.gradle/caches/9.3.1/transforms/362d085f87ab095a10f89d9828654e35/transformed/work-runtime-2.9.1/AndroidManifest.xml:49:13-70
-182            android:exported="true"
-182-->[androidx.work:work-runtime:2.9.1] /Users/chiragdodia/.gradle/caches/9.3.1/transforms/362d085f87ab095a10f89d9828654e35/transformed/work-runtime-2.9.1/AndroidManifest.xml:50:13-36
-183            android:permission="android.permission.BIND_JOB_SERVICE" />
-183-->[androidx.work:work-runtime:2.9.1] /Users/chiragdodia/.gradle/caches/9.3.1/transforms/362d085f87ab095a10f89d9828654e35/transformed/work-runtime-2.9.1/AndroidManifest.xml:51:13-69
-184        <service
-184-->[androidx.work:work-runtime:2.9.1] /Users/chiragdodia/.gradle/caches/9.3.1/transforms/362d085f87ab095a10f89d9828654e35/transformed/work-runtime-2.9.1/AndroidManifest.xml:53:9-59:35
-185            android:name="androidx.work.impl.foreground.SystemForegroundService"
-185-->[androidx.work:work-runtime:2.9.1] /Users/chiragdodia/.gradle/caches/9.3.1/transforms/362d085f87ab095a10f89d9828654e35/transformed/work-runtime-2.9.1/AndroidManifest.xml:54:13-81
-186            android:directBootAware="false"
-186-->[androidx.work:work-runtime:2.9.1] /Users/chiragdodia/.gradle/caches/9.3.1/transforms/362d085f87ab095a10f89d9828654e35/transformed/work-runtime-2.9.1/AndroidManifest.xml:55:13-44
-187            android:enabled="@bool/enable_system_foreground_service_default"
-187-->[androidx.work:work-runtime:2.9.1] /Users/chiragdodia/.gradle/caches/9.3.1/transforms/362d085f87ab095a10f89d9828654e35/transformed/work-runtime-2.9.1/AndroidManifest.xml:56:13-77
-188            android:exported="false" />
-188-->[androidx.work:work-runtime:2.9.1] /Users/chiragdodia/.gradle/caches/9.3.1/transforms/362d085f87ab095a10f89d9828654e35/transformed/work-runtime-2.9.1/AndroidManifest.xml:57:13-37
-189
-190        <receiver
-190-->[androidx.work:work-runtime:2.9.1] /Users/chiragdodia/.gradle/caches/9.3.1/transforms/362d085f87ab095a10f89d9828654e35/transformed/work-runtime-2.9.1/AndroidManifest.xml:61:9-66:35
-191            android:name="androidx.work.impl.utils.ForceStopRunnable$BroadcastReceiver"
-191-->[androidx.work:work-runtime:2.9.1] /Users/chiragdodia/.gradle/caches/9.3.1/transforms/362d085f87ab095a10f89d9828654e35/transformed/work-runtime-2.9.1/AndroidManifest.xml:62:13-88
-192            android:directBootAware="false"
-192-->[androidx.work:work-runtime:2.9.1] /Users/chiragdodia/.gradle/caches/9.3.1/transforms/362d085f87ab095a10f89d9828654e35/transformed/work-runtime-2.9.1/AndroidManifest.xml:63:13-44
-193            android:enabled="true"
-193-->[androidx.work:work-runtime:2.9.1] /Users/chiragdodia/.gradle/caches/9.3.1/transforms/362d085f87ab095a10f89d9828654e35/transformed/work-runtime-2.9.1/AndroidManifest.xml:64:13-35
-194            android:exported="false" />
-194-->[androidx.work:work-runtime:2.9.1] /Users/chiragdodia/.gradle/caches/9.3.1/transforms/362d085f87ab095a10f89d9828654e35/transformed/work-runtime-2.9.1/AndroidManifest.xml:65:13-37
-195        <receiver
-195-->[androidx.work:work-runtime:2.9.1] /Users/chiragdodia/.gradle/caches/9.3.1/transforms/362d085f87ab095a10f89d9828654e35/transformed/work-runtime-2.9.1/AndroidManifest.xml:67:9-77:20
-196            android:name="androidx.work.impl.background.systemalarm.ConstraintProxy$BatteryChargingProxy"
-196-->[androidx.work:work-runtime:2.9.1] /Users/chiragdodia/.gradle/caches/9.3.1/transforms/362d085f87ab095a10f89d9828654e35/transformed/work-runtime-2.9.1/AndroidManifest.xml:68:13-106
-197            android:directBootAware="false"
-197-->[androidx.work:work-runtime:2.9.1] /Users/chiragdodia/.gradle/caches/9.3.1/transforms/362d085f87ab095a10f89d9828654e35/transformed/work-runtime-2.9.1/AndroidManifest.xml:69:13-44
-198            android:enabled="false"
-198-->[androidx.work:work-runtime:2.9.1] /Users/chiragdodia/.gradle/caches/9.3.1/transforms/362d085f87ab095a10f89d9828654e35/transformed/work-runtime-2.9.1/AndroidManifest.xml:70:13-36
-199            android:exported="false" >
-199-->[androidx.work:work-runtime:2.9.1] /Users/chiragdodia/.gradle/caches/9.3.1/transforms/362d085f87ab095a10f89d9828654e35/transformed/work-runtime-2.9.1/AndroidManifest.xml:71:13-37
-200            <intent-filter>
-200-->[androidx.work:work-runtime:2.9.1] /Users/chiragdodia/.gradle/caches/9.3.1/transforms/362d085f87ab095a10f89d9828654e35/transformed/work-runtime-2.9.1/AndroidManifest.xml:73:13-76:29
-201                <action android:name="android.intent.action.ACTION_POWER_CONNECTED" />
-201-->[androidx.work:work-runtime:2.9.1] /Users/chiragdodia/.gradle/caches/9.3.1/transforms/362d085f87ab095a10f89d9828654e35/transformed/work-runtime-2.9.1/AndroidManifest.xml:74:17-87
-201-->[androidx.work:work-runtime:2.9.1] /Users/chiragdodia/.gradle/caches/9.3.1/transforms/362d085f87ab095a10f89d9828654e35/transformed/work-runtime-2.9.1/AndroidManifest.xml:74:25-84
-202                <action android:name="android.intent.action.ACTION_POWER_DISCONNECTED" />
-202-->[androidx.work:work-runtime:2.9.1] /Users/chiragdodia/.gradle/caches/9.3.1/transforms/362d085f87ab095a10f89d9828654e35/transformed/work-runtime-2.9.1/AndroidManifest.xml:75:17-90
-202-->[androidx.work:work-runtime:2.9.1] /Users/chiragdodia/.gradle/caches/9.3.1/transforms/362d085f87ab095a10f89d9828654e35/transformed/work-runtime-2.9.1/AndroidManifest.xml:75:25-87
-203            </intent-filter>
-204        </receiver>
-205        <receiver
-205-->[androidx.work:work-runtime:2.9.1] /Users/chiragdodia/.gradle/caches/9.3.1/transforms/362d085f87ab095a10f89d9828654e35/transformed/work-runtime-2.9.1/AndroidManifest.xml:78:9-88:20
-206            android:name="androidx.work.impl.background.systemalarm.ConstraintProxy$BatteryNotLowProxy"
-206-->[androidx.work:work-runtime:2.9.1] /Users/chiragdodia/.gradle/caches/9.3.1/transforms/362d085f87ab095a10f89d9828654e35/transformed/work-runtime-2.9.1/AndroidManifest.xml:79:13-104
-207            android:directBootAware="false"
-207-->[androidx.work:work-runtime:2.9.1] /Users/chiragdodia/.gradle/caches/9.3.1/transforms/362d085f87ab095a10f89d9828654e35/transformed/work-runtime-2.9.1/AndroidManifest.xml:80:13-44
-208            android:enabled="false"
-208-->[androidx.work:work-runtime:2.9.1] /Users/chiragdodia/.gradle/caches/9.3.1/transforms/362d085f87ab095a10f89d9828654e35/transformed/work-runtime-2.9.1/AndroidManifest.xml:81:13-36
-209            android:exported="false" >
-209-->[androidx.work:work-runtime:2.9.1] /Users/chiragdodia/.gradle/caches/9.3.1/transforms/362d085f87ab095a10f89d9828654e35/transformed/work-runtime-2.9.1/AndroidManifest.xml:82:13-37
-210            <intent-filter>
-210-->[androidx.work:work-runtime:2.9.1] /Users/chiragdodia/.gradle/caches/9.3.1/transforms/362d085f87ab095a10f89d9828654e35/transformed/work-runtime-2.9.1/AndroidManifest.xml:84:13-87:29
-211                <action android:name="android.intent.action.BATTERY_OKAY" />
-211-->[androidx.work:work-runtime:2.9.1] /Users/chiragdodia/.gradle/caches/9.3.1/transforms/362d085f87ab095a10f89d9828654e35/transformed/work-runtime-2.9.1/AndroidManifest.xml:85:17-77
-211-->[androidx.work:work-runtime:2.9.1] /Users/chiragdodia/.gradle/caches/9.3.1/transforms/362d085f87ab095a10f89d9828654e35/transformed/work-runtime-2.9.1/AndroidManifest.xml:85:25-74
-212                <action android:name="android.intent.action.BATTERY_LOW" />
-212-->[androidx.work:work-runtime:2.9.1] /Users/chiragdodia/.gradle/caches/9.3.1/transforms/362d085f87ab095a10f89d9828654e35/transformed/work-runtime-2.9.1/AndroidManifest.xml:86:17-76
-212-->[androidx.work:work-runtime:2.9.1] /Users/chiragdodia/.gradle/caches/9.3.1/transforms/362d085f87ab095a10f89d9828654e35/transformed/work-runtime-2.9.1/AndroidManifest.xml:86:25-73
-213            </intent-filter>
-214        </receiver>
-215        <receiver
-215-->[androidx.work:work-runtime:2.9.1] /Users/chiragdodia/.gradle/caches/9.3.1/transforms/362d085f87ab095a10f89d9828654e35/transformed/work-runtime-2.9.1/AndroidManifest.xml:89:9-99:20
-216            android:name="androidx.work.impl.background.systemalarm.ConstraintProxy$StorageNotLowProxy"
-216-->[androidx.work:work-runtime:2.9.1] /Users/chiragdodia/.gradle/caches/9.3.1/transforms/362d085f87ab095a10f89d9828654e35/transformed/work-runtime-2.9.1/AndroidManifest.xml:90:13-104
-217            android:directBootAware="false"
-217-->[androidx.work:work-runtime:2.9.1] /Users/chiragdodia/.gradle/caches/9.3.1/transforms/362d085f87ab095a10f89d9828654e35/transformed/work-runtime-2.9.1/AndroidManifest.xml:91:13-44
-218            android:enabled="false"
-218-->[androidx.work:work-runtime:2.9.1] /Users/chiragdodia/.gradle/caches/9.3.1/transforms/362d085f87ab095a10f89d9828654e35/transformed/work-runtime-2.9.1/AndroidManifest.xml:92:13-36
-219            android:exported="false" >
-219-->[androidx.work:work-runtime:2.9.1] /Users/chiragdodia/.gradle/caches/9.3.1/transforms/362d085f87ab095a10f89d9828654e35/transformed/work-runtime-2.9.1/AndroidManifest.xml:93:13-37
-220            <intent-filter>
-220-->[androidx.work:work-runtime:2.9.1] /Users/chiragdodia/.gradle/caches/9.3.1/transforms/362d085f87ab095a10f89d9828654e35/transformed/work-runtime-2.9.1/AndroidManifest.xml:95:13-98:29
-221                <action android:name="android.intent.action.DEVICE_STORAGE_LOW" />
-221-->[androidx.work:work-runtime:2.9.1] /Users/chiragdodia/.gradle/caches/9.3.1/transforms/362d085f87ab095a10f89d9828654e35/transformed/work-runtime-2.9.1/AndroidManifest.xml:96:17-83
-221-->[androidx.work:work-runtime:2.9.1] /Users/chiragdodia/.gradle/caches/9.3.1/transforms/362d085f87ab095a10f89d9828654e35/transformed/work-runtime-2.9.1/AndroidManifest.xml:96:25-80
-222                <action android:name="android.intent.action.DEVICE_STORAGE_OK" />
-222-->[androidx.work:work-runtime:2.9.1] /Users/chiragdodia/.gradle/caches/9.3.1/transforms/362d085f87ab095a10f89d9828654e35/transformed/work-runtime-2.9.1/AndroidManifest.xml:97:17-82
-222-->[androidx.work:work-runtime:2.9.1] /Users/chiragdodia/.gradle/caches/9.3.1/transforms/362d085f87ab095a10f89d9828654e35/transformed/work-runtime-2.9.1/AndroidManifest.xml:97:25-79
-223            </intent-filter>
-224        </receiver>
-225        <receiver
-225-->[androidx.work:work-runtime:2.9.1] /Users/chiragdodia/.gradle/caches/9.3.1/transforms/362d085f87ab095a10f89d9828654e35/transformed/work-runtime-2.9.1/AndroidManifest.xml:100:9-109:20
-226            android:name="androidx.work.impl.background.systemalarm.ConstraintProxy$NetworkStateProxy"
-226-->[androidx.work:work-runtime:2.9.1] /Users/chiragdodia/.gradle/caches/9.3.1/transforms/362d085f87ab095a10f89d9828654e35/transformed/work-runtime-2.9.1/AndroidManifest.xml:101:13-103
-227            android:directBootAware="false"
-227-->[androidx.work:work-runtime:2.9.1] /Users/chiragdodia/.gradle/caches/9.3.1/transforms/362d085f87ab095a10f89d9828654e35/transformed/work-runtime-2.9.1/AndroidManifest.xml:102:13-44
-228            android:enabled="false"
-228-->[androidx.work:work-runtime:2.9.1] /Users/chiragdodia/.gradle/caches/9.3.1/transforms/362d085f87ab095a10f89d9828654e35/transformed/work-runtime-2.9.1/AndroidManifest.xml:103:13-36
-229            android:exported="false" >
-229-->[androidx.work:work-runtime:2.9.1] /Users/chiragdodia/.gradle/caches/9.3.1/transforms/362d085f87ab095a10f89d9828654e35/transformed/work-runtime-2.9.1/AndroidManifest.xml:104:13-37
-230            <intent-filter>
-230-->[androidx.work:work-runtime:2.9.1] /Users/chiragdodia/.gradle/caches/9.3.1/transforms/362d085f87ab095a10f89d9828654e35/transformed/work-runtime-2.9.1/AndroidManifest.xml:106:13-108:29
-231                <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
-231-->[androidx.work:work-runtime:2.9.1] /Users/chiragdodia/.gradle/caches/9.3.1/transforms/362d085f87ab095a10f89d9828654e35/transformed/work-runtime-2.9.1/AndroidManifest.xml:107:17-79
-231-->[androidx.work:work-runtime:2.9.1] /Users/chiragdodia/.gradle/caches/9.3.1/transforms/362d085f87ab095a10f89d9828654e35/transformed/work-runtime-2.9.1/AndroidManifest.xml:107:25-76
-232            </intent-filter>
-233        </receiver>
-234        <receiver
-234-->[androidx.work:work-runtime:2.9.1] /Users/chiragdodia/.gradle/caches/9.3.1/transforms/362d085f87ab095a10f89d9828654e35/transformed/work-runtime-2.9.1/AndroidManifest.xml:110:9-121:20
-235            android:name="androidx.work.impl.background.systemalarm.RescheduleReceiver"
-235-->[androidx.work:work-runtime:2.9.1] /Users/chiragdodia/.gradle/caches/9.3.1/transforms/362d085f87ab095a10f89d9828654e35/transformed/work-runtime-2.9.1/AndroidManifest.xml:111:13-88
-236            android:directBootAware="false"
-236-->[androidx.work:work-runtime:2.9.1] /Users/chiragdodia/.gradle/caches/9.3.1/transforms/362d085f87ab095a10f89d9828654e35/transformed/work-runtime-2.9.1/AndroidManifest.xml:112:13-44
-237            android:enabled="false"
-237-->[androidx.work:work-runtime:2.9.1] /Users/chiragdodia/.gradle/caches/9.3.1/transforms/362d085f87ab095a10f89d9828654e35/transformed/work-runtime-2.9.1/AndroidManifest.xml:113:13-36
-238            android:exported="false" >
-238-->[androidx.work:work-runtime:2.9.1] /Users/chiragdodia/.gradle/caches/9.3.1/transforms/362d085f87ab095a10f89d9828654e35/transformed/work-runtime-2.9.1/AndroidManifest.xml:114:13-37
-239            <intent-filter>
-239-->[androidx.work:work-runtime:2.9.1] /Users/chiragdodia/.gradle/caches/9.3.1/transforms/362d085f87ab095a10f89d9828654e35/transformed/work-runtime-2.9.1/AndroidManifest.xml:116:13-120:29
-240                <action android:name="android.intent.action.BOOT_COMPLETED" />
-240-->[androidx.work:work-runtime:2.9.1] /Users/chiragdodia/.gradle/caches/9.3.1/transforms/362d085f87ab095a10f89d9828654e35/transformed/work-runtime-2.9.1/AndroidManifest.xml:117:17-79
-240-->[androidx.work:work-runtime:2.9.1] /Users/chiragdodia/.gradle/caches/9.3.1/transforms/362d085f87ab095a10f89d9828654e35/transformed/work-runtime-2.9.1/AndroidManifest.xml:117:25-76
-241                <action android:name="android.intent.action.TIME_SET" />
-241-->[androidx.work:work-runtime:2.9.1] /Users/chiragdodia/.gradle/caches/9.3.1/transforms/362d085f87ab095a10f89d9828654e35/transformed/work-runtime-2.9.1/AndroidManifest.xml:118:17-73
-241-->[androidx.work:work-runtime:2.9.1] /Users/chiragdodia/.gradle/caches/9.3.1/transforms/362d085f87ab095a10f89d9828654e35/transformed/work-runtime-2.9.1/AndroidManifest.xml:118:25-70
-242                <action android:name="android.intent.action.TIMEZONE_CHANGED" />
-242-->[androidx.work:work-runtime:2.9.1] /Users/chiragdodia/.gradle/caches/9.3.1/transforms/362d085f87ab095a10f89d9828654e35/transformed/work-runtime-2.9.1/AndroidManifest.xml:119:17-81
-242-->[androidx.work:work-runtime:2.9.1] /Users/chiragdodia/.gradle/caches/9.3.1/transforms/362d085f87ab095a10f89d9828654e35/transformed/work-runtime-2.9.1/AndroidManifest.xml:119:25-78
-243            </intent-filter>
-244        </receiver>
-245        <receiver
-245-->[androidx.work:work-runtime:2.9.1] /Users/chiragdodia/.gradle/caches/9.3.1/transforms/362d085f87ab095a10f89d9828654e35/transformed/work-runtime-2.9.1/AndroidManifest.xml:122:9-131:20
-246            android:name="androidx.work.impl.background.systemalarm.ConstraintProxyUpdateReceiver"
-246-->[androidx.work:work-runtime:2.9.1] /Users/chiragdodia/.gradle/caches/9.3.1/transforms/362d085f87ab095a10f89d9828654e35/transformed/work-runtime-2.9.1/AndroidManifest.xml:123:13-99
-247            android:directBootAware="false"
-247-->[androidx.work:work-runtime:2.9.1] /Users/chiragdodia/.gradle/caches/9.3.1/transforms/362d085f87ab095a10f89d9828654e35/transformed/work-runtime-2.9.1/AndroidManifest.xml:124:13-44
-248            android:enabled="@bool/enable_system_alarm_service_default"
-248-->[androidx.work:work-runtime:2.9.1] /Users/chiragdodia/.gradle/caches/9.3.1/transforms/362d085f87ab095a10f89d9828654e35/transformed/work-runtime-2.9.1/AndroidManifest.xml:125:13-72
-249            android:exported="false" >
-249-->[androidx.work:work-runtime:2.9.1] /Users/chiragdodia/.gradle/caches/9.3.1/transforms/362d085f87ab095a10f89d9828654e35/transformed/work-runtime-2.9.1/AndroidManifest.xml:126:13-37
-250            <intent-filter>
-250-->[androidx.work:work-runtime:2.9.1] /Users/chiragdodia/.gradle/caches/9.3.1/transforms/362d085f87ab095a10f89d9828654e35/transformed/work-runtime-2.9.1/AndroidManifest.xml:128:13-130:29
-251                <action android:name="androidx.work.impl.background.systemalarm.UpdateProxies" />
-251-->[androidx.work:work-runtime:2.9.1] /Users/chiragdodia/.gradle/caches/9.3.1/transforms/362d085f87ab095a10f89d9828654e35/transformed/work-runtime-2.9.1/AndroidManifest.xml:129:17-98
-251-->[androidx.work:work-runtime:2.9.1] /Users/chiragdodia/.gradle/caches/9.3.1/transforms/362d085f87ab095a10f89d9828654e35/transformed/work-runtime-2.9.1/AndroidManifest.xml:129:25-95
-252            </intent-filter>
-253        </receiver>
-254        <receiver
-254-->[androidx.work:work-runtime:2.9.1] /Users/chiragdodia/.gradle/caches/9.3.1/transforms/362d085f87ab095a10f89d9828654e35/transformed/work-runtime-2.9.1/AndroidManifest.xml:132:9-142:20
-255            android:name="androidx.work.impl.diagnostics.DiagnosticsReceiver"
-255-->[androidx.work:work-runtime:2.9.1] /Users/chiragdodia/.gradle/caches/9.3.1/transforms/362d085f87ab095a10f89d9828654e35/transformed/work-runtime-2.9.1/AndroidManifest.xml:133:13-78
-256            android:directBootAware="false"
-256-->[androidx.work:work-runtime:2.9.1] /Users/chiragdodia/.gradle/caches/9.3.1/transforms/362d085f87ab095a10f89d9828654e35/transformed/work-runtime-2.9.1/AndroidManifest.xml:134:13-44
-257            android:enabled="true"
-257-->[androidx.work:work-runtime:2.9.1] /Users/chiragdodia/.gradle/caches/9.3.1/transforms/362d085f87ab095a10f89d9828654e35/transformed/work-runtime-2.9.1/AndroidManifest.xml:135:13-35
-258            android:exported="true"
-258-->[androidx.work:work-runtime:2.9.1] /Users/chiragdodia/.gradle/caches/9.3.1/transforms/362d085f87ab095a10f89d9828654e35/transformed/work-runtime-2.9.1/AndroidManifest.xml:136:13-36
-259            android:permission="android.permission.DUMP" >
-259-->[androidx.work:work-runtime:2.9.1] /Users/chiragdodia/.gradle/caches/9.3.1/transforms/362d085f87ab095a10f89d9828654e35/transformed/work-runtime-2.9.1/AndroidManifest.xml:137:13-57
-260            <intent-filter>
-260-->[androidx.work:work-runtime:2.9.1] /Users/chiragdodia/.gradle/caches/9.3.1/transforms/362d085f87ab095a10f89d9828654e35/transformed/work-runtime-2.9.1/AndroidManifest.xml:139:13-141:29
-261                <action android:name="androidx.work.diagnostics.REQUEST_DIAGNOSTICS" />
-261-->[androidx.work:work-runtime:2.9.1] /Users/chiragdodia/.gradle/caches/9.3.1/transforms/362d085f87ab095a10f89d9828654e35/transformed/work-runtime-2.9.1/AndroidManifest.xml:140:17-88
-261-->[androidx.work:work-runtime:2.9.1] /Users/chiragdodia/.gradle/caches/9.3.1/transforms/362d085f87ab095a10f89d9828654e35/transformed/work-runtime-2.9.1/AndroidManifest.xml:140:25-85
-262            </intent-filter>
-263        </receiver>
-264
-265        <activity
-265-->[androidx.compose.ui:ui-tooling-android:1.7.3] /Users/chiragdodia/.gradle/caches/9.3.1/transforms/510bc755512e713c8fb36976627f68a1/transformed/ui-tooling-release/AndroidManifest.xml:23:9-25:39
-266            android:name="androidx.compose.ui.tooling.PreviewActivity"
-266-->[androidx.compose.ui:ui-tooling-android:1.7.3] /Users/chiragdodia/.gradle/caches/9.3.1/transforms/510bc755512e713c8fb36976627f68a1/transformed/ui-tooling-release/AndroidManifest.xml:24:13-71
-267            android:exported="true" />
-267-->[androidx.compose.ui:ui-tooling-android:1.7.3] /Users/chiragdodia/.gradle/caches/9.3.1/transforms/510bc755512e713c8fb36976627f68a1/transformed/ui-tooling-release/AndroidManifest.xml:25:13-36
-268
-269        <meta-data
-269-->[com.google.android.gms:play-services-basement:18.4.0] /Users/chiragdodia/.gradle/caches/9.3.1/transforms/5eb4b7b2ba8ecce0f7974d0a751774ac/transformed/play-services-basement-18.4.0/AndroidManifest.xml:6:9-122
-270            android:name="com.google.android.gms.version"
-270-->[com.google.android.gms:play-services-basement:18.4.0] /Users/chiragdodia/.gradle/caches/9.3.1/transforms/5eb4b7b2ba8ecce0f7974d0a751774ac/transformed/play-services-basement-18.4.0/AndroidManifest.xml:6:20-65
-271            android:value="@integer/google_play_services_version" />
-271-->[com.google.android.gms:play-services-basement:18.4.0] /Users/chiragdodia/.gradle/caches/9.3.1/transforms/5eb4b7b2ba8ecce0f7974d0a751774ac/transformed/play-services-basement-18.4.0/AndroidManifest.xml:6:66-119
-272
-273        <service
-273-->[androidx.core:core-remoteviews:1.1.0] /Users/chiragdodia/.gradle/caches/9.3.1/transforms/bf74293d647841cabc916f0e5e80d874/transformed/core-remoteviews-1.1.0/AndroidManifest.xml:24:9-27:63
-274            android:name="androidx.core.widget.RemoteViewsCompatService"
-274-->[androidx.core:core-remoteviews:1.1.0] /Users/chiragdodia/.gradle/caches/9.3.1/transforms/bf74293d647841cabc916f0e5e80d874/transformed/core-remoteviews-1.1.0/AndroidManifest.xml:25:13-73
-275            android:permission="android.permission.BIND_REMOTEVIEWS" />
-275-->[androidx.core:core-remoteviews:1.1.0] /Users/chiragdodia/.gradle/caches/9.3.1/transforms/bf74293d647841cabc916f0e5e80d874/transformed/core-remoteviews-1.1.0/AndroidManifest.xml:26:13-69
-276
-277        <receiver
-277-->[androidx.profileinstaller:profileinstaller:1.3.1] /Users/chiragdodia/.gradle/caches/9.3.1/transforms/a104c33c9fed9ee3a0aef1fcb3a38b4d/transformed/profileinstaller-1.3.1/AndroidManifest.xml:34:9-52:20
-278            android:name="androidx.profileinstaller.ProfileInstallReceiver"
-278-->[androidx.profileinstaller:profileinstaller:1.3.1] /Users/chiragdodia/.gradle/caches/9.3.1/transforms/a104c33c9fed9ee3a0aef1fcb3a38b4d/transformed/profileinstaller-1.3.1/AndroidManifest.xml:35:13-76
-279            android:directBootAware="false"
-279-->[androidx.profileinstaller:profileinstaller:1.3.1] /Users/chiragdodia/.gradle/caches/9.3.1/transforms/a104c33c9fed9ee3a0aef1fcb3a38b4d/transformed/profileinstaller-1.3.1/AndroidManifest.xml:36:13-44
-280            android:enabled="true"
-280-->[androidx.profileinstaller:profileinstaller:1.3.1] /Users/chiragdodia/.gradle/caches/9.3.1/transforms/a104c33c9fed9ee3a0aef1fcb3a38b4d/transformed/profileinstaller-1.3.1/AndroidManifest.xml:37:13-35
-281            android:exported="true"
-281-->[androidx.profileinstaller:profileinstaller:1.3.1] /Users/chiragdodia/.gradle/caches/9.3.1/transforms/a104c33c9fed9ee3a0aef1fcb3a38b4d/transformed/profileinstaller-1.3.1/AndroidManifest.xml:38:13-36
-282            android:permission="android.permission.DUMP" >
-282-->[androidx.profileinstaller:profileinstaller:1.3.1] /Users/chiragdodia/.gradle/caches/9.3.1/transforms/a104c33c9fed9ee3a0aef1fcb3a38b4d/transformed/profileinstaller-1.3.1/AndroidManifest.xml:39:13-57
-283            <intent-filter>
-283-->[androidx.profileinstaller:profileinstaller:1.3.1] /Users/chiragdodia/.gradle/caches/9.3.1/transforms/a104c33c9fed9ee3a0aef1fcb3a38b4d/transformed/profileinstaller-1.3.1/AndroidManifest.xml:40:13-42:29
-284                <action android:name="androidx.profileinstaller.action.INSTALL_PROFILE" />
-284-->[androidx.profileinstaller:profileinstaller:1.3.1] /Users/chiragdodia/.gradle/caches/9.3.1/transforms/a104c33c9fed9ee3a0aef1fcb3a38b4d/transformed/profileinstaller-1.3.1/AndroidManifest.xml:41:17-91
-284-->[androidx.profileinstaller:profileinstaller:1.3.1] /Users/chiragdodia/.gradle/caches/9.3.1/transforms/a104c33c9fed9ee3a0aef1fcb3a38b4d/transformed/profileinstaller-1.3.1/AndroidManifest.xml:41:25-88
-285            </intent-filter>
-286            <intent-filter>
-286-->[androidx.profileinstaller:profileinstaller:1.3.1] /Users/chiragdodia/.gradle/caches/9.3.1/transforms/a104c33c9fed9ee3a0aef1fcb3a38b4d/transformed/profileinstaller-1.3.1/AndroidManifest.xml:43:13-45:29
-287                <action android:name="androidx.profileinstaller.action.SKIP_FILE" />
-287-->[androidx.profileinstaller:profileinstaller:1.3.1] /Users/chiragdodia/.gradle/caches/9.3.1/transforms/a104c33c9fed9ee3a0aef1fcb3a38b4d/transformed/profileinstaller-1.3.1/AndroidManifest.xml:44:17-85
-287-->[androidx.profileinstaller:profileinstaller:1.3.1] /Users/chiragdodia/.gradle/caches/9.3.1/transforms/a104c33c9fed9ee3a0aef1fcb3a38b4d/transformed/profileinstaller-1.3.1/AndroidManifest.xml:44:25-82
-288            </intent-filter>
-289            <intent-filter>
-289-->[androidx.profileinstaller:profileinstaller:1.3.1] /Users/chiragdodia/.gradle/caches/9.3.1/transforms/a104c33c9fed9ee3a0aef1fcb3a38b4d/transformed/profileinstaller-1.3.1/AndroidManifest.xml:46:13-48:29
-290                <action android:name="androidx.profileinstaller.action.SAVE_PROFILE" />
-290-->[androidx.profileinstaller:profileinstaller:1.3.1] /Users/chiragdodia/.gradle/caches/9.3.1/transforms/a104c33c9fed9ee3a0aef1fcb3a38b4d/transformed/profileinstaller-1.3.1/AndroidManifest.xml:47:17-88
-290-->[androidx.profileinstaller:profileinstaller:1.3.1] /Users/chiragdodia/.gradle/caches/9.3.1/transforms/a104c33c9fed9ee3a0aef1fcb3a38b4d/transformed/profileinstaller-1.3.1/AndroidManifest.xml:47:25-85
-291            </intent-filter>
-292            <intent-filter>
-292-->[androidx.profileinstaller:profileinstaller:1.3.1] /Users/chiragdodia/.gradle/caches/9.3.1/transforms/a104c33c9fed9ee3a0aef1fcb3a38b4d/transformed/profileinstaller-1.3.1/AndroidManifest.xml:49:13-51:29
-293                <action android:name="androidx.profileinstaller.action.BENCHMARK_OPERATION" />
-293-->[androidx.profileinstaller:profileinstaller:1.3.1] /Users/chiragdodia/.gradle/caches/9.3.1/transforms/a104c33c9fed9ee3a0aef1fcb3a38b4d/transformed/profileinstaller-1.3.1/AndroidManifest.xml:50:17-95
-293-->[androidx.profileinstaller:profileinstaller:1.3.1] /Users/chiragdodia/.gradle/caches/9.3.1/transforms/a104c33c9fed9ee3a0aef1fcb3a38b4d/transformed/profileinstaller-1.3.1/AndroidManifest.xml:50:25-92
-294            </intent-filter>
-295        </receiver>
-296    </application>
-297
-298</manifest>
+58        android:testOnly="true"
+59        android:theme="@style/Theme.BloomingtonTransit" >
+59-->/Users/chiragdodia/Desktop/luddy_hackathon_case3/app/src/main/AndroidManifest.xml:30:9-56
+60
+61        <!-- Google Maps API Key -->
+62        <meta-data
+63            android:name="com.google.android.geo.API_KEY"
+63-->/Users/chiragdodia/Desktop/luddy_hackathon_case3/app/src/main/AndroidManifest.xml:34:13-58
+64            android:value="AIzaSyBc69POE4YRcKnAEjXgzdCBhlh61YBdQ8E" />
+64-->/Users/chiragdodia/Desktop/luddy_hackathon_case3/app/src/main/AndroidManifest.xml:35:13-44
+65
+66        <activity
+66-->/Users/chiragdodia/Desktop/luddy_hackathon_case3/app/src/main/AndroidManifest.xml:37:9-51:20
+67            android:name="com.luddy.bloomington_transit.MainActivity"
+67-->/Users/chiragdodia/Desktop/luddy_hackathon_case3/app/src/main/AndroidManifest.xml:38:13-41
+68            android:exported="true"
+68-->/Users/chiragdodia/Desktop/luddy_hackathon_case3/app/src/main/AndroidManifest.xml:39:13-36
+69            android:theme="@style/Theme.BloomingtonTransit" >
+69-->/Users/chiragdodia/Desktop/luddy_hackathon_case3/app/src/main/AndroidManifest.xml:40:13-60
+70            <intent-filter>
+70-->/Users/chiragdodia/Desktop/luddy_hackathon_case3/app/src/main/AndroidManifest.xml:41:13-44:29
+71                <action android:name="android.intent.action.MAIN" />
+71-->/Users/chiragdodia/Desktop/luddy_hackathon_case3/app/src/main/AndroidManifest.xml:42:17-69
+71-->/Users/chiragdodia/Desktop/luddy_hackathon_case3/app/src/main/AndroidManifest.xml:42:25-66
+72
+73                <category android:name="android.intent.category.LAUNCHER" />
+73-->/Users/chiragdodia/Desktop/luddy_hackathon_case3/app/src/main/AndroidManifest.xml:43:17-77
+73-->/Users/chiragdodia/Desktop/luddy_hackathon_case3/app/src/main/AndroidManifest.xml:43:27-74
+74            </intent-filter>
+75            <!-- Deep link from widget tap -->
+76            <intent-filter>
+76-->/Users/chiragdodia/Desktop/luddy_hackathon_case3/app/src/main/AndroidManifest.xml:46:13-50:29
+77                <action android:name="android.intent.action.VIEW" />
+77-->/Users/chiragdodia/Desktop/luddy_hackathon_case3/app/src/main/AndroidManifest.xml:47:17-69
+77-->/Users/chiragdodia/Desktop/luddy_hackathon_case3/app/src/main/AndroidManifest.xml:47:25-66
+78
+79                <category android:name="android.intent.category.DEFAULT" />
+79-->/Users/chiragdodia/Desktop/luddy_hackathon_case3/app/src/main/AndroidManifest.xml:48:17-76
+79-->/Users/chiragdodia/Desktop/luddy_hackathon_case3/app/src/main/AndroidManifest.xml:48:27-73
+80
+81                <data
+81-->/Users/chiragdodia/Desktop/luddy_hackathon_case3/app/src/main/AndroidManifest.xml:49:17-73
+82                    android:host="bus"
+82-->/Users/chiragdodia/Desktop/luddy_hackathon_case3/app/src/main/AndroidManifest.xml:49:52-70
+83                    android:scheme="bloomington" />
+83-->/Users/chiragdodia/Desktop/luddy_hackathon_case3/app/src/main/AndroidManifest.xml:49:23-51
+84            </intent-filter>
+85        </activity>
+86
+87        <!-- Bus tracking foreground service -->
+88        <service
+88-->/Users/chiragdodia/Desktop/luddy_hackathon_case3/app/src/main/AndroidManifest.xml:54:9-57:40
+89            android:name="com.luddy.bloomington_transit.service.BusTrackingService"
+89-->/Users/chiragdodia/Desktop/luddy_hackathon_case3/app/src/main/AndroidManifest.xml:55:13-55
+90            android:exported="false"
+90-->/Users/chiragdodia/Desktop/luddy_hackathon_case3/app/src/main/AndroidManifest.xml:57:13-37
+91            android:foregroundServiceType="location" />
+91-->/Users/chiragdodia/Desktop/luddy_hackathon_case3/app/src/main/AndroidManifest.xml:56:13-53
+92
+93        <!-- Home screen widget -->
+94        <receiver
+94-->/Users/chiragdodia/Desktop/luddy_hackathon_case3/app/src/main/AndroidManifest.xml:60:9-69:20
+95            android:name="com.luddy.bloomington_transit.widget.BusWidgetReceiver"
+95-->/Users/chiragdodia/Desktop/luddy_hackathon_case3/app/src/main/AndroidManifest.xml:61:13-53
+96            android:exported="true" >
+96-->/Users/chiragdodia/Desktop/luddy_hackathon_case3/app/src/main/AndroidManifest.xml:62:13-36
+97            <intent-filter>
+97-->/Users/chiragdodia/Desktop/luddy_hackathon_case3/app/src/main/AndroidManifest.xml:63:13-65:29
+98                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+98-->/Users/chiragdodia/Desktop/luddy_hackathon_case3/app/src/main/AndroidManifest.xml:64:17-84
+98-->/Users/chiragdodia/Desktop/luddy_hackathon_case3/app/src/main/AndroidManifest.xml:64:25-81
+99            </intent-filter>
+100
+101            <meta-data
+101-->/Users/chiragdodia/Desktop/luddy_hackathon_case3/app/src/main/AndroidManifest.xml:66:13-68:59
+102                android:name="android.appwidget.provider"
+102-->/Users/chiragdodia/Desktop/luddy_hackathon_case3/app/src/main/AndroidManifest.xml:67:17-58
+103                android:resource="@xml/bus_widget_info" />
+103-->/Users/chiragdodia/Desktop/luddy_hackathon_case3/app/src/main/AndroidManifest.xml:68:17-56
+104        </receiver>
+105
+106        <!-- WorkManager for widget refresh -->
+107        <provider
+108            android:name="androidx.startup.InitializationProvider"
+108-->/Users/chiragdodia/Desktop/luddy_hackathon_case3/app/src/main/AndroidManifest.xml:73:13-67
+109            android:authorities="com.luddy.bloomington_transit.androidx-startup"
+109-->/Users/chiragdodia/Desktop/luddy_hackathon_case3/app/src/main/AndroidManifest.xml:74:13-68
+110            android:exported="false" >
+110-->/Users/chiragdodia/Desktop/luddy_hackathon_case3/app/src/main/AndroidManifest.xml:75:13-37
+111            <meta-data
+111-->/Users/chiragdodia/Desktop/luddy_hackathon_case3/app/src/main/AndroidManifest.xml:76:13-78:52
+112                android:name="androidx.work.WorkManagerInitializer"
+112-->/Users/chiragdodia/Desktop/luddy_hackathon_case3/app/src/main/AndroidManifest.xml:77:17-68
+113                android:value="androidx.startup" />
+113-->/Users/chiragdodia/Desktop/luddy_hackathon_case3/app/src/main/AndroidManifest.xml:78:17-49
+114            <meta-data
+114-->[androidx.emoji2:emoji2:1.3.0] /Users/chiragdodia/.gradle/caches/transforms-4/799368ca0fa9898d7bdd6c49e52539ef/transformed/emoji2-1.3.0/AndroidManifest.xml:29:13-31:52
+115                android:name="androidx.emoji2.text.EmojiCompatInitializer"
+115-->[androidx.emoji2:emoji2:1.3.0] /Users/chiragdodia/.gradle/caches/transforms-4/799368ca0fa9898d7bdd6c49e52539ef/transformed/emoji2-1.3.0/AndroidManifest.xml:30:17-75
+116                android:value="androidx.startup" />
+116-->[androidx.emoji2:emoji2:1.3.0] /Users/chiragdodia/.gradle/caches/transforms-4/799368ca0fa9898d7bdd6c49e52539ef/transformed/emoji2-1.3.0/AndroidManifest.xml:31:17-49
+117            <meta-data
+117-->[androidx.lifecycle:lifecycle-process:2.8.6] /Users/chiragdodia/.gradle/caches/transforms-4/dee23f557fce1f1013c0f7f64af3f657/transformed/lifecycle-process-2.8.6/AndroidManifest.xml:29:13-31:52
+118                android:name="androidx.lifecycle.ProcessLifecycleInitializer"
+118-->[androidx.lifecycle:lifecycle-process:2.8.6] /Users/chiragdodia/.gradle/caches/transforms-4/dee23f557fce1f1013c0f7f64af3f657/transformed/lifecycle-process-2.8.6/AndroidManifest.xml:30:17-78
+119                android:value="androidx.startup" />
+119-->[androidx.lifecycle:lifecycle-process:2.8.6] /Users/chiragdodia/.gradle/caches/transforms-4/dee23f557fce1f1013c0f7f64af3f657/transformed/lifecycle-process-2.8.6/AndroidManifest.xml:31:17-49
+120            <meta-data
+120-->[androidx.profileinstaller:profileinstaller:1.3.1] /Users/chiragdodia/.gradle/caches/transforms-4/51173d88dd975995648ff3328f3b1eb9/transformed/profileinstaller-1.3.1/AndroidManifest.xml:29:13-31:52
+121                android:name="androidx.profileinstaller.ProfileInstallerInitializer"
+121-->[androidx.profileinstaller:profileinstaller:1.3.1] /Users/chiragdodia/.gradle/caches/transforms-4/51173d88dd975995648ff3328f3b1eb9/transformed/profileinstaller-1.3.1/AndroidManifest.xml:30:17-85
+122                android:value="androidx.startup" />
+122-->[androidx.profileinstaller:profileinstaller:1.3.1] /Users/chiragdodia/.gradle/caches/transforms-4/51173d88dd975995648ff3328f3b1eb9/transformed/profileinstaller-1.3.1/AndroidManifest.xml:31:17-49
+123        </provider>
+124
+125        <activity
+125-->[androidx.glance:glance-appwidget:1.1.0] /Users/chiragdodia/.gradle/caches/transforms-4/998af27aed4996bb4c1d7d72b440e217/transformed/glance-appwidget-1.1.0/AndroidManifest.xml:23:9-28:62
+126            android:name="androidx.glance.appwidget.action.ActionTrampolineActivity"
+126-->[androidx.glance:glance-appwidget:1.1.0] /Users/chiragdodia/.gradle/caches/transforms-4/998af27aed4996bb4c1d7d72b440e217/transformed/glance-appwidget-1.1.0/AndroidManifest.xml:24:13-85
+127            android:enabled="true"
+127-->[androidx.glance:glance-appwidget:1.1.0] /Users/chiragdodia/.gradle/caches/transforms-4/998af27aed4996bb4c1d7d72b440e217/transformed/glance-appwidget-1.1.0/AndroidManifest.xml:25:13-35
+128            android:excludeFromRecents="true"
+128-->[androidx.glance:glance-appwidget:1.1.0] /Users/chiragdodia/.gradle/caches/transforms-4/998af27aed4996bb4c1d7d72b440e217/transformed/glance-appwidget-1.1.0/AndroidManifest.xml:26:13-46
+129            android:exported="false"
+129-->[androidx.glance:glance-appwidget:1.1.0] /Users/chiragdodia/.gradle/caches/transforms-4/998af27aed4996bb4c1d7d72b440e217/transformed/glance-appwidget-1.1.0/AndroidManifest.xml:27:13-37
+130            android:theme="@android:style/Theme.NoDisplay" />
+130-->[androidx.glance:glance-appwidget:1.1.0] /Users/chiragdodia/.gradle/caches/transforms-4/998af27aed4996bb4c1d7d72b440e217/transformed/glance-appwidget-1.1.0/AndroidManifest.xml:28:13-59
+131        <activity
+131-->[androidx.glance:glance-appwidget:1.1.0] /Users/chiragdodia/.gradle/caches/transforms-4/998af27aed4996bb4c1d7d72b440e217/transformed/glance-appwidget-1.1.0/AndroidManifest.xml:29:9-36:81
+132            android:name="androidx.glance.appwidget.action.InvisibleActionTrampolineActivity"
+132-->[androidx.glance:glance-appwidget:1.1.0] /Users/chiragdodia/.gradle/caches/transforms-4/998af27aed4996bb4c1d7d72b440e217/transformed/glance-appwidget-1.1.0/AndroidManifest.xml:30:13-94
+133            android:enabled="true"
+133-->[androidx.glance:glance-appwidget:1.1.0] /Users/chiragdodia/.gradle/caches/transforms-4/998af27aed4996bb4c1d7d72b440e217/transformed/glance-appwidget-1.1.0/AndroidManifest.xml:31:13-35
+134            android:exported="false"
+134-->[androidx.glance:glance-appwidget:1.1.0] /Users/chiragdodia/.gradle/caches/transforms-4/998af27aed4996bb4c1d7d72b440e217/transformed/glance-appwidget-1.1.0/AndroidManifest.xml:32:13-37
+135            android:launchMode="singleInstance"
+135-->[androidx.glance:glance-appwidget:1.1.0] /Users/chiragdodia/.gradle/caches/transforms-4/998af27aed4996bb4c1d7d72b440e217/transformed/glance-appwidget-1.1.0/AndroidManifest.xml:33:13-48
+136            android:noHistory="true"
+136-->[androidx.glance:glance-appwidget:1.1.0] /Users/chiragdodia/.gradle/caches/transforms-4/998af27aed4996bb4c1d7d72b440e217/transformed/glance-appwidget-1.1.0/AndroidManifest.xml:34:13-37
+137            android:taskAffinity="androidx.glance.appwidget.ListAdapterCallbackTrampoline"
+137-->[androidx.glance:glance-appwidget:1.1.0] /Users/chiragdodia/.gradle/caches/transforms-4/998af27aed4996bb4c1d7d72b440e217/transformed/glance-appwidget-1.1.0/AndroidManifest.xml:35:13-91
+138            android:theme="@style/Widget.Glance.AppWidget.CallbackTrampoline" />
+138-->[androidx.glance:glance-appwidget:1.1.0] /Users/chiragdodia/.gradle/caches/transforms-4/998af27aed4996bb4c1d7d72b440e217/transformed/glance-appwidget-1.1.0/AndroidManifest.xml:36:13-78
+139
+140        <receiver
+140-->[androidx.glance:glance-appwidget:1.1.0] /Users/chiragdodia/.gradle/caches/transforms-4/998af27aed4996bb4c1d7d72b440e217/transformed/glance-appwidget-1.1.0/AndroidManifest.xml:38:9-41:40
+141            android:name="androidx.glance.appwidget.action.ActionCallbackBroadcastReceiver"
+141-->[androidx.glance:glance-appwidget:1.1.0] /Users/chiragdodia/.gradle/caches/transforms-4/998af27aed4996bb4c1d7d72b440e217/transformed/glance-appwidget-1.1.0/AndroidManifest.xml:39:13-92
+142            android:enabled="true"
+142-->[androidx.glance:glance-appwidget:1.1.0] /Users/chiragdodia/.gradle/caches/transforms-4/998af27aed4996bb4c1d7d72b440e217/transformed/glance-appwidget-1.1.0/AndroidManifest.xml:40:13-35
+143            android:exported="false" />
+143-->[androidx.glance:glance-appwidget:1.1.0] /Users/chiragdodia/.gradle/caches/transforms-4/998af27aed4996bb4c1d7d72b440e217/transformed/glance-appwidget-1.1.0/AndroidManifest.xml:41:13-37
+144        <receiver
+144-->[androidx.glance:glance-appwidget:1.1.0] /Users/chiragdodia/.gradle/caches/transforms-4/998af27aed4996bb4c1d7d72b440e217/transformed/glance-appwidget-1.1.0/AndroidManifest.xml:42:9-45:40
+145            android:name="androidx.glance.appwidget.UnmanagedSessionReceiver"
+145-->[androidx.glance:glance-appwidget:1.1.0] /Users/chiragdodia/.gradle/caches/transforms-4/998af27aed4996bb4c1d7d72b440e217/transformed/glance-appwidget-1.1.0/AndroidManifest.xml:43:13-78
+146            android:enabled="true"
+146-->[androidx.glance:glance-appwidget:1.1.0] /Users/chiragdodia/.gradle/caches/transforms-4/998af27aed4996bb4c1d7d72b440e217/transformed/glance-appwidget-1.1.0/AndroidManifest.xml:44:13-35
+147            android:exported="false" />
+147-->[androidx.glance:glance-appwidget:1.1.0] /Users/chiragdodia/.gradle/caches/transforms-4/998af27aed4996bb4c1d7d72b440e217/transformed/glance-appwidget-1.1.0/AndroidManifest.xml:45:13-37
+148        <receiver
+148-->[androidx.glance:glance-appwidget:1.1.0] /Users/chiragdodia/.gradle/caches/transforms-4/998af27aed4996bb4c1d7d72b440e217/transformed/glance-appwidget-1.1.0/AndroidManifest.xml:46:9-53:20
+149            android:name="androidx.glance.appwidget.MyPackageReplacedReceiver"
+149-->[androidx.glance:glance-appwidget:1.1.0] /Users/chiragdodia/.gradle/caches/transforms-4/998af27aed4996bb4c1d7d72b440e217/transformed/glance-appwidget-1.1.0/AndroidManifest.xml:47:13-79
+150            android:enabled="true"
+150-->[androidx.glance:glance-appwidget:1.1.0] /Users/chiragdodia/.gradle/caches/transforms-4/998af27aed4996bb4c1d7d72b440e217/transformed/glance-appwidget-1.1.0/AndroidManifest.xml:48:13-35
+151            android:exported="false" >
+151-->[androidx.glance:glance-appwidget:1.1.0] /Users/chiragdodia/.gradle/caches/transforms-4/998af27aed4996bb4c1d7d72b440e217/transformed/glance-appwidget-1.1.0/AndroidManifest.xml:49:13-37
+152            <intent-filter>
+152-->[androidx.glance:glance-appwidget:1.1.0] /Users/chiragdodia/.gradle/caches/transforms-4/998af27aed4996bb4c1d7d72b440e217/transformed/glance-appwidget-1.1.0/AndroidManifest.xml:50:13-52:29
+153                <action android:name="android.intent.action.MY_PACKAGE_REPLACED" />
+153-->[androidx.glance:glance-appwidget:1.1.0] /Users/chiragdodia/.gradle/caches/transforms-4/998af27aed4996bb4c1d7d72b440e217/transformed/glance-appwidget-1.1.0/AndroidManifest.xml:51:17-84
+153-->[androidx.glance:glance-appwidget:1.1.0] /Users/chiragdodia/.gradle/caches/transforms-4/998af27aed4996bb4c1d7d72b440e217/transformed/glance-appwidget-1.1.0/AndroidManifest.xml:51:25-81
+154            </intent-filter>
+155        </receiver>
+156
+157        <service
+157-->[androidx.glance:glance-appwidget:1.1.0] /Users/chiragdodia/.gradle/caches/transforms-4/998af27aed4996bb4c1d7d72b440e217/transformed/glance-appwidget-1.1.0/AndroidManifest.xml:55:9-58:72
+158            android:name="androidx.glance.appwidget.GlanceRemoteViewsService"
+158-->[androidx.glance:glance-appwidget:1.1.0] /Users/chiragdodia/.gradle/caches/transforms-4/998af27aed4996bb4c1d7d72b440e217/transformed/glance-appwidget-1.1.0/AndroidManifest.xml:56:13-78
+159            android:exported="true"
+159-->[androidx.glance:glance-appwidget:1.1.0] /Users/chiragdodia/.gradle/caches/transforms-4/998af27aed4996bb4c1d7d72b440e217/transformed/glance-appwidget-1.1.0/AndroidManifest.xml:57:13-36
+160            android:permission="android.permission.BIND_REMOTEVIEWS" /> <!-- Needs to be explicitly declared on P+ -->
+160-->[androidx.glance:glance-appwidget:1.1.0] /Users/chiragdodia/.gradle/caches/transforms-4/998af27aed4996bb4c1d7d72b440e217/transformed/glance-appwidget-1.1.0/AndroidManifest.xml:58:13-69
+161        <uses-library
+161-->[com.google.android.gms:play-services-maps:19.0.0] /Users/chiragdodia/.gradle/caches/transforms-4/430080e210b00581714fdd8b6964842e/transformed/play-services-maps-19.0.0/AndroidManifest.xml:39:9-41:40
+162            android:name="org.apache.http.legacy"
+162-->[com.google.android.gms:play-services-maps:19.0.0] /Users/chiragdodia/.gradle/caches/transforms-4/430080e210b00581714fdd8b6964842e/transformed/play-services-maps-19.0.0/AndroidManifest.xml:40:13-50
+163            android:required="false" />
+163-->[com.google.android.gms:play-services-maps:19.0.0] /Users/chiragdodia/.gradle/caches/transforms-4/430080e210b00581714fdd8b6964842e/transformed/play-services-maps-19.0.0/AndroidManifest.xml:41:13-37
+164
+165        <activity
+165-->[com.google.android.gms:play-services-base:18.5.0] /Users/chiragdodia/.gradle/caches/transforms-4/cef9eef240bdf191404272f9ae3a6c7c/transformed/play-services-base-18.5.0/AndroidManifest.xml:5:9-173
+166            android:name="com.google.android.gms.common.api.GoogleApiActivity"
+166-->[com.google.android.gms:play-services-base:18.5.0] /Users/chiragdodia/.gradle/caches/transforms-4/cef9eef240bdf191404272f9ae3a6c7c/transformed/play-services-base-18.5.0/AndroidManifest.xml:5:19-85
+167            android:exported="false"
+167-->[com.google.android.gms:play-services-base:18.5.0] /Users/chiragdodia/.gradle/caches/transforms-4/cef9eef240bdf191404272f9ae3a6c7c/transformed/play-services-base-18.5.0/AndroidManifest.xml:5:146-170
+168            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
+168-->[com.google.android.gms:play-services-base:18.5.0] /Users/chiragdodia/.gradle/caches/transforms-4/cef9eef240bdf191404272f9ae3a6c7c/transformed/play-services-base-18.5.0/AndroidManifest.xml:5:86-145
+169
+170        <service
+170-->[androidx.room:room-runtime:2.6.1] /Users/chiragdodia/.gradle/caches/transforms-4/8e21e3211eef06c29f45a17859dfc2f9/transformed/room-runtime-2.6.1/AndroidManifest.xml:24:9-28:63
+171            android:name="androidx.room.MultiInstanceInvalidationService"
+171-->[androidx.room:room-runtime:2.6.1] /Users/chiragdodia/.gradle/caches/transforms-4/8e21e3211eef06c29f45a17859dfc2f9/transformed/room-runtime-2.6.1/AndroidManifest.xml:25:13-74
+172            android:directBootAware="true"
+172-->[androidx.room:room-runtime:2.6.1] /Users/chiragdodia/.gradle/caches/transforms-4/8e21e3211eef06c29f45a17859dfc2f9/transformed/room-runtime-2.6.1/AndroidManifest.xml:26:13-43
+173            android:exported="false" />
+173-->[androidx.room:room-runtime:2.6.1] /Users/chiragdodia/.gradle/caches/transforms-4/8e21e3211eef06c29f45a17859dfc2f9/transformed/room-runtime-2.6.1/AndroidManifest.xml:27:13-37
+174        <service
+174-->[androidx.work:work-runtime:2.9.1] /Users/chiragdodia/.gradle/caches/transforms-4/5e456d57c614095578c91a830b63c4aa/transformed/work-runtime-2.9.1/AndroidManifest.xml:39:9-45:35
+175            android:name="androidx.work.impl.background.systemalarm.SystemAlarmService"
+175-->[androidx.work:work-runtime:2.9.1] /Users/chiragdodia/.gradle/caches/transforms-4/5e456d57c614095578c91a830b63c4aa/transformed/work-runtime-2.9.1/AndroidManifest.xml:40:13-88
+176            android:directBootAware="false"
+176-->[androidx.work:work-runtime:2.9.1] /Users/chiragdodia/.gradle/caches/transforms-4/5e456d57c614095578c91a830b63c4aa/transformed/work-runtime-2.9.1/AndroidManifest.xml:41:13-44
+177            android:enabled="@bool/enable_system_alarm_service_default"
+177-->[androidx.work:work-runtime:2.9.1] /Users/chiragdodia/.gradle/caches/transforms-4/5e456d57c614095578c91a830b63c4aa/transformed/work-runtime-2.9.1/AndroidManifest.xml:42:13-72
+178            android:exported="false" />
+178-->[androidx.work:work-runtime:2.9.1] /Users/chiragdodia/.gradle/caches/transforms-4/5e456d57c614095578c91a830b63c4aa/transformed/work-runtime-2.9.1/AndroidManifest.xml:43:13-37
+179        <service
+179-->[androidx.work:work-runtime:2.9.1] /Users/chiragdodia/.gradle/caches/transforms-4/5e456d57c614095578c91a830b63c4aa/transformed/work-runtime-2.9.1/AndroidManifest.xml:46:9-52:35
+180            android:name="androidx.work.impl.background.systemjob.SystemJobService"
+180-->[androidx.work:work-runtime:2.9.1] /Users/chiragdodia/.gradle/caches/transforms-4/5e456d57c614095578c91a830b63c4aa/transformed/work-runtime-2.9.1/AndroidManifest.xml:47:13-84
+181            android:directBootAware="false"
+181-->[androidx.work:work-runtime:2.9.1] /Users/chiragdodia/.gradle/caches/transforms-4/5e456d57c614095578c91a830b63c4aa/transformed/work-runtime-2.9.1/AndroidManifest.xml:48:13-44
+182            android:enabled="@bool/enable_system_job_service_default"
+182-->[androidx.work:work-runtime:2.9.1] /Users/chiragdodia/.gradle/caches/transforms-4/5e456d57c614095578c91a830b63c4aa/transformed/work-runtime-2.9.1/AndroidManifest.xml:49:13-70
+183            android:exported="true"
+183-->[androidx.work:work-runtime:2.9.1] /Users/chiragdodia/.gradle/caches/transforms-4/5e456d57c614095578c91a830b63c4aa/transformed/work-runtime-2.9.1/AndroidManifest.xml:50:13-36
+184            android:permission="android.permission.BIND_JOB_SERVICE" />
+184-->[androidx.work:work-runtime:2.9.1] /Users/chiragdodia/.gradle/caches/transforms-4/5e456d57c614095578c91a830b63c4aa/transformed/work-runtime-2.9.1/AndroidManifest.xml:51:13-69
+185        <service
+185-->[androidx.work:work-runtime:2.9.1] /Users/chiragdodia/.gradle/caches/transforms-4/5e456d57c614095578c91a830b63c4aa/transformed/work-runtime-2.9.1/AndroidManifest.xml:53:9-59:35
+186            android:name="androidx.work.impl.foreground.SystemForegroundService"
+186-->[androidx.work:work-runtime:2.9.1] /Users/chiragdodia/.gradle/caches/transforms-4/5e456d57c614095578c91a830b63c4aa/transformed/work-runtime-2.9.1/AndroidManifest.xml:54:13-81
+187            android:directBootAware="false"
+187-->[androidx.work:work-runtime:2.9.1] /Users/chiragdodia/.gradle/caches/transforms-4/5e456d57c614095578c91a830b63c4aa/transformed/work-runtime-2.9.1/AndroidManifest.xml:55:13-44
+188            android:enabled="@bool/enable_system_foreground_service_default"
+188-->[androidx.work:work-runtime:2.9.1] /Users/chiragdodia/.gradle/caches/transforms-4/5e456d57c614095578c91a830b63c4aa/transformed/work-runtime-2.9.1/AndroidManifest.xml:56:13-77
+189            android:exported="false" />
+189-->[androidx.work:work-runtime:2.9.1] /Users/chiragdodia/.gradle/caches/transforms-4/5e456d57c614095578c91a830b63c4aa/transformed/work-runtime-2.9.1/AndroidManifest.xml:57:13-37
+190
+191        <receiver
+191-->[androidx.work:work-runtime:2.9.1] /Users/chiragdodia/.gradle/caches/transforms-4/5e456d57c614095578c91a830b63c4aa/transformed/work-runtime-2.9.1/AndroidManifest.xml:61:9-66:35
+192            android:name="androidx.work.impl.utils.ForceStopRunnable$BroadcastReceiver"
+192-->[androidx.work:work-runtime:2.9.1] /Users/chiragdodia/.gradle/caches/transforms-4/5e456d57c614095578c91a830b63c4aa/transformed/work-runtime-2.9.1/AndroidManifest.xml:62:13-88
+193            android:directBootAware="false"
+193-->[androidx.work:work-runtime:2.9.1] /Users/chiragdodia/.gradle/caches/transforms-4/5e456d57c614095578c91a830b63c4aa/transformed/work-runtime-2.9.1/AndroidManifest.xml:63:13-44
+194            android:enabled="true"
+194-->[androidx.work:work-runtime:2.9.1] /Users/chiragdodia/.gradle/caches/transforms-4/5e456d57c614095578c91a830b63c4aa/transformed/work-runtime-2.9.1/AndroidManifest.xml:64:13-35
+195            android:exported="false" />
+195-->[androidx.work:work-runtime:2.9.1] /Users/chiragdodia/.gradle/caches/transforms-4/5e456d57c614095578c91a830b63c4aa/transformed/work-runtime-2.9.1/AndroidManifest.xml:65:13-37
+196        <receiver
+196-->[androidx.work:work-runtime:2.9.1] /Users/chiragdodia/.gradle/caches/transforms-4/5e456d57c614095578c91a830b63c4aa/transformed/work-runtime-2.9.1/AndroidManifest.xml:67:9-77:20
+197            android:name="androidx.work.impl.background.systemalarm.ConstraintProxy$BatteryChargingProxy"
+197-->[androidx.work:work-runtime:2.9.1] /Users/chiragdodia/.gradle/caches/transforms-4/5e456d57c614095578c91a830b63c4aa/transformed/work-runtime-2.9.1/AndroidManifest.xml:68:13-106
+198            android:directBootAware="false"
+198-->[androidx.work:work-runtime:2.9.1] /Users/chiragdodia/.gradle/caches/transforms-4/5e456d57c614095578c91a830b63c4aa/transformed/work-runtime-2.9.1/AndroidManifest.xml:69:13-44
+199            android:enabled="false"
+199-->[androidx.work:work-runtime:2.9.1] /Users/chiragdodia/.gradle/caches/transforms-4/5e456d57c614095578c91a830b63c4aa/transformed/work-runtime-2.9.1/AndroidManifest.xml:70:13-36
+200            android:exported="false" >
+200-->[androidx.work:work-runtime:2.9.1] /Users/chiragdodia/.gradle/caches/transforms-4/5e456d57c614095578c91a830b63c4aa/transformed/work-runtime-2.9.1/AndroidManifest.xml:71:13-37
+201            <intent-filter>
+201-->[androidx.work:work-runtime:2.9.1] /Users/chiragdodia/.gradle/caches/transforms-4/5e456d57c614095578c91a830b63c4aa/transformed/work-runtime-2.9.1/AndroidManifest.xml:73:13-76:29
+202                <action android:name="android.intent.action.ACTION_POWER_CONNECTED" />
+202-->[androidx.work:work-runtime:2.9.1] /Users/chiragdodia/.gradle/caches/transforms-4/5e456d57c614095578c91a830b63c4aa/transformed/work-runtime-2.9.1/AndroidManifest.xml:74:17-87
+202-->[androidx.work:work-runtime:2.9.1] /Users/chiragdodia/.gradle/caches/transforms-4/5e456d57c614095578c91a830b63c4aa/transformed/work-runtime-2.9.1/AndroidManifest.xml:74:25-84
+203                <action android:name="android.intent.action.ACTION_POWER_DISCONNECTED" />
+203-->[androidx.work:work-runtime:2.9.1] /Users/chiragdodia/.gradle/caches/transforms-4/5e456d57c614095578c91a830b63c4aa/transformed/work-runtime-2.9.1/AndroidManifest.xml:75:17-90
+203-->[androidx.work:work-runtime:2.9.1] /Users/chiragdodia/.gradle/caches/transforms-4/5e456d57c614095578c91a830b63c4aa/transformed/work-runtime-2.9.1/AndroidManifest.xml:75:25-87
+204            </intent-filter>
+205        </receiver>
+206        <receiver
+206-->[androidx.work:work-runtime:2.9.1] /Users/chiragdodia/.gradle/caches/transforms-4/5e456d57c614095578c91a830b63c4aa/transformed/work-runtime-2.9.1/AndroidManifest.xml:78:9-88:20
+207            android:name="androidx.work.impl.background.systemalarm.ConstraintProxy$BatteryNotLowProxy"
+207-->[androidx.work:work-runtime:2.9.1] /Users/chiragdodia/.gradle/caches/transforms-4/5e456d57c614095578c91a830b63c4aa/transformed/work-runtime-2.9.1/AndroidManifest.xml:79:13-104
+208            android:directBootAware="false"
+208-->[androidx.work:work-runtime:2.9.1] /Users/chiragdodia/.gradle/caches/transforms-4/5e456d57c614095578c91a830b63c4aa/transformed/work-runtime-2.9.1/AndroidManifest.xml:80:13-44
+209            android:enabled="false"
+209-->[androidx.work:work-runtime:2.9.1] /Users/chiragdodia/.gradle/caches/transforms-4/5e456d57c614095578c91a830b63c4aa/transformed/work-runtime-2.9.1/AndroidManifest.xml:81:13-36
+210            android:exported="false" >
+210-->[androidx.work:work-runtime:2.9.1] /Users/chiragdodia/.gradle/caches/transforms-4/5e456d57c614095578c91a830b63c4aa/transformed/work-runtime-2.9.1/AndroidManifest.xml:82:13-37
+211            <intent-filter>
+211-->[androidx.work:work-runtime:2.9.1] /Users/chiragdodia/.gradle/caches/transforms-4/5e456d57c614095578c91a830b63c4aa/transformed/work-runtime-2.9.1/AndroidManifest.xml:84:13-87:29
+212                <action android:name="android.intent.action.BATTERY_OKAY" />
+212-->[androidx.work:work-runtime:2.9.1] /Users/chiragdodia/.gradle/caches/transforms-4/5e456d57c614095578c91a830b63c4aa/transformed/work-runtime-2.9.1/AndroidManifest.xml:85:17-77
+212-->[androidx.work:work-runtime:2.9.1] /Users/chiragdodia/.gradle/caches/transforms-4/5e456d57c614095578c91a830b63c4aa/transformed/work-runtime-2.9.1/AndroidManifest.xml:85:25-74
+213                <action android:name="android.intent.action.BATTERY_LOW" />
+213-->[androidx.work:work-runtime:2.9.1] /Users/chiragdodia/.gradle/caches/transforms-4/5e456d57c614095578c91a830b63c4aa/transformed/work-runtime-2.9.1/AndroidManifest.xml:86:17-76
+213-->[androidx.work:work-runtime:2.9.1] /Users/chiragdodia/.gradle/caches/transforms-4/5e456d57c614095578c91a830b63c4aa/transformed/work-runtime-2.9.1/AndroidManifest.xml:86:25-73
+214            </intent-filter>
+215        </receiver>
+216        <receiver
+216-->[androidx.work:work-runtime:2.9.1] /Users/chiragdodia/.gradle/caches/transforms-4/5e456d57c614095578c91a830b63c4aa/transformed/work-runtime-2.9.1/AndroidManifest.xml:89:9-99:20
+217            android:name="androidx.work.impl.background.systemalarm.ConstraintProxy$StorageNotLowProxy"
+217-->[androidx.work:work-runtime:2.9.1] /Users/chiragdodia/.gradle/caches/transforms-4/5e456d57c614095578c91a830b63c4aa/transformed/work-runtime-2.9.1/AndroidManifest.xml:90:13-104
+218            android:directBootAware="false"
+218-->[androidx.work:work-runtime:2.9.1] /Users/chiragdodia/.gradle/caches/transforms-4/5e456d57c614095578c91a830b63c4aa/transformed/work-runtime-2.9.1/AndroidManifest.xml:91:13-44
+219            android:enabled="false"
+219-->[androidx.work:work-runtime:2.9.1] /Users/chiragdodia/.gradle/caches/transforms-4/5e456d57c614095578c91a830b63c4aa/transformed/work-runtime-2.9.1/AndroidManifest.xml:92:13-36
+220            android:exported="false" >
+220-->[androidx.work:work-runtime:2.9.1] /Users/chiragdodia/.gradle/caches/transforms-4/5e456d57c614095578c91a830b63c4aa/transformed/work-runtime-2.9.1/AndroidManifest.xml:93:13-37
+221            <intent-filter>
+221-->[androidx.work:work-runtime:2.9.1] /Users/chiragdodia/.gradle/caches/transforms-4/5e456d57c614095578c91a830b63c4aa/transformed/work-runtime-2.9.1/AndroidManifest.xml:95:13-98:29
+222                <action android:name="android.intent.action.DEVICE_STORAGE_LOW" />
+222-->[androidx.work:work-runtime:2.9.1] /Users/chiragdodia/.gradle/caches/transforms-4/5e456d57c614095578c91a830b63c4aa/transformed/work-runtime-2.9.1/AndroidManifest.xml:96:17-83
+222-->[androidx.work:work-runtime:2.9.1] /Users/chiragdodia/.gradle/caches/transforms-4/5e456d57c614095578c91a830b63c4aa/transformed/work-runtime-2.9.1/AndroidManifest.xml:96:25-80
+223                <action android:name="android.intent.action.DEVICE_STORAGE_OK" />
+223-->[androidx.work:work-runtime:2.9.1] /Users/chiragdodia/.gradle/caches/transforms-4/5e456d57c614095578c91a830b63c4aa/transformed/work-runtime-2.9.1/AndroidManifest.xml:97:17-82
+223-->[androidx.work:work-runtime:2.9.1] /Users/chiragdodia/.gradle/caches/transforms-4/5e456d57c614095578c91a830b63c4aa/transformed/work-runtime-2.9.1/AndroidManifest.xml:97:25-79
+224            </intent-filter>
+225        </receiver>
+226        <receiver
+226-->[androidx.work:work-runtime:2.9.1] /Users/chiragdodia/.gradle/caches/transforms-4/5e456d57c614095578c91a830b63c4aa/transformed/work-runtime-2.9.1/AndroidManifest.xml:100:9-109:20
+227            android:name="androidx.work.impl.background.systemalarm.ConstraintProxy$NetworkStateProxy"
+227-->[androidx.work:work-runtime:2.9.1] /Users/chiragdodia/.gradle/caches/transforms-4/5e456d57c614095578c91a830b63c4aa/transformed/work-runtime-2.9.1/AndroidManifest.xml:101:13-103
+228            android:directBootAware="false"
+228-->[androidx.work:work-runtime:2.9.1] /Users/chiragdodia/.gradle/caches/transforms-4/5e456d57c614095578c91a830b63c4aa/transformed/work-runtime-2.9.1/AndroidManifest.xml:102:13-44
+229            android:enabled="false"
+229-->[androidx.work:work-runtime:2.9.1] /Users/chiragdodia/.gradle/caches/transforms-4/5e456d57c614095578c91a830b63c4aa/transformed/work-runtime-2.9.1/AndroidManifest.xml:103:13-36
+230            android:exported="false" >
+230-->[androidx.work:work-runtime:2.9.1] /Users/chiragdodia/.gradle/caches/transforms-4/5e456d57c614095578c91a830b63c4aa/transformed/work-runtime-2.9.1/AndroidManifest.xml:104:13-37
+231            <intent-filter>
+231-->[androidx.work:work-runtime:2.9.1] /Users/chiragdodia/.gradle/caches/transforms-4/5e456d57c614095578c91a830b63c4aa/transformed/work-runtime-2.9.1/AndroidManifest.xml:106:13-108:29
+232                <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
+232-->[androidx.work:work-runtime:2.9.1] /Users/chiragdodia/.gradle/caches/transforms-4/5e456d57c614095578c91a830b63c4aa/transformed/work-runtime-2.9.1/AndroidManifest.xml:107:17-79
+232-->[androidx.work:work-runtime:2.9.1] /Users/chiragdodia/.gradle/caches/transforms-4/5e456d57c614095578c91a830b63c4aa/transformed/work-runtime-2.9.1/AndroidManifest.xml:107:25-76
+233            </intent-filter>
+234        </receiver>
+235        <receiver
+235-->[androidx.work:work-runtime:2.9.1] /Users/chiragdodia/.gradle/caches/transforms-4/5e456d57c614095578c91a830b63c4aa/transformed/work-runtime-2.9.1/AndroidManifest.xml:110:9-121:20
+236            android:name="androidx.work.impl.background.systemalarm.RescheduleReceiver"
+236-->[androidx.work:work-runtime:2.9.1] /Users/chiragdodia/.gradle/caches/transforms-4/5e456d57c614095578c91a830b63c4aa/transformed/work-runtime-2.9.1/AndroidManifest.xml:111:13-88
+237            android:directBootAware="false"
+237-->[androidx.work:work-runtime:2.9.1] /Users/chiragdodia/.gradle/caches/transforms-4/5e456d57c614095578c91a830b63c4aa/transformed/work-runtime-2.9.1/AndroidManifest.xml:112:13-44
+238            android:enabled="false"
+238-->[androidx.work:work-runtime:2.9.1] /Users/chiragdodia/.gradle/caches/transforms-4/5e456d57c614095578c91a830b63c4aa/transformed/work-runtime-2.9.1/AndroidManifest.xml:113:13-36
+239            android:exported="false" >
+239-->[androidx.work:work-runtime:2.9.1] /Users/chiragdodia/.gradle/caches/transforms-4/5e456d57c614095578c91a830b63c4aa/transformed/work-runtime-2.9.1/AndroidManifest.xml:114:13-37
+240            <intent-filter>
+240-->[androidx.work:work-runtime:2.9.1] /Users/chiragdodia/.gradle/caches/transforms-4/5e456d57c614095578c91a830b63c4aa/transformed/work-runtime-2.9.1/AndroidManifest.xml:116:13-120:29
+241                <action android:name="android.intent.action.BOOT_COMPLETED" />
+241-->[androidx.work:work-runtime:2.9.1] /Users/chiragdodia/.gradle/caches/transforms-4/5e456d57c614095578c91a830b63c4aa/transformed/work-runtime-2.9.1/AndroidManifest.xml:117:17-79
+241-->[androidx.work:work-runtime:2.9.1] /Users/chiragdodia/.gradle/caches/transforms-4/5e456d57c614095578c91a830b63c4aa/transformed/work-runtime-2.9.1/AndroidManifest.xml:117:25-76
+242                <action android:name="android.intent.action.TIME_SET" />
+242-->[androidx.work:work-runtime:2.9.1] /Users/chiragdodia/.gradle/caches/transforms-4/5e456d57c614095578c91a830b63c4aa/transformed/work-runtime-2.9.1/AndroidManifest.xml:118:17-73
+242-->[androidx.work:work-runtime:2.9.1] /Users/chiragdodia/.gradle/caches/transforms-4/5e456d57c614095578c91a830b63c4aa/transformed/work-runtime-2.9.1/AndroidManifest.xml:118:25-70
+243                <action android:name="android.intent.action.TIMEZONE_CHANGED" />
+243-->[androidx.work:work-runtime:2.9.1] /Users/chiragdodia/.gradle/caches/transforms-4/5e456d57c614095578c91a830b63c4aa/transformed/work-runtime-2.9.1/AndroidManifest.xml:119:17-81
+243-->[androidx.work:work-runtime:2.9.1] /Users/chiragdodia/.gradle/caches/transforms-4/5e456d57c614095578c91a830b63c4aa/transformed/work-runtime-2.9.1/AndroidManifest.xml:119:25-78
+244            </intent-filter>
+245        </receiver>
+246        <receiver
+246-->[androidx.work:work-runtime:2.9.1] /Users/chiragdodia/.gradle/caches/transforms-4/5e456d57c614095578c91a830b63c4aa/transformed/work-runtime-2.9.1/AndroidManifest.xml:122:9-131:20
+247            android:name="androidx.work.impl.background.systemalarm.ConstraintProxyUpdateReceiver"
+247-->[androidx.work:work-runtime:2.9.1] /Users/chiragdodia/.gradle/caches/transforms-4/5e456d57c614095578c91a830b63c4aa/transformed/work-runtime-2.9.1/AndroidManifest.xml:123:13-99
+248            android:directBootAware="false"
+248-->[androidx.work:work-runtime:2.9.1] /Users/chiragdodia/.gradle/caches/transforms-4/5e456d57c614095578c91a830b63c4aa/transformed/work-runtime-2.9.1/AndroidManifest.xml:124:13-44
+249            android:enabled="@bool/enable_system_alarm_service_default"
+249-->[androidx.work:work-runtime:2.9.1] /Users/chiragdodia/.gradle/caches/transforms-4/5e456d57c614095578c91a830b63c4aa/transformed/work-runtime-2.9.1/AndroidManifest.xml:125:13-72
+250            android:exported="false" >
+250-->[androidx.work:work-runtime:2.9.1] /Users/chiragdodia/.gradle/caches/transforms-4/5e456d57c614095578c91a830b63c4aa/transformed/work-runtime-2.9.1/AndroidManifest.xml:126:13-37
+251            <intent-filter>
+251-->[androidx.work:work-runtime:2.9.1] /Users/chiragdodia/.gradle/caches/transforms-4/5e456d57c614095578c91a830b63c4aa/transformed/work-runtime-2.9.1/AndroidManifest.xml:128:13-130:29
+252                <action android:name="androidx.work.impl.background.systemalarm.UpdateProxies" />
+252-->[androidx.work:work-runtime:2.9.1] /Users/chiragdodia/.gradle/caches/transforms-4/5e456d57c614095578c91a830b63c4aa/transformed/work-runtime-2.9.1/AndroidManifest.xml:129:17-98
+252-->[androidx.work:work-runtime:2.9.1] /Users/chiragdodia/.gradle/caches/transforms-4/5e456d57c614095578c91a830b63c4aa/transformed/work-runtime-2.9.1/AndroidManifest.xml:129:25-95
+253            </intent-filter>
+254        </receiver>
+255        <receiver
+255-->[androidx.work:work-runtime:2.9.1] /Users/chiragdodia/.gradle/caches/transforms-4/5e456d57c614095578c91a830b63c4aa/transformed/work-runtime-2.9.1/AndroidManifest.xml:132:9-142:20
+256            android:name="androidx.work.impl.diagnostics.DiagnosticsReceiver"
+256-->[androidx.work:work-runtime:2.9.1] /Users/chiragdodia/.gradle/caches/transforms-4/5e456d57c614095578c91a830b63c4aa/transformed/work-runtime-2.9.1/AndroidManifest.xml:133:13-78
+257            android:directBootAware="false"
+257-->[androidx.work:work-runtime:2.9.1] /Users/chiragdodia/.gradle/caches/transforms-4/5e456d57c614095578c91a830b63c4aa/transformed/work-runtime-2.9.1/AndroidManifest.xml:134:13-44
+258            android:enabled="true"
+258-->[androidx.work:work-runtime:2.9.1] /Users/chiragdodia/.gradle/caches/transforms-4/5e456d57c614095578c91a830b63c4aa/transformed/work-runtime-2.9.1/AndroidManifest.xml:135:13-35
+259            android:exported="true"
+259-->[androidx.work:work-runtime:2.9.1] /Users/chiragdodia/.gradle/caches/transforms-4/5e456d57c614095578c91a830b63c4aa/transformed/work-runtime-2.9.1/AndroidManifest.xml:136:13-36
+260            android:permission="android.permission.DUMP" >
+260-->[androidx.work:work-runtime:2.9.1] /Users/chiragdodia/.gradle/caches/transforms-4/5e456d57c614095578c91a830b63c4aa/transformed/work-runtime-2.9.1/AndroidManifest.xml:137:13-57
+261            <intent-filter>
+261-->[androidx.work:work-runtime:2.9.1] /Users/chiragdodia/.gradle/caches/transforms-4/5e456d57c614095578c91a830b63c4aa/transformed/work-runtime-2.9.1/AndroidManifest.xml:139:13-141:29
+262                <action android:name="androidx.work.diagnostics.REQUEST_DIAGNOSTICS" />
+262-->[androidx.work:work-runtime:2.9.1] /Users/chiragdodia/.gradle/caches/transforms-4/5e456d57c614095578c91a830b63c4aa/transformed/work-runtime-2.9.1/AndroidManifest.xml:140:17-88
+262-->[androidx.work:work-runtime:2.9.1] /Users/chiragdodia/.gradle/caches/transforms-4/5e456d57c614095578c91a830b63c4aa/transformed/work-runtime-2.9.1/AndroidManifest.xml:140:25-85
+263            </intent-filter>
+264        </receiver>
+265
+266        <activity
+266-->[androidx.compose.ui:ui-tooling-android:1.7.3] /Users/chiragdodia/.gradle/caches/transforms-4/a3e4557b0521410d95a1a201e9608290/transformed/ui-tooling-release/AndroidManifest.xml:23:9-25:39
+267            android:name="androidx.compose.ui.tooling.PreviewActivity"
+267-->[androidx.compose.ui:ui-tooling-android:1.7.3] /Users/chiragdodia/.gradle/caches/transforms-4/a3e4557b0521410d95a1a201e9608290/transformed/ui-tooling-release/AndroidManifest.xml:24:13-71
+268            android:exported="true" />
+268-->[androidx.compose.ui:ui-tooling-android:1.7.3] /Users/chiragdodia/.gradle/caches/transforms-4/a3e4557b0521410d95a1a201e9608290/transformed/ui-tooling-release/AndroidManifest.xml:25:13-36
+269
+270        <meta-data
+270-->[com.google.android.gms:play-services-basement:18.4.0] /Users/chiragdodia/.gradle/caches/transforms-4/8ca711ac8158d584cfbf0ee25249c707/transformed/play-services-basement-18.4.0/AndroidManifest.xml:6:9-122
+271            android:name="com.google.android.gms.version"
+271-->[com.google.android.gms:play-services-basement:18.4.0] /Users/chiragdodia/.gradle/caches/transforms-4/8ca711ac8158d584cfbf0ee25249c707/transformed/play-services-basement-18.4.0/AndroidManifest.xml:6:20-65
+272            android:value="@integer/google_play_services_version" />
+272-->[com.google.android.gms:play-services-basement:18.4.0] /Users/chiragdodia/.gradle/caches/transforms-4/8ca711ac8158d584cfbf0ee25249c707/transformed/play-services-basement-18.4.0/AndroidManifest.xml:6:66-119
+273
+274        <service
+274-->[androidx.core:core-remoteviews:1.1.0] /Users/chiragdodia/.gradle/caches/transforms-4/7f0fb9e5a7893c44a0caa3bc2a076452/transformed/core-remoteviews-1.1.0/AndroidManifest.xml:24:9-27:63
+275            android:name="androidx.core.widget.RemoteViewsCompatService"
+275-->[androidx.core:core-remoteviews:1.1.0] /Users/chiragdodia/.gradle/caches/transforms-4/7f0fb9e5a7893c44a0caa3bc2a076452/transformed/core-remoteviews-1.1.0/AndroidManifest.xml:25:13-73
+276            android:permission="android.permission.BIND_REMOTEVIEWS" />
+276-->[androidx.core:core-remoteviews:1.1.0] /Users/chiragdodia/.gradle/caches/transforms-4/7f0fb9e5a7893c44a0caa3bc2a076452/transformed/core-remoteviews-1.1.0/AndroidManifest.xml:26:13-69
+277
+278        <receiver
+278-->[androidx.profileinstaller:profileinstaller:1.3.1] /Users/chiragdodia/.gradle/caches/transforms-4/51173d88dd975995648ff3328f3b1eb9/transformed/profileinstaller-1.3.1/AndroidManifest.xml:34:9-52:20
+279            android:name="androidx.profileinstaller.ProfileInstallReceiver"
+279-->[androidx.profileinstaller:profileinstaller:1.3.1] /Users/chiragdodia/.gradle/caches/transforms-4/51173d88dd975995648ff3328f3b1eb9/transformed/profileinstaller-1.3.1/AndroidManifest.xml:35:13-76
+280            android:directBootAware="false"
+280-->[androidx.profileinstaller:profileinstaller:1.3.1] /Users/chiragdodia/.gradle/caches/transforms-4/51173d88dd975995648ff3328f3b1eb9/transformed/profileinstaller-1.3.1/AndroidManifest.xml:36:13-44
+281            android:enabled="true"
+281-->[androidx.profileinstaller:profileinstaller:1.3.1] /Users/chiragdodia/.gradle/caches/transforms-4/51173d88dd975995648ff3328f3b1eb9/transformed/profileinstaller-1.3.1/AndroidManifest.xml:37:13-35
+282            android:exported="true"
+282-->[androidx.profileinstaller:profileinstaller:1.3.1] /Users/chiragdodia/.gradle/caches/transforms-4/51173d88dd975995648ff3328f3b1eb9/transformed/profileinstaller-1.3.1/AndroidManifest.xml:38:13-36
+283            android:permission="android.permission.DUMP" >
+283-->[androidx.profileinstaller:profileinstaller:1.3.1] /Users/chiragdodia/.gradle/caches/transforms-4/51173d88dd975995648ff3328f3b1eb9/transformed/profileinstaller-1.3.1/AndroidManifest.xml:39:13-57
+284            <intent-filter>
+284-->[androidx.profileinstaller:profileinstaller:1.3.1] /Users/chiragdodia/.gradle/caches/transforms-4/51173d88dd975995648ff3328f3b1eb9/transformed/profileinstaller-1.3.1/AndroidManifest.xml:40:13-42:29
+285                <action android:name="androidx.profileinstaller.action.INSTALL_PROFILE" />
+285-->[androidx.profileinstaller:profileinstaller:1.3.1] /Users/chiragdodia/.gradle/caches/transforms-4/51173d88dd975995648ff3328f3b1eb9/transformed/profileinstaller-1.3.1/AndroidManifest.xml:41:17-91
+285-->[androidx.profileinstaller:profileinstaller:1.3.1] /Users/chiragdodia/.gradle/caches/transforms-4/51173d88dd975995648ff3328f3b1eb9/transformed/profileinstaller-1.3.1/AndroidManifest.xml:41:25-88
+286            </intent-filter>
+287            <intent-filter>
+287-->[androidx.profileinstaller:profileinstaller:1.3.1] /Users/chiragdodia/.gradle/caches/transforms-4/51173d88dd975995648ff3328f3b1eb9/transformed/profileinstaller-1.3.1/AndroidManifest.xml:43:13-45:29
+288                <action android:name="androidx.profileinstaller.action.SKIP_FILE" />
+288-->[androidx.profileinstaller:profileinstaller:1.3.1] /Users/chiragdodia/.gradle/caches/transforms-4/51173d88dd975995648ff3328f3b1eb9/transformed/profileinstaller-1.3.1/AndroidManifest.xml:44:17-85
+288-->[androidx.profileinstaller:profileinstaller:1.3.1] /Users/chiragdodia/.gradle/caches/transforms-4/51173d88dd975995648ff3328f3b1eb9/transformed/profileinstaller-1.3.1/AndroidManifest.xml:44:25-82
+289            </intent-filter>
+290            <intent-filter>
+290-->[androidx.profileinstaller:profileinstaller:1.3.1] /Users/chiragdodia/.gradle/caches/transforms-4/51173d88dd975995648ff3328f3b1eb9/transformed/profileinstaller-1.3.1/AndroidManifest.xml:46:13-48:29
+291                <action android:name="androidx.profileinstaller.action.SAVE_PROFILE" />
+291-->[androidx.profileinstaller:profileinstaller:1.3.1] /Users/chiragdodia/.gradle/caches/transforms-4/51173d88dd975995648ff3328f3b1eb9/transformed/profileinstaller-1.3.1/AndroidManifest.xml:47:17-88
+291-->[androidx.profileinstaller:profileinstaller:1.3.1] /Users/chiragdodia/.gradle/caches/transforms-4/51173d88dd975995648ff3328f3b1eb9/transformed/profileinstaller-1.3.1/AndroidManifest.xml:47:25-85
+292            </intent-filter>
+293            <intent-filter>
+293-->[androidx.profileinstaller:profileinstaller:1.3.1] /Users/chiragdodia/.gradle/caches/transforms-4/51173d88dd975995648ff3328f3b1eb9/transformed/profileinstaller-1.3.1/AndroidManifest.xml:49:13-51:29
+294                <action android:name="androidx.profileinstaller.action.BENCHMARK_OPERATION" />
+294-->[androidx.profileinstaller:profileinstaller:1.3.1] /Users/chiragdodia/.gradle/caches/transforms-4/51173d88dd975995648ff3328f3b1eb9/transformed/profileinstaller-1.3.1/AndroidManifest.xml:50:17-95
+294-->[androidx.profileinstaller:profileinstaller:1.3.1] /Users/chiragdodia/.gradle/caches/transforms-4/51173d88dd975995648ff3328f3b1eb9/transformed/profileinstaller-1.3.1/AndroidManifest.xml:50:25-92
+295            </intent-filter>
+296        </receiver>
+297    </application>
+298
+299</manifest>

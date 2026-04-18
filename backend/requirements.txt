@@ -1,0 +1,8 @@
+fastapi
+uvicorn
+httpx
+requests
+protobuf
+gtfs-realtime-bindings
+python-dotenv
+pydantic
