@@ -3,3 +3,10 @@
 
 sdk.dir=/Users/YOUR_USERNAME/Library/Android/sdk
 MAPS_API_KEY=YOUR_GOOGLE_MAPS_API_KEY_HERE
+
+# Deployed bt-ml inference service (AI ETAs, /plan, bunching, stats, /nlq).
+# Default in app/build.gradle.kts already points at the Railway deploy; this
+# override is only needed if you want to point at a local dev server (e.g.
+# http://10.0.2.2:8000/ when running the FastAPI service on your host machine
+# and the Android emulator on the same box).
+# BACKEND_BASE_URL=https://bt-ml-production.up.railway.app/
