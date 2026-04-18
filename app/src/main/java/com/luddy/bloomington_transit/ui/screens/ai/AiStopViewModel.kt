@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.luddy.bloomington_transit.data.ai.AiResult
 import com.luddy.bloomington_transit.data.ai.BtAiRepository
+import com.luddy.bloomington_transit.data.ai.dto.NlqResponseDto
 import com.luddy.bloomington_transit.data.ai.dto.PredictionsResponseDto
 import com.luddy.bloomington_transit.data.ai.dto.StopDto
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -21,6 +22,7 @@ data class AiStopUiState(
     val searchResults: List<StopDto> = emptyList(),
     val selectedStop: StopDto? = null,
     val predictions: PredictionsResponseDto? = null,
+    val nlqResult: NlqResponseDto? = null,
     val isSearching: Boolean = false,
     val isLoadingPredictions: Boolean = false,
     val errorMessage: String? = null,
@@ -39,20 +41,37 @@ class AiStopViewModel @Inject constructor(
     fun onQueryChange(query: String) {
         _uiState.update { it.copy(searchQuery = query) }
         if (query.length < 2) {
-            _uiState.update { it.copy(searchResults = emptyList()) }
+            _uiState.update { it.copy(searchResults = emptyList(), nlqResult = null) }
             return
         }
         _uiState.update { it.copy(isSearching = true) }
         viewModelScope.launch {
-            when (val r = repo.searchStops(query)) {
-                is AiResult.Ok -> _uiState.update {
-                    it.copy(searchResults = r.value.take(12), isSearching = false, errorMessage = null)
-                }
-                is AiResult.Err -> _uiState.update {
-                    it.copy(isSearching = false, errorMessage = r.message)
+            // Fire stop-name search and NL intent in parallel; both are cheap.
+            val stopJob = launch {
+                when (val r = repo.searchStops(query)) {
+                    is AiResult.Ok -> _uiState.update {
+                        it.copy(searchResults = r.value.take(12), isSearching = false, errorMessage = null)
+                    }
+                    is AiResult.Err -> _uiState.update {
+                        it.copy(isSearching = false, errorMessage = r.message)
+                    }
                 }
             }
+            val nlqJob = launch {
+                when (val r = repo.nlq(query)) {
+                    is AiResult.Ok -> _uiState.update {
+                        if (r.value.intent != "unknown") it.copy(nlqResult = r.value)
+                        else it.copy(nlqResult = null)
+                    }
+                    is AiResult.Err -> _uiState.update { it.copy(nlqResult = null) }
+                }
+            }
+            stopJob.join(); nlqJob.join()
         }
+    }
+
+    fun clearNlq() {
+        _uiState.update { it.copy(nlqResult = null) }
     }
 
     fun selectStop(stop: StopDto) {

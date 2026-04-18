@@ -15,6 +15,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AutoAwesome
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Insights
 import androidx.compose.material.icons.filled.Place
@@ -85,6 +86,34 @@ fun AiStopScreen(
                 shape = RoundedCornerShape(12.dp),
                 singleLine = true,
             )
+
+            // NL intent chip (C2) — shown when /nlq matches a recognised pattern
+            uiState.nlqResult?.let { nlq ->
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 6.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    Icon(
+                        Icons.Filled.AutoAwesome,
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.primary,
+                        modifier = Modifier.size(16.dp),
+                    )
+                    Spacer(Modifier.width(6.dp))
+                    Text(
+                        text = when (nlq.intent) {
+                            "next_on_route" -> "Got it: find next arrival on Route ${nlq.routeId}"
+                            "show_route" -> "Got it: Route ${nlq.routeId}"
+                            "stop_search" -> "Got it: searching stops"
+                            else -> "Parsed via ${nlq.parseSource}"
+                        },
+                        style = MaterialTheme.typography.labelMedium,
+                        color = MaterialTheme.colorScheme.primary,
+                    )
+                }
+            }
 
             if (uiState.searchResults.isNotEmpty()) {
                 Card(
