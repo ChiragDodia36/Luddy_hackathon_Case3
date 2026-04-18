@@ -8,6 +8,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavDestination.Companion.hierarchy
+import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavType
 import androidx.navigation.compose.*
 import androidx.navigation.navArgument
@@ -24,8 +25,18 @@ import com.luddy.bloomington_transit.ui.theme.BtBlue
 import com.luddy.bloomington_transit.ui.theme.TimeGradientBackground
 
 @Composable
-fun BtApp() {
+fun BtApp(pendingRouteId: kotlinx.coroutines.flow.SharedFlow<String>? = null) {
     val navController = rememberNavController()
+
+    // Navigate to Map when a tracking notification is tapped while app is running
+    LaunchedEffect(pendingRouteId) {
+        pendingRouteId?.collect { routeId ->
+            navController.navigate("map?routeId=$routeId") {
+                popUpTo(navController.graph.findStartDestination().id) { saveState = true }
+                launchSingleTop = true
+            }
+        }
+    }
 
     TimeGradientBackground {
         Scaffold(
@@ -58,12 +69,11 @@ fun BtApp() {
                             onClick = {
                                 val dest = if (item.screen is Screen.Map) "map" else item.screen.route
                                 navController.navigate(dest) {
-                                    popUpTo(Screen.Home.route) {
-                                        inclusive = false
-                                        saveState = false
+                                    popUpTo(navController.graph.findStartDestination().id) {
+                                        saveState = true
                                     }
                                     launchSingleTop = true
-                                    restoreState = false
+                                    restoreState = true
                                 }
                             }
                         )

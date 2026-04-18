@@ -31,6 +31,5 @@ val bottomNavItems = listOf(
     BottomNavItem(Screen.Home, "Home", Icons.Filled.Home),
     BottomNavItem(Screen.Map, "Map", Icons.Filled.Map),
     BottomNavItem(Screen.Ai, "AI", Icons.Filled.Insights),
-    BottomNavItem(Screen.Schedule, "Schedule", Icons.Filled.Schedule),
-    BottomNavItem(Screen.Favourites, "Favourites", Icons.Filled.Favorite)
+    BottomNavItem(Screen.Schedule, "Schedule", Icons.Filled.Schedule)
 )

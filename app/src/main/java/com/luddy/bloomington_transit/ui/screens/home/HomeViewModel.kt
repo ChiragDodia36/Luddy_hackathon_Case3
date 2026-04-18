@@ -12,17 +12,21 @@ import javax.inject.Inject
 
 enum class TimeWindow { MORNING, DAY, EVENING, NIGHT }
 
+data class PinnedRouteData(
+    val route: Route,
+    val nearestStop: Stop?,
+    val arrivals: List<Arrival>   // filtered to this route only, capped at 3
+)
+
 data class HomeUiState(
     val isLoading: Boolean = true,
     val routes: List<Route> = emptyList(),
-    val favouriteRouteId: String? = null,
+    val pinnedRouteIds: Set<String> = emptySet(),
+    val pinnedRoutes: List<PinnedRouteData> = emptyList(),
     val serviceAlerts: List<ServiceAlert> = emptyList(),
     val errorMessage: String? = null,
     val timeWindow: TimeWindow = TimeWindow.DAY,
-    val favouriteRouteArrivals: List<Arrival> = emptyList(),
-    val nearestStop: Stop? = null,
-    val nearestStopArrivals: List<Arrival> = emptyList(),
-    val isNearSavedStop: Boolean = false
+    val hasLocation: Boolean = false
 )
 
 @HiltViewModel
@@ -32,6 +36,9 @@ class HomeViewModel @Inject constructor(
 
     private val _uiState = MutableStateFlow(HomeUiState())
     val uiState: StateFlow<HomeUiState> = _uiState.asStateFlow()
+
+    private var userLat: Double? = null
+    private var userLon: Double? = null
 
     init {
         _uiState.update { it.copy(timeWindow = currentTimeWindow()) }
@@ -52,16 +59,17 @@ class HomeViewModel @Inject constructor(
     }
 
     private fun observeData() {
+        // Observe routes + pinned IDs together so cards update when either changes
         viewModelScope.launch {
             combine(
                 repository.getRoutes(),
-                repository.getFavouriteRouteId()
-            ) { routes, favRouteId -> routes to favRouteId }
-                .collect { (routes, favRouteId) ->
+                repository.getPinnedRouteIds()
+            ) { routes, pinnedIds -> routes to pinnedIds }
+                .collect { (routes, pinnedIds) ->
                     _uiState.update {
-                        it.copy(isLoading = false, routes = routes, favouriteRouteId = favRouteId)
+                        it.copy(isLoading = false, routes = routes, pinnedRouteIds = pinnedIds)
                     }
-                    favRouteId?.let { loadFavouriteRouteArrivals(it) }
+                    refreshPinnedRoutes(routes, pinnedIds)
                 }
         }
         // Poll service alerts every 30s
@@ -74,56 +82,65 @@ class HomeViewModel @Inject constructor(
                 kotlinx.coroutines.delay(30_000L)
             }
         }
-        // Refresh fav route arrivals every 10s
+        // Refresh pinned route arrivals every 10s
         viewModelScope.launch {
             while (true) {
                 kotlinx.coroutines.delay(10_000L)
-                _uiState.value.favouriteRouteId?.let { loadFavouriteRouteArrivals(it) }
+                val state = _uiState.value
+                refreshPinnedRoutes(state.routes, state.pinnedRouteIds)
             }
         }
     }
 
-    fun updateLocation(lat: Double, lon: Double) {
-        viewModelScope.launch {
-            try {
-                val nearestStops = repository.getNearestStops(lat, lon, radiusMeters = 400.0)
-                val nearestStop = nearestStops.firstOrNull()
-                val arrivals = nearestStop
-                    ?.let { repository.getArrivalsForStop(it.id).take(3) }
-                    ?: emptyList()
-                val savedIds = repository.getFavouriteStopIds().first()
-                val isNearSaved = nearestStops.any { it.id in savedIds }
-                _uiState.update {
-                    it.copy(
-                        nearestStop = nearestStop,
-                        nearestStopArrivals = arrivals,
-                        isNearSavedStop = isNearSaved
-                    )
-                }
-                _uiState.value.favouriteRouteId?.let { loadFavouriteRouteArrivals(it) }
-            } catch (_: Exception) {}
+    private suspend fun refreshPinnedRoutes(routes: List<Route>, pinnedIds: Set<String>) {
+        val lat = userLat ?: return
+        val lon = userLon ?: return
+        if (pinnedIds.isEmpty()) {
+            _uiState.update { it.copy(pinnedRoutes = emptyList()) }
+            return
         }
-    }
 
-    private fun loadFavouriteRouteArrivals(routeId: String) {
-        viewModelScope.launch {
+        val pinnedData = pinnedIds.mapNotNull { routeId ->
+            val route = routes.find { it.id == routeId } ?: return@mapNotNull null
             try {
-                val nearestStop = _uiState.value.nearestStop
+                // Find the stop on this route closest to the user
                 val stopsForRoute = repository.getStopsForRoute(routeId).first()
-                val targetStop = if (nearestStop != null && stopsForRoute.any { it.id == nearestStop.id }) {
-                    nearestStop
-                } else {
-                    stopsForRoute.firstOrNull()
+                val nearestStop = stopsForRoute.minByOrNull { stop ->
+                    val dLat = stop.lat - lat
+                    val dLon = stop.lon - lon
+                    dLat * dLat + dLon * dLon
                 }
-                val arrivals = targetStop
-                    ?.let { repository.getArrivalsForRoute(routeId, it.id).take(2) }
+                // Get arrivals at that stop, filter to this route only
+                val arrivals = nearestStop
+                    ?.let {
+                        repository.getArrivalsForStop(it.id)
+                            .filter { a -> a.routeId == routeId }
+                            .take(3)
+                    }
                     ?: emptyList()
-                _uiState.update { it.copy(favouriteRouteArrivals = arrivals) }
-            } catch (_: Exception) {}
+                PinnedRouteData(route, nearestStop, arrivals)
+            } catch (_: Exception) {
+                PinnedRouteData(route, null, emptyList())
+            }
+        }
+        _uiState.update { it.copy(pinnedRoutes = pinnedData) }
+    }
+
+    fun updateLocation(lat: Double, lon: Double) {
+        userLat = lat
+        userLon = lon
+        _uiState.update { it.copy(hasLocation = true) }
+        viewModelScope.launch {
+            val state = _uiState.value
+            refreshPinnedRoutes(state.routes, state.pinnedRouteIds)
         }
     }
 
-    fun setFavouriteRoute(routeId: String?) {
-        viewModelScope.launch { repository.setFavouriteRouteId(routeId) }
+    fun addPin(routeId: String) {
+        viewModelScope.launch { repository.addPinnedRoute(routeId) }
+    }
+
+    fun removePin(routeId: String) {
+        viewModelScope.launch { repository.removePinnedRoute(routeId) }
     }
 }

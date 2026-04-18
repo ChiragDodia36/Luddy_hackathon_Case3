@@ -21,7 +21,8 @@ data class FavouritesUiState(
     val favourites: List<FavouriteStopData> = emptyList(),
     val isLoading: Boolean = true,
     val favouriteRoute: Route? = null,
-    val favouriteRouteArrivals: List<Arrival> = emptyList()
+    val favouriteRouteArrivals: List<Arrival> = emptyList(),
+    val allRoutes: List<Route> = emptyList()
 )
 
 @HiltViewModel
@@ -35,7 +36,16 @@ class FavouritesViewModel @Inject constructor(
     init {
         observeFavourites()
         observeFavouriteRoute()
+        observeAllRoutes()
         startPolling()
+    }
+
+    private fun observeAllRoutes() {
+        viewModelScope.launch {
+            repository.getRoutes().collect { routes ->
+                _uiState.update { it.copy(allRoutes = routes) }
+            }
+        }
     }
 
     private fun observeFavourites() {
@@ -62,7 +72,7 @@ class FavouritesViewModel @Inject constructor(
 
     private suspend fun loadFavourites(ids: Set<String>) {
         val data = ids.mapNotNull { stopId ->
-            val stop = repository.searchStops(stopId).firstOrNull() ?: return@mapNotNull null
+            val stop = repository.getStopById(stopId) ?: return@mapNotNull null
             val arrivals = repository.getArrivalsForStop(stopId).take(2)
             FavouriteStopData(stop, arrivals)
         }
@@ -84,7 +94,7 @@ class FavouritesViewModel @Inject constructor(
     private fun startPolling() {
         viewModelScope.launch {
             while (true) {
-                delay(10_000L)
+                delay(5_000L)
                 val ids = repository.getFavouriteStopIds().first()
                 loadFavourites(ids)
                 _uiState.value.favouriteRoute?.let { loadFavouriteRouteArrivals(it.id) }
@@ -94,5 +104,9 @@ class FavouritesViewModel @Inject constructor(
 
     fun removeFavourite(stopId: String) {
         viewModelScope.launch { repository.removeFavouriteStop(stopId) }
+    }
+
+    fun setFavouriteRoute(routeId: String?) {
+        viewModelScope.launch { repository.setFavouriteRouteId(routeId) }
     }
 }

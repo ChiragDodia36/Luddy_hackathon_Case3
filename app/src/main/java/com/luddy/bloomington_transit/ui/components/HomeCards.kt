@@ -27,144 +27,36 @@ import com.luddy.bloomington_transit.ui.theme.CountdownGreen
 import com.luddy.bloomington_transit.ui.theme.GlassCard
 import com.luddy.bloomington_transit.ui.theme.routeColor
 import kotlinx.coroutines.delay
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 // ─────────────────────────────────────────────────────────────────
-// Card 1 — Live Countdown Hero
+// Live Status Board — nearest stop + filtered arrivals
 // ─────────────────────────────────────────────────────────────────
 
 @Composable
-fun CountdownHeroCard(
-    route: Route,
+fun LiveStatusCard(
+    nearestStop: Stop?,
     arrivals: List<Arrival>,
-    onViewOnMap: () -> Unit,
+    favouriteRouteId: String?,
+    favouriteRoute: com.luddy.bloomington_transit.domain.model.Route?,
+    onPinRoute: () -> Unit,
+    onChangeRoute: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val color = routeColor(route.color)
-    val firstArrival = arrivals.firstOrNull()
-
-    GlassCard(modifier = modifier.fillMaxWidth()) {
-        Column(modifier = Modifier.padding(20.dp)) {
-
-            // Route header
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Box(
-                    modifier = Modifier
-                        .size(40.dp)
-                        .clip(RoundedCornerShape(10.dp))
-                        .background(color),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Text(
-                        route.shortName.take(3),
-                        color = Color.White,
-                        fontWeight = FontWeight.Bold,
-                        style = MaterialTheme.typography.labelLarge
-                    )
-                }
-                Spacer(Modifier.width(10.dp))
-                Text(
-                    firstArrival?.headsign?.ifBlank { route.longName } ?: route.longName,
-                    style = MaterialTheme.typography.titleSmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
-            }
-
-            Spacer(Modifier.height(16.dp))
-
-            // Big countdown
-            if (firstArrival != null) {
-                CountdownHeroDisplay(
-                    arrivalMs = firstArrival.displayArrivalMs,
-                    isRealtime = firstArrival.isRealtime
-                )
-            } else {
-                Text(
-                    "No upcoming buses",
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
-            }
-
-            Spacer(Modifier.height(6.dp))
-
-            // Live indicator
-            if (firstArrival?.isRealtime == true) {
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Box(
-                        modifier = Modifier
-                            .size(8.dp)
-                            .clip(CircleShape)
-                            .background(CountdownGreen)
-                    )
-                    Spacer(Modifier.width(4.dp))
-                    Text("Live", style = MaterialTheme.typography.labelSmall, color = CountdownGreen)
-                }
-            }
-
-            Spacer(Modifier.height(16.dp))
-
-            Button(
-                onClick = onViewOnMap,
-                modifier = Modifier.fillMaxWidth(),
-                colors = ButtonDefaults.buttonColors(containerColor = color)
-            ) {
-                Icon(Icons.Filled.Map, contentDescription = null)
-                Spacer(Modifier.width(8.dp))
-                Text("View on Map", fontWeight = FontWeight.SemiBold)
-            }
-        }
+    val displayedArrivals = remember(arrivals, favouriteRouteId) {
+        if (favouriteRouteId != null) arrivals.filter { it.routeId == favouriteRouteId }
+        else arrivals
     }
-}
 
-@Composable
-private fun CountdownHeroDisplay(arrivalMs: Long, isRealtime: Boolean) {
-    var minutesLeft by remember(arrivalMs) {
-        mutableLongStateOf(((arrivalMs - System.currentTimeMillis()) / 60_000L).coerceAtLeast(0L))
-    }
-    LaunchedEffect(arrivalMs) {
-        while (true) {
-            minutesLeft = ((arrivalMs - System.currentTimeMillis()) / 60_000L).coerceAtLeast(0L)
-            delay(1000L)
-        }
-    }
-    Row(verticalAlignment = Alignment.Bottom) {
-        Text(
-            text = "$minutesLeft",
-            style = MaterialTheme.typography.displayLarge,
-            fontWeight = FontWeight.Bold,
-            color = BtBlue
-        )
-        Spacer(Modifier.width(6.dp))
-        Column(modifier = Modifier.padding(bottom = 10.dp)) {
-            Text(
-                "min away",
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
-            )
-            if (!isRealtime) {
-                Text(
-                    "scheduled",
-                    style = MaterialTheme.typography.labelSmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f)
-                )
-            }
-        }
-    }
-}
-
-// ─────────────────────────────────────────────────────────────────
-// Card 2 — Nearest Stop Arrivals
-// ─────────────────────────────────────────────────────────────────
-
-@Composable
-fun NearestStopCard(
-    stop: Stop,
-    arrivals: List<Arrival>,
-    modifier: Modifier = Modifier
-) {
     GlassCard(modifier = modifier.fillMaxWidth()) {
         Column(modifier = Modifier.padding(16.dp)) {
-            Row(verticalAlignment = Alignment.CenterVertically) {
+            // Header row
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
                 Icon(
                     Icons.Filled.Place,
                     contentDescription = null,
@@ -173,29 +65,107 @@ fun NearestStopCard(
                 )
                 Spacer(Modifier.width(6.dp))
                 Text(
-                    "Nearest Stop: ${stop.name}",
+                    if (nearestStop != null) nearestStop.name else "Nearest Stop",
                     style = MaterialTheme.typography.titleSmall,
-                    fontWeight = FontWeight.SemiBold
+                    fontWeight = FontWeight.SemiBold,
+                    modifier = Modifier.weight(1f)
                 )
+                if (favouriteRouteId != null) {
+                    TextButton(
+                        onClick = onChangeRoute,
+                        contentPadding = PaddingValues(horizontal = 8.dp, vertical = 0.dp)
+                    ) {
+                        Text(
+                            "Change",
+                            style = MaterialTheme.typography.labelSmall,
+                            color = BtBlue
+                        )
+                    }
+                }
             }
+
+            if (favouriteRoute != null) {
+                val color = routeColor(favouriteRoute.color)
+                Spacer(Modifier.height(4.dp))
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Box(
+                        modifier = Modifier
+                            .size(22.dp)
+                            .clip(RoundedCornerShape(5.dp))
+                            .background(color),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text(
+                            favouriteRoute.shortName.take(3),
+                            color = Color.White,
+                            fontWeight = FontWeight.Bold,
+                            style = MaterialTheme.typography.labelSmall
+                        )
+                    }
+                    Spacer(Modifier.width(6.dp))
+                    Text(
+                        favouriteRoute.longName,
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                }
+            }
+
             Spacer(Modifier.height(10.dp))
             HorizontalDivider(color = Color.Gray.copy(alpha = 0.15f))
             Spacer(Modifier.height(8.dp))
-            if (arrivals.isEmpty()) {
+
+            if (nearestStop == null) {
+                Text(
+                    "Enable location to see nearby stops",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            } else if (displayedArrivals.isEmpty()) {
                 Text(
                     "No upcoming buses at this stop",
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
             } else {
-                arrivals.forEach { NearestStopArrivalRow(it) }
+                displayedArrivals.take(3).forEach { LiveStatusArrivalRow(it) }
+            }
+
+            if (favouriteRouteId == null && nearestStop != null) {
+                Spacer(Modifier.height(10.dp))
+                HorizontalDivider(color = Color.Gray.copy(alpha = 0.15f))
+                Spacer(Modifier.height(8.dp))
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Icon(
+                        Icons.Filled.DirectionsBus,
+                        contentDescription = null,
+                        tint = BtBlue.copy(alpha = 0.5f),
+                        modifier = Modifier.size(14.dp)
+                    )
+                    Spacer(Modifier.width(6.dp))
+                    Text(
+                        "Pin a route to track only its times",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        modifier = Modifier.weight(1f)
+                    )
+                    TextButton(
+                        onClick = onPinRoute,
+                        contentPadding = PaddingValues(horizontal = 8.dp, vertical = 0.dp)
+                    ) {
+                        Text("Pin", style = MaterialTheme.typography.labelSmall, color = BtBlue)
+                    }
+                }
             }
         }
     }
 }
 
 @Composable
-private fun NearestStopArrivalRow(arrival: Arrival) {
+private fun LiveStatusArrivalRow(arrival: Arrival) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
