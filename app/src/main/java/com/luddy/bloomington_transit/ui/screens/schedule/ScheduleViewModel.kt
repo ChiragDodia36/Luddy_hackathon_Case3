@@ -17,7 +17,8 @@ data class ScheduleUiState(
     val selectedStop: Stop? = null,
     val arrivals: List<Arrival> = emptyList(),
     val showRealtimeOnly: Boolean = false,
-    val isLoading: Boolean = false
+    val isLoading: Boolean = false,
+    val recentStops: List<Stop> = emptyList()
 )
 
 @HiltViewModel
@@ -28,7 +29,21 @@ class ScheduleViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(ScheduleUiState())
     val uiState: StateFlow<ScheduleUiState> = _uiState.asStateFlow()
 
-    init { startPolling() }
+    init {
+        observeRecentStops()
+        startPolling()
+    }
+
+    private fun observeRecentStops() {
+        viewModelScope.launch {
+            repository.getRecentStopIds().collect { ids ->
+                val stops = ids.mapNotNull { id ->
+                    repository.searchStops(id).firstOrNull { it.id == id }
+                }
+                _uiState.update { it.copy(recentStops = stops) }
+            }
+        }
+    }
 
     fun onQueryChange(query: String) {
         _uiState.update { it.copy(searchQuery = query) }
@@ -39,8 +54,23 @@ class ScheduleViewModel @Inject constructor(
     }
 
     fun selectStop(stop: Stop) {
-        _uiState.update { it.copy(selectedStop = stop, searchQuery = stop.name, searchResults = emptyList(), isLoading = true) }
+        _uiState.update {
+            it.copy(
+                selectedStop = stop,
+                searchQuery = stop.name,
+                searchResults = emptyList(),
+                isLoading = true
+            )
+        }
+        viewModelScope.launch { repository.addRecentStop(stop.id) }
         loadArrivals(stop.id)
+    }
+
+    fun useNearestStop(lat: Double, lon: Double) {
+        viewModelScope.launch {
+            val stops = repository.getNearestStops(lat, lon, radiusMeters = 500.0)
+            stops.firstOrNull()?.let { selectStop(it) }
+        }
     }
 
     fun toggleRealtimeFilter() {

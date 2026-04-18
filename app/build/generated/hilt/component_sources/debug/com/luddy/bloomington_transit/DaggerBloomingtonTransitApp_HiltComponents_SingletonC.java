@@ -408,22 +408,22 @@ public final class DaggerBloomingtonTransitApp_HiltComponents_SingletonC {
 
     @IdentifierNameString
     private static final class LazyClassKeyProvider {
+      static String com_luddy_bloomington_transit_ui_screens_map_MapViewModel = "com.luddy.bloomington_transit.ui.screens.map.MapViewModel";
+
       static String com_luddy_bloomington_transit_ui_screens_favourites_FavouritesViewModel = "com.luddy.bloomington_transit.ui.screens.favourites.FavouritesViewModel";
 
       static String com_luddy_bloomington_transit_ui_screens_home_HomeViewModel = "com.luddy.bloomington_transit.ui.screens.home.HomeViewModel";
 
-      static String com_luddy_bloomington_transit_ui_screens_map_MapViewModel = "com.luddy.bloomington_transit.ui.screens.map.MapViewModel";
-
       static String com_luddy_bloomington_transit_ui_screens_schedule_ScheduleViewModel = "com.luddy.bloomington_transit.ui.screens.schedule.ScheduleViewModel";
+
+      @KeepFieldType
+      MapViewModel com_luddy_bloomington_transit_ui_screens_map_MapViewModel2;
 
       @KeepFieldType
       FavouritesViewModel com_luddy_bloomington_transit_ui_screens_favourites_FavouritesViewModel2;
 
       @KeepFieldType
       HomeViewModel com_luddy_bloomington_transit_ui_screens_home_HomeViewModel2;
-
-      @KeepFieldType
-      MapViewModel com_luddy_bloomington_transit_ui_screens_map_MapViewModel2;
 
       @KeepFieldType
       ScheduleViewModel com_luddy_bloomington_transit_ui_screens_schedule_ScheduleViewModel2;
@@ -476,25 +476,25 @@ public final class DaggerBloomingtonTransitApp_HiltComponents_SingletonC {
 
     @IdentifierNameString
     private static final class LazyClassKeyProvider {
-      static String com_luddy_bloomington_transit_ui_screens_map_MapViewModel = "com.luddy.bloomington_transit.ui.screens.map.MapViewModel";
+      static String com_luddy_bloomington_transit_ui_screens_home_HomeViewModel = "com.luddy.bloomington_transit.ui.screens.home.HomeViewModel";
 
       static String com_luddy_bloomington_transit_ui_screens_favourites_FavouritesViewModel = "com.luddy.bloomington_transit.ui.screens.favourites.FavouritesViewModel";
 
-      static String com_luddy_bloomington_transit_ui_screens_home_HomeViewModel = "com.luddy.bloomington_transit.ui.screens.home.HomeViewModel";
-
       static String com_luddy_bloomington_transit_ui_screens_schedule_ScheduleViewModel = "com.luddy.bloomington_transit.ui.screens.schedule.ScheduleViewModel";
 
-      @KeepFieldType
-      MapViewModel com_luddy_bloomington_transit_ui_screens_map_MapViewModel2;
-
-      @KeepFieldType
-      FavouritesViewModel com_luddy_bloomington_transit_ui_screens_favourites_FavouritesViewModel2;
+      static String com_luddy_bloomington_transit_ui_screens_map_MapViewModel = "com.luddy.bloomington_transit.ui.screens.map.MapViewModel";
 
       @KeepFieldType
       HomeViewModel com_luddy_bloomington_transit_ui_screens_home_HomeViewModel2;
 
       @KeepFieldType
+      FavouritesViewModel com_luddy_bloomington_transit_ui_screens_favourites_FavouritesViewModel2;
+
+      @KeepFieldType
       ScheduleViewModel com_luddy_bloomington_transit_ui_screens_schedule_ScheduleViewModel2;
+
+      @KeepFieldType
+      MapViewModel com_luddy_bloomington_transit_ui_screens_map_MapViewModel2;
     }
 
     private static final class SwitchingProvider<T> implements Provider<T> {

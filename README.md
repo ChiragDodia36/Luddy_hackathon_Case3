@@ -1,135 +1,235 @@
 # BT Transit — Bloomington Transit Android App
 
 A modern, real-time Android app for Bloomington Transit (BT) built as a replacement for the ETA Spot app.
+Light glassmorphism UI with live bus tracking, arrival countdowns, and adaptive home screen.
 
 ---
 
-## Features
-- **Live Bus Tracking** — Real-time bus positions on an interactive Google Map, updated every 10 seconds
-- **Arrival Countdown** — Live ticking countdown timers (not static times) that turn amber <3min and red <1min
-- **Departure Board** — Airport-style upcoming bus list for any stop
-- **Route Map View** — Color-coded route polylines from GTFS shapes data
-- **Persistent Favourites** — Save stops that survive app restarts (fixes ETA Spot's #1 bug)
-- **Background Notifications** — Alerts when your tracked bus is within N minutes of your nearest stop
-- **Home Screen Widget** — Next bus countdown without opening the app
-- **Service Alert Banner** — GTFS-RT alert feed surfaced prominently at the top
-- **Dark Mode** — Follows system setting automatically
+## Requirements
+
+### Desktop / Machine
+| Requirement | Version | Notes |
+|---|---|---|
+| OS | macOS / Windows / Linux | All supported |
+| RAM | 8 GB minimum | 16 GB recommended for emulator |
+| Disk | 10 GB free | Android Studio + SDK + emulator |
+
+### Software to Install
+| Tool | Version | Download |
+|---|---|---|
+| Android Studio | Ladybug (2024.2.1) or newer | https://developer.android.com/studio |
+| JDK | 17 (bundled with Android Studio) | No separate install needed |
+| Android SDK | API 35 (Android 15) | Installed via Android Studio |
+| Android Build Tools | 35.0.0 | Installed via Android Studio |
+| Google Play Services | Latest | Needed for Maps + Location |
+
+> **Tip:** Android Studio bundles the JDK automatically. You do **not** need to install Java separately.
 
 ---
 
-## Setup Instructions
+## Prerequisite: Google Maps API Key
 
-### 1. Get a Google Maps API Key
+This app uses Google Maps. Each developer needs their own key (free tier is sufficient).
+
 1. Go to [Google Cloud Console](https://console.cloud.google.com)
-2. Create a project → Enable "Maps SDK for Android"
-3. Create credentials → API Key
-4. Restrict the key to "Android apps" with your package name: `com.luddy.bloomington_transit`
+2. Create a new project (or use an existing one)
+3. Enable these APIs:
+   - **Maps SDK for Android**
+   - **Places API** (optional, for future features)
+4. Go to **Credentials → Create Credentials → API Key**
+5. (Recommended) Restrict the key:
+   - Application restrictions → Android apps
+   - Package name: `com.luddy.bloomington_transit`
+   - SHA-1: run `./gradlew signingReport` to get your debug SHA-1
 
-### 2. Add the key to local.properties
-```
-sdk.dir=/Users/YOUR_USERNAME/Library/Android/sdk
-MAPS_API_KEY=YOUR_KEY_HERE
-```
+---
 
-### 3. Build and Run
+## Setup Steps
+
+### 1. Clone the repository
 ```bash
-# Debug APK
+git clone <your-repo-url>
+cd luddy_hackathon_case3
+```
+
+### 2. Create your `local.properties` file
+
+Copy the template and fill in your values:
+```bash
+cp local.properties.template local.properties
+```
+
+Then open `local.properties` and set:
+```properties
+# Replace with your actual Android SDK path
+# macOS default:
+sdk.dir=/Users/YOUR_USERNAME/Library/Android/sdk
+
+# Windows default:
+# sdk.dir=C\:\\Users\\YOUR_USERNAME\\AppData\\Local\\Android\\Sdk
+
+# Linux default:
+# sdk.dir=/home/YOUR_USERNAME/Android/Sdk
+
+# Your Google Maps API key (see Prerequisite above)
+MAPS_API_KEY=YOUR_GOOGLE_MAPS_API_KEY_HERE
+```
+
+> **Note:** `local.properties` is in `.gitignore` — never commit it. Each developer has their own.
+
+### 3. Open in Android Studio
+
+- Open Android Studio → **Open** → select the `luddy_hackathon_case3` folder
+- Wait for Gradle sync to complete (first sync downloads ~300 MB of dependencies)
+- Android Studio will automatically detect the SDK and suggest installing missing components
+
+### 4. Set up an emulator or physical device
+
+**Option A — Physical Android device (recommended for performance):**
+1. On your phone: Settings → About Phone → tap "Build Number" 7 times to enable Developer Options
+2. Settings → Developer Options → enable "USB Debugging"
+3. Connect via USB cable
+4. Accept the "Allow USB debugging" prompt on the phone
+
+**Option B — Android Emulator:**
+1. In Android Studio: Tools → Device Manager → Create Device
+2. Select a phone (e.g., Pixel 8)
+3. System Image: API 35 (Android 15) — download if not present
+4. Finish and start the emulator
+
+> **Minimum Android version:** API 26 (Android 8.0 Oreo)
+
+### 5. Build and run
+
+**Via Android Studio:**
+- Press the green **Run** button (▶) or `Shift+F10`
+
+**Via command line:**
+```bash
+# Build debug APK
 ./gradlew assembleDebug
 
-# Install on connected device
+# Build + install on connected device/emulator
 ./gradlew installDebug
 
-# Or open in Android Studio and press Run
+# Clean build (if you hit weird issues)
+./gradlew clean assembleDebug
+```
+
+---
+
+## First Launch Behaviour
+
+On first launch the app will:
+1. Download GTFS static data (~2–5 MB) from the Bloomington Transit server — this takes ~10–30 seconds
+2. Show a loading state on the Home and Map screens until data is ready
+3. All subsequent launches use the cached database (refreshed every 24 hours)
+
+Grant these permissions when prompted:
+- **Location** — for nearest stop detection and "Use my nearest stop" feature
+- **Notifications** — for arrival alerts (Android 13+)
+
+---
+
+## Project Dependencies (auto-downloaded by Gradle)
+
+All dependencies are declared in `gradle/libs.versions.toml` and downloaded automatically on first sync. No manual installation required.
+
+| Library | Version | Purpose |
+|---|---|---|
+| Kotlin | 2.0.21 | Language |
+| Jetpack Compose BOM | 2024.09.03 | UI framework |
+| Material3 | (via BOM) | Design components |
+| Hilt | 2.52 | Dependency injection |
+| Room | 2.6.1 | Local SQLite (GTFS static data) |
+| DataStore | 1.1.1 | User preferences |
+| Retrofit + OkHttp | 2.11.0 / 4.12.0 | Network requests |
+| maps-compose | 6.1.0 | Google Maps in Compose |
+| play-services-maps | 19.0.0 | Google Maps SDK |
+| play-services-location | 21.3.0 | FusedLocationProvider |
+| gtfs-realtime-bindings | 0.0.4 | GTFS protobuf parsing |
+| Glance AppWidget | 1.1.0 | Home screen widget |
+| kotlinx-coroutines | 1.8.1 | Async + Flow |
+| WorkManager | 2.9.1 | Background widget updates |
+
+---
+
+## GTFS API Endpoints Used
+
+| Feed | Purpose |
+|---|---|
+| `gtfs.zip` (S3) | Routes, stops, schedules, shapes (static, cached 24h) |
+| `position_updates.pb` | Live bus lat/lon + bearing (polled every 10s) |
+| `trip_updates.pb` | Predicted arrival times (polled every 10s) |
+| `alerts.pb` | Service disruptions (polled every 10s) |
+
+---
+
+## Project Structure
+
+```
+app/src/main/java/com/luddy/bloomington_transit/
+├── BloomingtonTransitApp.kt     Hilt app entry + notification channels
+├── MainActivity.kt              Single activity host
+├── data/
+│   ├── api/                     GTFS Realtime Retrofit + Static zip parser
+│   ├── local/                   Room DB, DAOs, DataStore, entities
+│   └── repository/              TransitRepositoryImpl
+├── di/                          Hilt modules (NetworkModule, DatabaseModule)
+├── domain/
+│   ├── model/                   Route, Stop, Bus, Arrival, ShapePoint, ServiceAlert
+│   ├── repository/              TransitRepository interface
+│   └── usecase/                 Business logic use cases
+├── service/                     Foreground service + arrival notifications
+├── ui/
+│   ├── BtApp.kt                 Root composable: gradient + nav + scaffold
+│   ├── components/              CountdownChip, ArrivalRow, HomeCards, AlertBanner
+│   ├── navigation/              NavGraph, BottomNavItems
+│   ├── screens/
+│   │   ├── home/                HomeScreen + HomeViewModel (adaptive context)
+│   │   ├── map/                 MapScreen + MapViewModel (live buses + routes)
+│   │   ├── schedule/            ScheduleScreen + ScheduleViewModel (search + arrivals)
+│   │   └── favourites/          FavouritesScreen + FavouritesViewModel (saved stops)
+│   └── theme/                   Colors, Typography, Theme, GlassComponents
+└── widget/                      Glance home screen widget
 ```
 
 ---
 
 ## Architecture
 
-This app follows **Clean Architecture + MVVM** as required for graduate teams.
+**Clean Architecture + MVVM**
 
 ```
-┌─────────────────────────────────────┐
-│           UI Layer (MVVM)           │
-│   Composables ←→ ViewModels         │
-│   (screens/, components/, theme/)   │
-└──────────────┬──────────────────────┘
-               │ Use Cases
-┌──────────────▼──────────────────────┐
-│          Domain Layer               │
-│   Models | Repository (interface)   │
-│   Use Cases (pure Kotlin)           │
-└──────────────┬──────────────────────┘
-               │ Implementation
-┌──────────────▼──────────────────────┐
-│           Data Layer                │
-│   Room DB | DataStore | Retrofit    │
-│   GtfsStaticParser | RealtimeApi    │
-└─────────────────────────────────────┘
+UI Layer (Compose + ViewModel)
+    ↓ collects StateFlow
+Domain Layer (Repository interface + Use Cases)
+    ↓ implements
+Data Layer (Room + DataStore + Retrofit)
 ```
 
-### Dependency Injection
-Hilt (`@HiltAndroidApp`, `@AndroidEntryPoint`, `@HiltViewModel`) wires all layers.
+Dependency injection via **Hilt** wires all layers at compile time.
 
 ---
 
-## GTFS API Endpoints Used
+## Troubleshooting
 
-| Feed | URL | Purpose |
-|------|-----|---------|
-| Static GTFS | `https://s3.amazonaws.com/etatransit.gtfs/bloomingtontransit.etaspot.net/gtfs.zip` | Routes, stops, schedules, shapes |
-| Vehicle Positions | `.../position_updates.pb` | Live bus lat/lon, bearing |
-| Trip Updates | `.../trip_updates.pb` | Predicted arrival times |
-| Service Alerts | `.../alerts.pb` | Service disruptions |
-
-All realtime feeds polled every **10 seconds**.
-
----
-
-## Tech Stack
-
-| Technology | Purpose |
+| Problem | Fix |
 |---|---|
-| Kotlin | Primary language |
-| Jetpack Compose + Material3 | UI framework |
-| Hilt | Dependency injection |
-| Room | Local SQLite for GTFS static data |
-| DataStore | User preferences (favourites, settings) |
-| Retrofit + OkHttp | GTFS realtime protobuf fetching |
-| gtfs-realtime-bindings 0.0.4 | Protobuf parsing |
-| Google Maps SDK + maps-compose | Interactive map |
-| Glance AppWidget | Home screen widget |
-| kotlinx-coroutines | Async + Flow |
-
----
-
-## Project Structure
-```
-app/src/main/java/com/luddy/bloomington_transit/
-├── BloomingtonTransitApp.kt     Hilt app + notification channels
-├── MainActivity.kt              Entry point
-├── data/
-│   ├── api/                     GTFS Realtime Retrofit + Static parser
-│   ├── local/                   Room DB + DataStore
-│   └── repository/              TransitRepositoryImpl
-├── di/                          Hilt modules
-├── domain/
-│   ├── model/                   Route, Stop, Bus, Arrival, etc.
-│   ├── repository/              TransitRepository interface
-│   └── usecase/                 Business logic
-├── service/                     Foreground service + notifications
-├── ui/
-│   ├── components/              CountdownChip, ArrivalRow, AlertBanner
-│   ├── navigation/              NavGraph, BottomNavItems
-│   ├── screens/                 home, map, schedule, favourites
-│   └── theme/                   Colors, Typography, Theme
-└── widget/                      Glance home screen widget
-```
+| Gradle sync fails | File → Invalidate Caches → Restart; then re-sync |
+| `MAPS_API_KEY` missing error | Make sure `local.properties` exists with your key |
+| Map shows grey tiles | Check your Maps API key is valid and Maps SDK is enabled |
+| App crashes on launch | Grant location permission; check Logcat for `TransitRepo` tag |
+| "No routes found" on Home | Wait 30s for GTFS static download on first launch |
+| Build error on emulator | Use a physical device — emulators can be slow on Gradle 8+ |
+| `sdk.dir` not found | Open local.properties and fix the path to your Android SDK |
 
 ---
 
 ## Known Limitations
-- Location permission required for nearest stop detection
+
+- Location permission required for nearest stop detection and "Use my nearest stop" button
 - Notification permission required (Android 13+) for arrival alerts
-- Google Maps API key required to display map tiles
-- GTFS static data download (~2-5MB) on first launch
+- Google Maps API key required for map tiles (app works without it but map will be blank)
+- GTFS static data downloads on first launch (~2–5 MB, ~10–30 seconds on WiFi)
+- App targets Android 8.0+ (API 26) — older devices not supported

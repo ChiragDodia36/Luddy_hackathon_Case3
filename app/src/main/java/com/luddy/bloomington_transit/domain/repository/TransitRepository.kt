@@ -37,4 +37,8 @@ interface TransitRepository {
     // Favourite route (for route picker flow)
     fun getFavouriteRouteId(): Flow<String?>
     suspend fun setFavouriteRouteId(routeId: String?)
+
+    // Recently viewed stops
+    fun getRecentStopIds(): Flow<List<String>>
+    suspend fun addRecentStop(stopId: String)
 }

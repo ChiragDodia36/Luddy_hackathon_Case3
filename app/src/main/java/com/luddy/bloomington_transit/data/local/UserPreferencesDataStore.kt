@@ -24,6 +24,7 @@ class UserPreferencesDataStore @Inject constructor(
         val NOTIFICATION_THRESHOLD_MINUTES = intPreferencesKey("notif_threshold_min")
         val GTFS_LAST_UPDATED = longPreferencesKey("gtfs_last_updated")
         val FAVOURITE_ROUTE_ID = stringPreferencesKey("favourite_route_id")
+        val RECENT_STOP_IDS = stringPreferencesKey("recent_stop_ids")
     }
 
     val favouriteStopIds: Flow<Set<String>> = context.dataStore.data
@@ -45,6 +46,15 @@ class UserPreferencesDataStore @Inject constructor(
     val favouriteRouteId: Flow<String?> = context.dataStore.data
         .catch { if (it is IOException) emit(emptyPreferences()) else throw it }
         .map { it[Keys.FAVOURITE_ROUTE_ID] }
+
+    val recentStopIds: Flow<List<String>> = context.dataStore.data
+        .catch { if (it is IOException) emit(emptyPreferences()) else throw it }
+        .map { prefs ->
+            prefs[Keys.RECENT_STOP_IDS]
+                ?.split(",")
+                ?.filter { it.isNotBlank() }
+                ?: emptyList()
+        }
 
     suspend fun addFavouriteStop(stopId: String) {
         context.dataStore.edit { prefs ->
@@ -86,6 +96,17 @@ class UserPreferencesDataStore @Inject constructor(
         context.dataStore.edit {
             if (routeId == null) it.remove(Keys.FAVOURITE_ROUTE_ID)
             else it[Keys.FAVOURITE_ROUTE_ID] = routeId
+        }
+    }
+
+    suspend fun addRecentStop(stopId: String) {
+        context.dataStore.edit { prefs ->
+            val current = prefs[Keys.RECENT_STOP_IDS]
+                ?.split(",")
+                ?.filter { it.isNotBlank() }
+                ?: emptyList()
+            val updated = (listOf(stopId) + current.filter { it != stopId }).take(5)
+            prefs[Keys.RECENT_STOP_IDS] = updated.joinToString(",")
         }
     }
 }

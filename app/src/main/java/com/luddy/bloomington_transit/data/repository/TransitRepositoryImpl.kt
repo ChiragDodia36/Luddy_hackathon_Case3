@@ -236,6 +236,9 @@ class TransitRepositoryImpl @Inject constructor(
     override fun getFavouriteRouteId(): Flow<String?> = prefs.favouriteRouteId
     override suspend fun setFavouriteRouteId(routeId: String?) = prefs.setFavouriteRouteId(routeId)
 
+    override fun getRecentStopIds(): Flow<List<String>> = prefs.recentStopIds
+    override suspend fun addRecentStop(stopId: String) = prefs.addRecentStop(stopId)
+
     // Helpers
     private fun haversineMeters(lat1: Double, lon1: Double, lat2: Double, lon2: Double): Double {
         val r = 6371000.0
