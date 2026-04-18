@@ -9,6 +9,8 @@ import com.google.android.libraries.places.api.model.RectangularBounds
 import com.google.android.libraries.places.api.net.FetchPlaceRequest
 import com.google.android.libraries.places.api.net.FindAutocompletePredictionsRequest
 import com.google.android.libraries.places.api.net.PlacesClient
+import com.luddy.bloomington_transit.data.ai.AiResult
+import com.luddy.bloomington_transit.data.ai.BtAiRepository
 import com.luddy.bloomington_transit.domain.model.*
 import com.luddy.bloomington_transit.domain.repository.TransitRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -59,7 +61,13 @@ data class MapUiState(
     val alightingStop: Stop? = null,
     val boardingArrivals: List<Arrival> = emptyList(),
     val transferArrivals: List<Arrival> = emptyList(),
-    val alightingArrivals: List<Arrival> = emptyList()
+    val alightingArrivals: List<Arrival> = emptyList(),
+    // AI-enriched boarding predictions (A1+A2 adjusted, with confidence tier).
+    // Populated alongside boardingArrivals when the AI backend is reachable.
+    val aiBoardingPredictions: List<com.luddy.bloomington_transit.data.ai.dto.PredictionDto> = emptyList(),
+    // Optional Google-Directions-style plan (our /plan endpoint = Google Directions + AI boarding ETAs).
+    // Populated once per destination selection; null when unavailable.
+    val aiPlan: com.luddy.bloomington_transit.data.ai.dto.TripPlanResponseDto? = null,
 )
 
 // Walking constants
@@ -73,7 +81,8 @@ fun metersToWalkMinutes(meters: Double): Int = ceil(meters / WALK_M_PER_MIN).toI
 @HiltViewModel
 class MapViewModel @Inject constructor(
     private val repository: TransitRepository,
-    private val placesClient: PlacesClient
+    private val placesClient: PlacesClient,
+    private val aiRepo: BtAiRepository,
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(MapUiState())
@@ -154,12 +163,50 @@ class MapViewModel @Inject constructor(
             val transferArrivals = if (s.isTransferRoute && s.transferStop != null && s.transferRoute != null) {
                 repository.getArrivalsForStop(s.transferStop.id).filter { it.routeId == s.transferRoute.id }
             } else emptyList()
+
+            // AI enrichment — fetch adjusted boarding predictions from our backend.
+            // Best-effort; silently skipped if the backend is unreachable.
+            val aiPreds = when (val r = aiRepo.predictionsFor(boarding.id, horizonMinutes = 60)) {
+                is AiResult.Ok -> r.value.predictions.filter { it.routeId == firstRouteId }
+                is AiResult.Err -> emptyList()
+            }
+
             _uiState.update { it.copy(
                 boardingArrivals = boardingArrivals,
                 alightingArrivals = alightingArrivals,
-                transferArrivals = transferArrivals
+                transferArrivals = transferArrivals,
+                aiBoardingPredictions = aiPreds,
             ) }
         } catch (_: Exception) {}
+    }
+
+    /**
+     * One-shot Google-Directions-style plan via our backend's /plan endpoint.
+     * Populates uiState.aiPlan with Google's transit routes enriched by our
+     * A1+A2 boarding-ETA adjustments. Best-effort; silently sets null on failure.
+     */
+    private fun fetchAiPlan(destinationLatLng: LatLng) {
+        val origin = _uiState.value.userLocation ?: return
+        viewModelScope.launch {
+            when (val r = aiRepo.plan(
+                originLat = origin.latitude, originLng = origin.longitude,
+                destLat = destinationLatLng.latitude, destLng = destinationLatLng.longitude,
+            )) {
+                is AiResult.Ok -> _uiState.update { it.copy(aiPlan = r.value) }
+                is AiResult.Err -> _uiState.update { it.copy(aiPlan = null) }
+            }
+        }
+    }
+
+    /**
+     * Fire AI enrichment for the currently-selected route:
+     *  - Immediate /predictions fetch for the boarding stop so the UI shows
+     *    adjusted ETAs without waiting for the 10s poll.
+     *  - Optional /plan fetch for a Google-Directions-style companion view.
+     */
+    private fun enrichWithAi() {
+        viewModelScope.launch { refreshRoutingEtas() }
+        _uiState.value.destinationLatLng?.let { fetchAiPlan(it) }
     }
 
     // ── Manual route selection ────────────────────────────────────────────────
@@ -418,6 +465,7 @@ class MapViewModel @Inject constructor(
                     isRoutingLoading   = false,
                     routingError       = null
                 ) }
+                enrichWithAi()
             } else {
                 val t = best.transfer!!
                 Log.d("MapVM", "✅ Transfer: ${t.route1.shortName}→${t.route2.shortName} | board: ${t.boardingStop.name} | xfer: ${t.transferStop.name} | alight: ${t.alightingStop.name}")
@@ -440,6 +488,7 @@ class MapViewModel @Inject constructor(
                     isRoutingLoading   = false,
                     routingError       = null
                 ) }
+                enrichWithAi()
             }
         } catch (e: Exception) {
             Log.e("MapVM", "Routing error: ${e.message}")
@@ -471,7 +520,9 @@ class MapViewModel @Inject constructor(
             alightingStop      = null,
             boardingArrivals   = emptyList(),
             transferArrivals   = emptyList(),
-            alightingArrivals  = emptyList()
+            alightingArrivals  = emptyList(),
+            aiBoardingPredictions = emptyList(),
+            aiPlan             = null,
         ) }
     }
 
