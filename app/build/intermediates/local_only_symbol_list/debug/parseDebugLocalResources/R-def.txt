@@ -1,0 +1,10 @@
+R_DEF: Internal format may change without notice
+local
+mipmap ic_launcher
+mipmap ic_launcher_round
+string app_name
+string tracking_notification_channel
+string tracking_notification_title
+string widget_title
+style Theme.BloomingtonTransit
+xml bus_widget_info

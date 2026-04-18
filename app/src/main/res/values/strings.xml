@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">BT Transit</string>
+    <string name="tracking_notification_channel">Bus Tracking</string>
+    <string name="tracking_notification_title">Tracking your bus</string>
+    <string name="widget_title">Next Bus</string>
+</resources>

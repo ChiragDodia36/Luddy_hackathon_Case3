@@ -1,0 +1,5 @@
+## This file must be renamed to local.properties and filled in before building.
+## DO NOT commit local.properties to git — it contains your API key.
+
+sdk.dir=/Users/YOUR_USERNAME/Library/Android/sdk
+MAPS_API_KEY=YOUR_GOOGLE_MAPS_API_KEY_HERE
