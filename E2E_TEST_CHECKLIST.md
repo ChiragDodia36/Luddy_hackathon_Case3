@@ -20,7 +20,7 @@ If `model_loaded` is `false` or `model_source` is `passthrough`, the joblib fail
 curl -s $BASE/stats | python3 -m json.tool | grep -E "mae_s|improvement"
 ```
 
-Expected: `bt_headline_mae_s` around 94.3, `a1_cv_headline_mae_s` around 80 (±3).
+Expected: `bt_headline_mae_s` around 94.3, `a1_cv_headline_mae_s` around 64.8 (±3) after Saturday retrain.
 
 ```bash
 curl -s "$BASE/plan?origin_lat=39.1674&origin_lng=-86.5240&dest_lat=39.2050&dest_lng=-86.5500" | python3 -c "import json,sys;d=json.load(sys.stdin);print('status',d.get('status'),'routes',len(d.get('routes',[])))"
@@ -95,7 +95,7 @@ If the AI tab icon is missing the sparkle, `material-icons-extended` didn't reso
 | Step | Expected |
 |---|---|
 | 5.1 On Home tab → tap 🐞 icon in top bar | Diagnostics screen |
-| 5.2 Card 1 — Model accuracy | Shows `BT headline MAE @ 3-5 min: 94.3 s`, `Our A1 CV MAE: ~81 s`, `Improvement: +14.5%`, `model_source: a1_lightgbm`, `a1_abort: false`, `routes_with_intercept: 12` |
+| 5.2 Card 1 — Model accuracy | Shows `BT headline MAE @ 3-5 min: 94.3 s`, `Our A1 CV MAE: ~64.8 s`, `Improvement: +31.3%`, `model_source: a1_lightgbm`, `a1_abort: false`, `routes_with_intercept: 11` |
 | 5.3 Card 2 — Live feed | `Live fleet size` (0 overnight, 6–16 during service), `Stale vehicles (>90 s)`, `Last local refresh` |
 | 5.4 Card 3 — Vehicles | Per-vehicle rows with ID, route_id, stale age with **drift delta** next to the age (item 8) |
 | 5.5 Error line | Only shown if any of /healthz, /stats, /vehicles failed — copy verbatim into a bug report |
@@ -124,7 +124,7 @@ Accept criteria: **before tapping into a plan, you can already see whether the A
 
 ## 8 · New in this build — Route-6 bias pill
 
-If a plan's `firstRoute.id == "6"`, a small `⚠ Route 6 bias: −154 s baked in` pill renders at the top of the detail panel. This is the storytelling line: Route 6 is the most-biased route in our audit (BT over-predicts lateness by ~2.5 min on average) and A2 intercepts it.
+If a plan's `firstRoute.id == "6"`, a small `⚠ Route 6 bias: +82 s baked in` pill renders at the top of the detail panel. This is the storytelling line: Route 6 was the most-biased route in our audit. The Saturday retrain flipped the sign — BT now *under*-predicts Route-6 lateness, so A2 adds +82 s.
 
 Accept criteria: **search "Hoosier Courts" or similar Route-6 destination → plan is Route 6 → pill appears above the step-by-step.**
 
