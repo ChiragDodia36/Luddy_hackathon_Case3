@@ -6,6 +6,7 @@ plugins {
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.hilt)
     alias(libs.plugins.ksp)
+    alias(libs.plugins.kotlin.serialization)
 }
 
 android {
@@ -29,6 +30,12 @@ android {
         }
         val mapsApiKey = localProperties.getProperty("MAPS_API_KEY") ?: ""
         manifestPlaceholders["MAPS_API_KEY"] = mapsApiKey
+
+        // AI inference backend base URL (override via local.properties: BACKEND_BASE_URL=...)
+        // Default: Android emulator can reach host machine at 10.0.2.2
+        val backendBaseUrl = localProperties.getProperty("BACKEND_BASE_URL")
+            ?: "http://10.0.2.2:8000/"
+        buildConfigField("String", "BACKEND_BASE_URL", "\"$backendBaseUrl\"")
     }
 
     buildTypes {
@@ -95,6 +102,10 @@ dependencies {
     implementation(libs.retrofit.scalars)
     implementation(libs.okhttp)
     implementation(libs.okhttp.logging)
+
+    // Kotlinx Serialization — JSON wire format for the AI backend
+    implementation(libs.kotlinx.serialization.json)
+    implementation(libs.retrofit.kotlinx.serialization)
 
     // Maps
     implementation(libs.maps.compose)
