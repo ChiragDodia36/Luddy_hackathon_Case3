@@ -722,6 +722,26 @@ private fun PlanOptionRow(plan: RoutePlan, isSelected: Boolean, onClick: () -> U
                 style = MaterialTheme.typography.labelSmall,
                 color = Color.Gray,
                 maxLines = 1)
+            // "Can you catch it?" — derived from nextBusMinutes vs walkInMinutes.
+            // Signals: green if >=2 min spare, amber if 0-1 min, red if you'd miss it.
+            busMin?.let { bm ->
+                val spare = bm - plan.walkInMinutes.toLong()
+                val (icon, label, color) = when {
+                    spare >= 2L  -> Triple(Icons.Filled.CheckCircle, "Catch it · +${spare} min spare",   Color(0xFF2E7D32))
+                    spare >= 0L  -> Triple(Icons.Filled.Warning,     "Tight · ${if (spare==0L) "just in time" else "+${spare} min spare"}", Color(0xFFB26A00))
+                    else         -> Triple(Icons.Filled.Cancel,      "Miss by ${-spare} min",             Color(0xFFC62828))
+                }
+                Row(verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.padding(top = 1.dp)) {
+                    Icon(icon, null, tint = color, modifier = Modifier.size(10.dp))
+                    Spacer(Modifier.width(3.dp))
+                    Text(label,
+                        style = MaterialTheme.typography.labelSmall,
+                        fontWeight = FontWeight.Medium,
+                        color = color,
+                        maxLines = 1)
+                }
+            }
             // AI summary (unchanged behaviour, kept visible on the row)
             aiPred?.let { p ->
                 val corr = p.correctionSeconds.toInt()
