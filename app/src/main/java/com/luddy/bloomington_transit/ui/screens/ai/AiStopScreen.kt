@@ -219,6 +219,11 @@ fun AiStopScreen(
             }
             Spacer(Modifier.height(8.dp))
 
+            // Capture predictions once — uiState.predictions can be null-flipped
+            // by a concurrent selectStop/clearSelection between the null-guard
+            // and the LazyList interval-content lambda, which crashes with NPE
+            // on the `!!` inside items(...).
+            val preds = uiState.predictions
             when {
                 uiState.isLoadingPredictions -> {
                     Box(
@@ -226,8 +231,8 @@ fun AiStopScreen(
                         contentAlignment = Alignment.Center,
                     ) { CircularProgressIndicator() }
                 }
-                uiState.predictions == null -> Unit
-                uiState.predictions!!.predictions.isEmpty() -> {
+                preds == null -> Unit
+                preds.predictions.isEmpty() -> {
                     Text(
                         text = "No upcoming departures in the next hour.",
                         modifier = Modifier.padding(16.dp),
@@ -236,7 +241,7 @@ fun AiStopScreen(
                 }
                 else -> {
                     LazyColumn {
-                        items(uiState.predictions!!.predictions) { p ->
+                        items(preds.predictions) { p ->
                             AiArrivalRow(
                                 prediction = p,
                                 onClick = { navController.navigate(Screen.TripEta.routeFor(p.tripId)) },
