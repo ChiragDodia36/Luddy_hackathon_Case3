@@ -341,6 +341,7 @@ fun MapScreen(
                             boardingArrival  = uiState.boardingArrivals.firstOrNull(),
                             transferArrival  = uiState.transferArrivals.firstOrNull(),
                             alightingArrival = uiState.alightingArrivals.firstOrNull(),
+                            aiBoardingPrediction = uiState.aiBoardingPredictions.firstOrNull(),
                             onDismiss        = { viewModel.clearSearch() }
                         )
                     }
@@ -574,6 +575,7 @@ private fun RouteSuggestionPanel(
     boardingArrival: Arrival?,
     transferArrival: Arrival?,
     alightingArrival: Arrival?,
+    aiBoardingPrediction: com.luddy.bloomington_transit.data.ai.dto.PredictionDto? = null,
     onDismiss: () -> Unit
 ) {
     val firstColor  = firstRoute?.color?.let { routeColor(it) } ?: BtBlue
@@ -627,6 +629,35 @@ private fun RouteSuggestionPanel(
             stopName = boardingStop?.name ?: "—",
             arrival = boardingArrival
         )
+
+        // AI-adjusted boarding ETA (from our backend /predictions) — only shown
+        // when we have a refined prediction for the same stop+route.
+        aiBoardingPrediction?.let { p ->
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.padding(start = 32.dp, top = 2.dp, bottom = 2.dp, end = 4.dp),
+            ) {
+                Icon(
+                    Icons.Filled.AutoAwesome,
+                    contentDescription = null,
+                    tint = firstColor,
+                    modifier = Modifier.size(12.dp),
+                )
+                Spacer(Modifier.width(6.dp))
+                val correctionText = p.correctionSeconds.toInt().let { s ->
+                    when {
+                        s == 0 -> "matches BT"
+                        s > 0 -> "+${s}s vs BT"
+                        else -> "${s}s vs BT"
+                    }
+                }
+                Text(
+                    text = "AI-adjusted: $correctionText · ${p.confidence}",
+                    style = MaterialTheme.typography.labelSmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+            }
+        }
 
         if (isTransfer && transferStop != null && transferRoute != null) {
             StepConnector(color = firstColor)

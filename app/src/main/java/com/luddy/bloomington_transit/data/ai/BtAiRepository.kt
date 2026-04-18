@@ -8,6 +8,7 @@ import com.luddy.bloomington_transit.data.ai.dto.PredictionsResponseDto
 import com.luddy.bloomington_transit.data.ai.dto.StatsResponseDto
 import com.luddy.bloomington_transit.data.ai.dto.StopDto
 import com.luddy.bloomington_transit.data.ai.dto.TripEtaTrajectoryResponseDto
+import com.luddy.bloomington_transit.data.ai.dto.TripPlanResponseDto
 import com.luddy.bloomington_transit.data.ai.dto.VehicleDto
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -57,4 +58,13 @@ class BtAiRepository @Inject constructor(private val api: BtAiApi) {
     suspend fun stats(): AiResult<StatsResponseDto> = call { api.stats() }
 
     suspend fun nlq(query: String): AiResult<NlqResponseDto> = call { api.nlq(query) }
+
+    /** Google Directions transit routes enriched with A1+A2 boarding ETAs. */
+    suspend fun plan(
+        originLat: Double, originLng: Double,
+        destLat: Double, destLng: Double,
+        departureTimeEpochSec: Long? = null,
+    ): AiResult<TripPlanResponseDto> = call {
+        api.plan(originLat, originLng, destLat, destLng, departureTimeEpochSec)
+    }
 }
