@@ -30,6 +30,8 @@ android {
         }
         val mapsApiKey = localProperties.getProperty("MAPS_API_KEY") ?: ""
         manifestPlaceholders["MAPS_API_KEY"] = mapsApiKey
+        // Exposed as BuildConfig for client-side Maps/Places/Directions calls.
+        buildConfigField("String", "MAPS_API_KEY", "\"$mapsApiKey\"")
 
         // AI inference backend base URL (override via local.properties: BACKEND_BASE_URL=...)
         // Default: Android emulator can reach host machine at 10.0.2.2
@@ -128,6 +130,9 @@ dependencies {
     implementation(libs.androidx.work.runtime)
     implementation(libs.hilt.work)
     ksp(libs.hilt.work.compiler)
+
+    // Google Places
+    implementation(libs.places.sdk)
 
     debugImplementation(libs.androidx.ui.tooling)
 }
