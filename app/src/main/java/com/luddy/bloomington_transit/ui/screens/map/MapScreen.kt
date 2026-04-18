@@ -238,8 +238,22 @@ fun MapScreen(
                     }
                 }
 
-            // Stop markers — only stops within 0.5 mile of user, visible from zoom 12f
-            if (cameraPositionState.position.zoom >= 12f) {
+            // Stop markers:
+            //  - Route selected → show ALL stops on that route at zoom >= 11f
+            //  - No route selected → show nearby stops (0.3 mi) at zoom >= 12f
+            if (uiState.selectedRouteIds.isNotEmpty() && uiState.stopsForSelectedRoutes.isNotEmpty()) {
+                if (cameraPositionState.position.zoom >= 11f) {
+                    uiState.stopsForSelectedRoutes.forEach { stop ->
+                        MarkerComposable(
+                            state = MarkerState(position = LatLng(stop.lat, stop.lon)),
+                            title = stop.name,
+                            onClick = { viewModel.selectStop(stop); false }
+                        ) {
+                            StopMarker()
+                        }
+                    }
+                }
+            } else if (cameraPositionState.position.zoom >= 12f) {
                 nearbyStops.forEach { stop ->
                     MarkerComposable(
                         state = MarkerState(position = LatLng(stop.lat, stop.lon)),

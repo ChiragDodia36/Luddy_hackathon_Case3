@@ -85,6 +85,7 @@ data class MapUiState(
     val routes: List<Route> = emptyList(),
     val stops: List<Stop> = emptyList(),
     val selectedRouteIds: Set<String> = emptySet(),
+    val stopsForSelectedRoutes: List<Stop> = emptyList(),
     val selectedBus: Bus? = null,
     val selectedStop: Stop? = null,
     val stopArrivals: List<Arrival> = emptyList(),
@@ -125,6 +126,7 @@ class MapViewModel @Inject constructor(
     val uiState: StateFlow<MapUiState> = _uiState.asStateFlow()
 
     private var searchJob: Job? = null
+    private var routeStopsJob: Job? = null
 
     init {
         viewModelScope.launch {
@@ -207,6 +209,7 @@ class MapViewModel @Inject constructor(
             val cur = s.selectedRouteIds
             s.copy(selectedRouteIds = if (routeId in cur) cur - routeId else cur + routeId, routePlans = emptyList())
         }
+        loadStopsForSelectedRoutes(_uiState.value.selectedRouteIds)
     }
 
     fun toggleAllRoutes() {
@@ -214,10 +217,28 @@ class MapViewModel @Inject constructor(
             val all = s.routes.map { it.id }.toSet()
             s.copy(selectedRouteIds = if (s.selectedRouteIds.size == all.size) emptySet() else all, routePlans = emptyList())
         }
+        loadStopsForSelectedRoutes(_uiState.value.selectedRouteIds)
     }
 
     fun selectOnlyRoute(routeId: String) {
         _uiState.update { it.copy(selectedRouteIds = setOf(routeId)) }
+        loadStopsForSelectedRoutes(setOf(routeId))
+    }
+
+    private fun loadStopsForSelectedRoutes(routeIds: Set<String>) {
+        routeStopsJob?.cancel()
+        if (routeIds.isEmpty()) {
+            _uiState.update { it.copy(stopsForSelectedRoutes = emptyList()) }
+            return
+        }
+        routeStopsJob = viewModelScope.launch {
+            try {
+                val stops = routeIds.flatMap { routeId ->
+                    repository.getStopsForRoute(routeId).first()
+                }.distinctBy { it.id }
+                _uiState.update { it.copy(stopsForSelectedRoutes = stops) }
+            } catch (_: Exception) {}
+        }
     }
 
     fun selectBus(bus: Bus)  { _uiState.update { it.copy(selectedBus = bus, selectedStop = null) } }
