@@ -141,6 +141,79 @@ data class StatsResponseDto(
 )
 
 @Serializable
+data class TripPlanLocationDto(
+    val lat: Double? = null,
+    val lng: Double? = null,
+)
+
+@Serializable
+data class TripPlanStopDto(
+    val name: String? = null,
+    val location: TripPlanLocationDto? = null,
+    @SerialName("bt_stop_id") val btStopId: String? = null,
+    @SerialName("bt_snap_distance_m") val btSnapDistanceM: Double? = null,
+    @SerialName("time_text") val timeText: String? = null,
+    @SerialName("time_value") val timeValue: Long? = null,
+    @SerialName("ai_adjusted_time_value") val aiAdjustedTimeValue: Long? = null,
+    @SerialName("ai_correction_seconds") val aiCorrectionSeconds: Double? = null,
+    val confidence: String? = null,
+)
+
+@Serializable
+data class TripPlanStepDto(
+    val mode: String,
+    @SerialName("duration_s") val durationS: Int,
+    @SerialName("distance_m") val distanceM: Int,
+    @SerialName("html_instructions") val htmlInstructions: String? = null,
+    @SerialName("line_short_name") val lineShortName: String? = null,
+    @SerialName("line_color") val lineColor: String? = null,
+    @SerialName("line_name") val lineName: String? = null,
+    @SerialName("bt_route_id") val btRouteId: String? = null,
+    val headsign: String? = null,
+    @SerialName("num_stops") val numStops: Int? = null,
+    @SerialName("departure_stop") val departureStop: TripPlanStopDto? = null,
+    @SerialName("arrival_stop") val arrivalStop: TripPlanStopDto? = null,
+    val polyline: String? = null,
+    @SerialName("start_location") val startLocation: TripPlanLocationDto? = null,
+    @SerialName("end_location") val endLocation: TripPlanLocationDto? = null,
+)
+
+@Serializable
+data class TripPlanRouteDto(
+    val summary: String? = null,
+    @SerialName("duration_s") val durationS: Int,
+    @SerialName("distance_m") val distanceM: Int,
+    @SerialName("departure_time_value") val departureTimeValue: Long? = null,
+    @SerialName("departure_time_text") val departureTimeText: String? = null,
+    @SerialName("arrival_time_value") val arrivalTimeValue: Long? = null,
+    @SerialName("arrival_time_text") val arrivalTimeText: String? = null,
+    @SerialName("start_address") val startAddress: String? = null,
+    @SerialName("end_address") val endAddress: String? = null,
+    @SerialName("start_location") val startLocation: TripPlanLocationDto? = null,
+    @SerialName("end_location") val endLocation: TripPlanLocationDto? = null,
+    val warnings: List<String> = emptyList(),
+    @SerialName("overview_polyline") val overviewPolyline: String? = null,
+    val steps: List<TripPlanStepDto> = emptyList(),
+)
+
+@Serializable
+data class TripPlanMetaDto(
+    @SerialName("cache_hit") val cacheHit: Boolean? = null,
+    @SerialName("latency_ms") val latencyMs: Double? = null,
+    @SerialName("upstream_status") val upstreamStatus: String? = null,
+    @SerialName("enrich_ms") val enrichMs: Double? = null,
+    @SerialName("total_ms") val totalMs: Double? = null,
+    @SerialName("model_source") val modelSource: String? = null,
+)
+
+@Serializable
+data class TripPlanResponseDto(
+    val status: String,
+    val routes: List<TripPlanRouteDto> = emptyList(),
+    val meta: TripPlanMetaDto? = null,
+)
+
+@Serializable
 data class NlqResponseDto(
     val query: String,
     val intent: String,

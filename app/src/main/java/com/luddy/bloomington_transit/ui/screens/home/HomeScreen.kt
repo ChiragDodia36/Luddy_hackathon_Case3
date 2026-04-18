@@ -152,6 +152,76 @@ fun HomeScreen(
             verticalArrangement = Arrangement.spacedBy(14.dp),
             contentPadding = PaddingValues(bottom = 24.dp)
         ) {
+            // Card 0 — Live BT-vs-us scoreboard (pitch headline, fetched once from /stats).
+            // Quietly absent when the backend is unreachable — rest of Home still loads.
+            uiState.stats?.let { stats ->
+                val bt = stats.btHeadlineMaeS
+                val us = stats.a1CvHeadlineMaeS
+                val pct = stats.a1CvImprovementPct
+                val routes = stats.routesWithIntercept
+                item {
+                    Card(
+                        modifier = Modifier.fillMaxWidth(),
+                        shape = RoundedCornerShape(12.dp),
+                        colors = CardDefaults.cardColors(
+                            containerColor = MaterialTheme.colorScheme.secondaryContainer,
+                        ),
+                    ) {
+                        Row(
+                            modifier = Modifier.fillMaxWidth().padding(12.dp),
+                            verticalAlignment = Alignment.CenterVertically,
+                        ) {
+                            Icon(
+                                Icons.Filled.AutoAwesome,
+                                contentDescription = null,
+                                tint = MaterialTheme.colorScheme.primary,
+                                modifier = Modifier.size(22.dp),
+                            )
+                            Spacer(Modifier.width(10.dp))
+                            Column(modifier = Modifier.weight(1f)) {
+                                Text(
+                                    "Live: BT vs Us",
+                                    style = MaterialTheme.typography.labelMedium,
+                                    color = MaterialTheme.colorScheme.onSecondaryContainer,
+                                )
+                                Row(verticalAlignment = Alignment.Bottom) {
+                                    Text(
+                                        "${us?.let { "%.0f".format(it) } ?: "—"} s",
+                                        style = MaterialTheme.typography.headlineSmall,
+                                        fontWeight = FontWeight.Bold,
+                                        color = MaterialTheme.colorScheme.primary,
+                                    )
+                                    Spacer(Modifier.width(6.dp))
+                                    Text(
+                                        "vs BT ${"%.0f".format(bt)} s",
+                                        style = MaterialTheme.typography.labelMedium,
+                                        color = MaterialTheme.colorScheme.onSecondaryContainer,
+                                        modifier = Modifier.padding(bottom = 3.dp),
+                                    )
+                                }
+                            }
+                            Column(horizontalAlignment = Alignment.End) {
+                                Text(
+                                    pct?.let { p ->
+                                        if (p > 0) "+%.1f%% better".format(p)
+                                        else "%.1f%% worse".format(p)
+                                    } ?: "—",
+                                    style = MaterialTheme.typography.titleMedium,
+                                    fontWeight = FontWeight.Bold,
+                                    color = if ((pct ?: 0.0) > 0.0) MaterialTheme.colorScheme.primary
+                                            else MaterialTheme.colorScheme.error,
+                                )
+                                Text(
+                                    "$routes routes corrected",
+                                    style = MaterialTheme.typography.labelSmall,
+                                    color = MaterialTheme.colorScheme.onSecondaryContainer,
+                                )
+                            }
+                        }
+                    }
+                }
+            }
+
             // ── Pinned route cards ───────────────────────────────────
             if (uiState.pinnedRoutes.isNotEmpty()) {
                 items(uiState.pinnedRoutes, key = { it.route.id }) { pinData ->

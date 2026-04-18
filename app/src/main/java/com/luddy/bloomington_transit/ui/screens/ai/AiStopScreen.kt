@@ -68,6 +68,63 @@ fun AiStopScreen(
             ),
         )
 
+        // Live scoreboard — BT vs Us (headline number from /stats).
+        uiState.stats?.let { stats ->
+            val bt = stats.btHeadlineMaeS
+            val us = stats.a1CvHeadlineMaeS
+            val pct = stats.a1CvImprovementPct
+            val routes = stats.routesWithIntercept
+            Card(
+                modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp),
+                shape = RoundedCornerShape(12.dp),
+                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.secondaryContainer),
+            ) {
+                Row(
+                    modifier = Modifier.fillMaxWidth().padding(12.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    Column(modifier = Modifier.weight(1f)) {
+                        Text(
+                            "Live: BT vs Us",
+                            style = MaterialTheme.typography.labelMedium,
+                            color = MaterialTheme.colorScheme.onSecondaryContainer,
+                        )
+                        Row(verticalAlignment = Alignment.Bottom) {
+                            Text(
+                                "${us?.let { "%.0f".format(it) } ?: "—"} s",
+                                style = MaterialTheme.typography.headlineSmall,
+                                fontWeight = FontWeight.Bold,
+                                color = MaterialTheme.colorScheme.primary,
+                            )
+                            Spacer(Modifier.width(6.dp))
+                            Text(
+                                "vs BT ${"%.0f".format(bt)} s",
+                                style = MaterialTheme.typography.labelMedium,
+                                color = MaterialTheme.colorScheme.onSecondaryContainer,
+                                modifier = Modifier.padding(bottom = 3.dp),
+                            )
+                        }
+                    }
+                    Column(horizontalAlignment = Alignment.End) {
+                        Text(
+                            pct?.let { p ->
+                                if (p > 0) "+%.1f%% better".format(p) else "%.1f%% worse".format(p)
+                            } ?: "—",
+                            style = MaterialTheme.typography.titleMedium,
+                            fontWeight = FontWeight.Bold,
+                            color = if ((pct ?: 0.0) > 0.0) MaterialTheme.colorScheme.primary
+                                    else MaterialTheme.colorScheme.error,
+                        )
+                        Text(
+                            "$routes routes corrected",
+                            style = MaterialTheme.typography.labelSmall,
+                            color = MaterialTheme.colorScheme.onSecondaryContainer,
+                        )
+                    }
+                }
+            }
+        }
+
         // Search bar
         Column(modifier = Modifier.padding(16.dp)) {
             OutlinedTextField(
@@ -162,6 +219,11 @@ fun AiStopScreen(
             }
             Spacer(Modifier.height(8.dp))
 
+            // Capture predictions once — uiState.predictions can be null-flipped
+            // by a concurrent selectStop/clearSelection between the null-guard
+            // and the LazyList interval-content lambda, which crashes with NPE
+            // on the `!!` inside items(...).
+            val preds = uiState.predictions
             when {
                 uiState.isLoadingPredictions -> {
                     Box(
@@ -169,8 +231,8 @@ fun AiStopScreen(
                         contentAlignment = Alignment.Center,
                     ) { CircularProgressIndicator() }
                 }
-                uiState.predictions == null -> Unit
-                uiState.predictions!!.predictions.isEmpty() -> {
+                preds == null -> Unit
+                preds.predictions.isEmpty() -> {
                     Text(
                         text = "No upcoming departures in the next hour.",
                         modifier = Modifier.padding(16.dp),
@@ -179,7 +241,7 @@ fun AiStopScreen(
                 }
                 else -> {
                     LazyColumn {
-                        items(uiState.predictions!!.predictions) { p ->
+                        items(preds.predictions) { p ->
                             AiArrivalRow(
                                 prediction = p,
                                 onClick = { navController.navigate(Screen.TripEta.routeFor(p.tripId)) },

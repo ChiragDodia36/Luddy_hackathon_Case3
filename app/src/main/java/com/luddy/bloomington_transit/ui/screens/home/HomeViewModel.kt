@@ -2,6 +2,9 @@ package com.luddy.bloomington_transit.ui.screens.home
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.luddy.bloomington_transit.data.ai.AiResult
+import com.luddy.bloomington_transit.data.ai.BtAiRepository
+import com.luddy.bloomington_transit.data.ai.dto.StatsResponseDto
 import com.luddy.bloomington_transit.domain.model.*
 import com.luddy.bloomington_transit.domain.repository.TransitRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -26,12 +29,19 @@ data class HomeUiState(
     val serviceAlerts: List<ServiceAlert> = emptyList(),
     val errorMessage: String? = null,
     val timeWindow: TimeWindow = TimeWindow.DAY,
-    val hasLocation: Boolean = false
+    val hasLocation: Boolean = false,
+    val favouriteRouteArrivals: List<Arrival> = emptyList(),
+    val nearestStop: Stop? = null,
+    val nearestStopArrivals: List<Arrival> = emptyList(),
+    val isNearSavedStop: Boolean = false,
+    // Live BT-vs-us scoreboard; fetched once on screen entry. Null → card hidden.
+    val stats: StatsResponseDto? = null,
 )
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
-    private val repository: TransitRepository
+    private val repository: TransitRepository,
+    private val aiRepo: BtAiRepository,
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(HomeUiState())
@@ -45,6 +55,13 @@ class HomeViewModel @Inject constructor(
         viewModelScope.launch {
             repository.initStaticData()
             observeData()
+        }
+        // One-shot stats fetch for the Home scoreboard card. Silent on failure.
+        viewModelScope.launch {
+            when (val r = aiRepo.stats()) {
+                is AiResult.Ok  -> _uiState.update { it.copy(stats = r.value) }
+                is AiResult.Err -> Unit
+            }
         }
     }
 
