@@ -1,4 +1,4 @@
-# BT Transit — Bloomington Transit Android App
+# BT Transit - Bloomington Transit Android App
 
 A modern, real-time Android app for Bloomington Transit (BT) built as a replacement for the ETA Spot app.
 Light glassmorphism UI with live bus tracking, arrival countdowns, and adaptive home screen.
@@ -90,13 +90,13 @@ BACKEND_BASE_URL=http://10.0.2.2:8000/
 
 ### 4. Set up an emulator or physical device
 
-**Option A — Physical Android device (recommended for performance):**
+**Option A - Physical Android device (recommended for performance):**
 1. On your phone: Settings → About Phone → tap "Build Number" 7 times to enable Developer Options
 2. Settings → Developer Options → enable "USB Debugging"
 3. Connect via USB cable
 4. Accept the "Allow USB debugging" prompt on the phone
 
-**Option B — Android Emulator:**
+**Option B - Android Emulator:**
 1. In Android Studio: Tools → Device Manager → Create Device
 2. Select a phone (e.g., Pixel 8)
 3. System Image: API 35 (Android 15) — download if not present
@@ -126,7 +126,7 @@ BACKEND_BASE_URL=http://10.0.2.2:8000/
 ## First Launch Behaviour
 
 On first launch the app will:
-1. Download GTFS static data (~2–5 MB) from the Bloomington Transit server — this takes ~10–30 seconds
+1. Download GTFS static data (~2–5 MB) from the Bloomington Transit server - this takes ~10-30 seconds
 2. Show a loading state on the Home and Map screens until data is ready
 3. All subsequent launches use the cached database (refreshed every 24 hours)
 
@@ -206,25 +206,25 @@ app/src/main/java/com/luddy/bloomington_transit/
 This app follows **Clean Architecture + MVVM** with an additional AI-inference layer.
 
 ```
-┌────────────────────────────────────────────────────────────────────┐
-│                         UI Layer (MVVM)                            │
-│   Composables  ←→  @HiltViewModel                                  │
-│   ├─ screens/{home, map, ai, schedule, favourites, diagnostics,    │
-│   │            trip}                                               │
-│   └─ components/{CountdownChip, ArrivalRow, AiArrivalRow,          │
-│                  ConfidenceBadge, BunchingBanner, ServiceAlertBanner}│
-└──────────────────┬────────────────────────┬────────────────────────┘
+┌───────────────────────────────────────────────────────────────────────┐
+│                         UI Layer (MVVM)                               │
+│   Composables  ←→  @HiltViewModel                                     │
+│   ├─ screens/{home, map, ai, schedule, favourites, diagnostics,       │
+│   │            trip}                                                  │
+│   └─ components/{CountdownChip, ArrivalRow, AiArrivalRow,             │
+│                  ConfidenceBadge, BunchingBanner, ServiceAlertBanner} │
+└──────────────────┬────────────────────────┬───────────────────────────┘
                    │                        │
                    │ Use Cases              │ AI calls
                    ▼                        ▼
-┌──────────────────────────────┐  ┌──────────────────────────────────┐
-│         Domain Layer         │  │       data/ai/ (new)             │
-│  Models | Repository (intf)  │  │  BtAiApi    (Retrofit)           │
-│  Use Cases (pure Kotlin)     │  │  BtAiRepository (AiResult<T>)    │
-└──────────────────┬───────────┘  │  dto/ @Serializable              │
-                   │              │  BtAiModule (@Named OkHttp +     │
+┌──────────────────────────────┐  ┌─────────────────────────────────────┐
+│         Domain Layer         │  │       data/ai/ (new)                │
+│  Models | Repository (intf)  │  │  BtAiApi    (Retrofit)              │
+│  Use Cases (pure Kotlin)     │  │  BtAiRepository (AiResult<T>)       │
+└──────────────────┬───────────┘  │  dto/ @Serializable                 │
+                   │              │  BtAiModule (@Named OkHttp +        │
                    │              │               kotlinx-serialization)│
-                   │              └──────────────────────────────────┘
+                   │              └─────────────────────────────────────┘
                    │ Implementation                │
 ┌──────────────────▼───────────┐                   │ HTTPS
 │        Data Layer            │                   ▼
@@ -241,12 +241,12 @@ Hilt (`@HiltAndroidApp`, `@AndroidEntryPoint`, `@HiltViewModel`) wires all layer
 
 ### AI-backed features (wired via `data/ai/` + `ui/screens/ai/`)
 
-- **Per-stop delay correction (A1 + A2)** — the FastAPI service returns `Scheduled / BT / Ours` for each arrival at a stop, with a per-prediction `confidence` tier (high/medium/low). Rendered by `ui/components/AiArrivalRow.kt` + `ConfidenceBadge.kt`, on `ui/screens/ai/AiStopScreen.kt`.
-- **Bunching detection (B1)** — 15 s polled `BunchingBanner` composable; appears on the Home screen when two same-route buses are within 200 m.
-- **Stale-vehicle flag (B2)** — the `VehicleDto.isStale` field from the backend is surfaced on the Diagnostics screen.
-- **Diagnostics dashboard (D1)** — `ui/screens/diagnostics/DiagnosticsScreen.kt`, reachable from the Home top-bar action. Shows live BT vs. our A1 CV MAE, fleet size, stale vehicle count, last feed refresh.
-- **Trip ETA propagation (B3)** — tap any AI arrival row → `ui/screens/trip/TripEtaScreen.kt` shows per-stop adjusted ETAs across the remaining stops of that trip.
-- **Natural-language query (C2)** — `BtAiRepository.nlq(query)` is called in parallel with stop-search; recognised intents (e.g. "next 6", "route 3E") show a hint chip under the search bar. Backend uses a regex-based intent parser with an optional LLM fallback for ambiguous queries.
+- **Per-stop delay correction (A1 + A2)** - the FastAPI service returns `Scheduled / BT / Ours` for each arrival at a stop, with a per-prediction `confidence` tier (high/medium/low). Rendered by `ui/components/AiArrivalRow.kt` + `ConfidenceBadge.kt`, on `ui/screens/ai/AiStopScreen.kt`.
+- **Bunching detection (B1)** - 15 s polled `BunchingBanner` composable; appears on the Home screen when two same-route buses are within 200 m.
+- **Stale-vehicle flag (B2)** - the `VehicleDto.isStale` field from the backend is surfaced on the Diagnostics screen.
+- **Diagnostics dashboard (D1)** - `ui/screens/diagnostics/DiagnosticsScreen.kt`, reachable from the Home top-bar action. Shows live BT vs. our A1 CV MAE, fleet size, stale vehicle count, last feed refresh.
+- **Trip ETA propagation (B3)** - tap any AI arrival row → `ui/screens/trip/TripEtaScreen.kt` shows per-stop adjusted ETAs across the remaining stops of that trip.
+- **Natural-language query (C2)** - `BtAiRepository.nlq(query)` is called in parallel with stop-search; recognised intents (e.g. "next 6", "route 3E") show a hint chip under the search bar. Backend uses a regex-based intent parser with an optional LLM fallback for ambiguous queries.
 
 ---
 
@@ -270,4 +270,4 @@ Hilt (`@HiltAndroidApp`, `@AndroidEntryPoint`, `@HiltViewModel`) wires all layer
 - Notification permission required (Android 13+) for arrival alerts
 - Google Maps API key required for map tiles (app works without it but map will be blank)
 - GTFS static data downloads on first launch (~2–5 MB, ~10–30 seconds on WiFi)
-- App targets Android 8.0+ (API 26) — older devices not supported
+- App targets Android 8.0+ (API 26) - older devices not supported
