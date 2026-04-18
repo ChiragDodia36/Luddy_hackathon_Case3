@@ -34,7 +34,6 @@ data class HomeUiState(
     val nearestStop: Stop? = null,
     val nearestStopArrivals: List<Arrival> = emptyList(),
     val isNearSavedStop: Boolean = false,
-    // Live BT-vs-us scoreboard; fetched once on screen entry. Null → card hidden.
     val stats: StatsResponseDto? = null,
 )
 
@@ -56,7 +55,6 @@ class HomeViewModel @Inject constructor(
             repository.initStaticData()
             observeData()
         }
-        // One-shot stats fetch for the Home scoreboard card. Silent on failure.
         viewModelScope.launch {
             when (val r = aiRepo.stats()) {
                 is AiResult.Ok  -> _uiState.update { it.copy(stats = r.value) }

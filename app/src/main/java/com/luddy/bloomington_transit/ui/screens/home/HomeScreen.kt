@@ -58,7 +58,6 @@ fun HomeScreen(
         }
     }
 
-    // ── Add Pin bottom sheet ──────────────────────────────────────
     if (showAddPinSheet) {
         ModalBottomSheet(
             onDismissRequest = { showAddPinSheet = false },
@@ -222,7 +221,6 @@ fun HomeScreen(
                 }
             }
 
-            // ── Pinned route cards ───────────────────────────────────
             if (uiState.pinnedRoutes.isNotEmpty()) {
                 items(uiState.pinnedRoutes, key = { it.route.id }) { pinData ->
                     PinnedRouteCard(
@@ -233,7 +231,6 @@ fun HomeScreen(
                 }
             }
 
-            // ── Add pin button / empty state ─────────────────────────
             item {
                 if (uiState.pinnedRoutes.isEmpty()) {
                     EmptyPinsCard(onAddPin = { showAddPinSheet = true })
@@ -256,7 +253,6 @@ fun HomeScreen(
                 }
             }
 
-            // ── Service alerts ───────────────────────────────────────
             if (uiState.serviceAlerts.isNotEmpty()) {
                 item {
                     ServiceAlertCard(alert = uiState.serviceAlerts.first())
@@ -266,7 +262,6 @@ fun HomeScreen(
     }
 }
 
-// ─── Route picker row inside bottom sheet ─────────────────────────
 
 @Composable
 private fun RoutePickerRow(route: Route, isPinned: Boolean, onToggle: () -> Unit) {
@@ -316,7 +311,6 @@ private fun RoutePickerRow(route: Route, isPinned: Boolean, onToggle: () -> Unit
     }
 }
 
-// ─── Per-route pin card ────────────────────────────────────────────
 
 @Composable
 private fun PinnedRouteCard(
@@ -446,7 +440,6 @@ private fun PinnedRouteCard(
     }
 }
 
-// ─── Empty state ───────────────────────────────────────────────────
 
 @Composable
 private fun EmptyPinsCard(onAddPin: () -> Unit) {
@@ -488,7 +481,6 @@ private fun EmptyPinsCard(onAddPin: () -> Unit) {
     }
 }
 
-// ─── Service alert card ────────────────────────────────────────────
 
 @Composable
 private fun ServiceAlertCard(alert: com.luddy.bloomington_transit.domain.model.ServiceAlert) {

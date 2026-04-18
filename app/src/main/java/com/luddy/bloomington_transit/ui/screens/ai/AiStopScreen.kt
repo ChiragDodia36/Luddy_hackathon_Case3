@@ -68,7 +68,6 @@ fun AiStopScreen(
             ),
         )
 
-        // Live scoreboard — BT vs Us (headline number from /stats).
         uiState.stats?.let { stats ->
             val bt = stats.btHeadlineMaeS
             val us = stats.a1CvHeadlineMaeS
@@ -144,7 +143,6 @@ fun AiStopScreen(
                 singleLine = true,
             )
 
-            // NL intent chip (C2) — shown when /nlq matches a recognised pattern
             uiState.nlqResult?.let { nlq ->
                 Row(
                     modifier = Modifier
@@ -219,10 +217,6 @@ fun AiStopScreen(
             }
             Spacer(Modifier.height(8.dp))
 
-            // Capture predictions once — uiState.predictions can be null-flipped
-            // by a concurrent selectStop/clearSelection between the null-guard
-            // and the LazyList interval-content lambda, which crashes with NPE
-            // on the `!!` inside items(...).
             val preds = uiState.predictions
             when {
                 uiState.isLoadingPredictions -> {

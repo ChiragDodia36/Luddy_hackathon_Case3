@@ -25,7 +25,6 @@ import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 import kotlin.math.*
 
-// ── Constants ─────────────────────────────────────────────────────────────────
 
 private const val WALK_M_PER_MIN   = 80.0
 private const val MAX_WALK_METERS  = 10 * WALK_M_PER_MIN   // 800 m = 10 min hard cap per leg
@@ -35,7 +34,6 @@ private const val MAX_PLAN_OPTIONS = 3
 
 fun metersToWalkMinutes(meters: Double): Int = ceil(meters / WALK_M_PER_MIN).toInt()
 
-// ── RoutePlan ─────────────────────────────────────────────────────────────────
 
 data class RoutePlan(
     val index: Int,
@@ -51,20 +49,12 @@ data class RoutePlan(
     val boardingArrivals: List<Arrival> = emptyList(),
     val transferArrivals: List<Arrival> = emptyList(),
     val alightingArrivals: List<Arrival> = emptyList(),
-    // AI-enriched boarding predictions (A1+A2 adjusted, with confidence tier).
-    // Populated in refreshAllPlanEtas() alongside boardingArrivals when the
-    // AI backend is reachable. Filtered to firstRoute.id so only this plan's
-    // matching predictions show.
     val aiBoardingPredictions: List<PredictionDto> = emptyList(),
 ) {
     val walkInMinutes: Int  get() = metersToWalkMinutes(walkInMeters)
     val walkOutMinutes: Int get() = metersToWalkMinutes(walkOutMeters)
     val nextBusMinutes: Long? get() = boardingArrivals.firstOrNull()?.minutesUntil()
 
-    // Estimated total journey time:
-    //   Direct  → walk in + wait for bus + walk out
-    //   Transfer → walk in + wait for bus 1 + wait for bus 2 at transfer stop + walk out
-    // Using live arrival data when available, conservative defaults otherwise.
     val estimatedTotalMinutes: Long
         get() {
             val walkIn  = walkInMinutes.toLong()
@@ -79,7 +69,6 @@ data class RoutePlan(
         }
 }
 
-// ── Search suggestion ─────────────────────────────────────────────────────────
 
 data class PlaceSuggestion(
     val placeId: String,
@@ -87,7 +76,6 @@ data class PlaceSuggestion(
     val secondaryText: String
 )
 
-// ── UI State ──────────────────────────────────────────────────────────────────
 
 data class MapUiState(
     val buses: List<Bus> = emptyList(),
@@ -112,24 +100,19 @@ data class MapUiState(
     val destinationLatLng: LatLng? = null,
     val destinationName: String? = null,
     val userLocation: LatLng? = null,
-    // Multi-plan routing result
     val routePlans: List<RoutePlan> = emptyList(),
     val selectedPlanIndex: Int = 0,
     val isPlanExpanded: Boolean = true,
     val planRouteStopsByIndex: Map<Int, List<Stop>> = emptyMap(),
     val isRoutingLoading: Boolean = false,
     val routingError: String? = null,
-    // Optional Google-Directions-style plan (our /plan endpoint = Google
-    // Directions + AI boarding ETAs). Populated once per destination selection.
     val aiPlan: TripPlanResponseDto? = null,
 ) {
-    // Convenience: the plan currently highlighted on the map
     val activePlan: RoutePlan? get() = routePlans.getOrNull(selectedPlanIndex)
     val suggestedRouteIds: Set<String> get() = activePlan?.routeIds ?: emptySet()
     val activePlanStops: List<Stop> get() = planRouteStopsByIndex[selectedPlanIndex] ?: emptyList()
 }
 
-// ── ViewModel ─────────────────────────────────────────────────────────────────
 
 @HiltViewModel
 class MapViewModel @Inject constructor(
@@ -198,9 +181,6 @@ class MapViewModel @Inject constructor(
         }
     }
 
-    // Refresh arrivals for every stored plan so ETAs stay live.
-    // Also fetches AI-adjusted boarding predictions from our backend for each
-    // plan's boarding stop — best-effort, silently empty if backend is down.
     private suspend fun refreshAllPlanEtas() {
         val plans = _uiState.value.routePlans
         if (plans.isEmpty()) return
@@ -215,7 +195,6 @@ class MapViewModel @Inject constructor(
                     repository.getArrivalsForStop(plan.transferStop.id).filter { it.routeId == plan.secondRoute.id }
                 else emptyList()
 
-                // AI backend enrichment — adjusted boarding ETA + confidence tier.
                 val aiPreds: List<PredictionDto> = when (val r = aiRepo.predictionsFor(plan.boardingStop.id, horizonMinutes = 60)) {
                     is AiResult.Ok -> r.value.predictions.filter { it.routeId == plan.firstRoute.id }
                     is AiResult.Err -> emptyList()
@@ -232,9 +211,6 @@ class MapViewModel @Inject constructor(
         _uiState.update { it.copy(routePlans = updated) }
     }
 
-    // One-shot Google-Directions-style plan via our backend's /plan endpoint.
-    // Populates uiState.aiPlan with Google's transit routes enriched by A1+A2
-    // boarding-ETA adjustments. Best-effort; silently sets null on failure.
     private fun fetchAiPlanFor(destination: LatLng) {
         val origin = _uiState.value.userLocation ?: return
         viewModelScope.launch {
@@ -248,7 +224,6 @@ class MapViewModel @Inject constructor(
         }
     }
 
-    // ── Manual route selection ────────────────────────────────────────────────
 
     fun toggleRoute(routeId: String) {
         _uiState.update { s ->
@@ -313,14 +288,12 @@ class MapViewModel @Inject constructor(
     fun trackBus(vehicleId: String)   { viewModelScope.launch { repository.addTrackedBus(vehicleId) } }
     fun untrackBus(vehicleId: String) { viewModelScope.launch { repository.removeTrackedBus(vehicleId) } }
 
-    // ── Location ──────────────────────────────────────────────────────────────
 
     fun updateUserLocation(lat: Double, lon: Double) {
         _uiState.update { it.copy(userLocation = LatLng(lat, lon)) }
         Log.d("MapVM", "Location → $lat, $lon")
     }
 
-    // ── Places search ─────────────────────────────────────────────────────────
 
     fun onSearchFocusChanged(focused: Boolean) { _uiState.update { it.copy(isSearchFocused = focused) } }
 
@@ -371,7 +344,6 @@ class MapViewModel @Inject constructor(
         }
     }
 
-    // ── Select a plan from the option list ───────────────────────────────────
 
     fun selectPlan(index: Int) {
         val plan = _uiState.value.routePlans.getOrNull(index) ?: return
@@ -380,7 +352,6 @@ class MapViewModel @Inject constructor(
 
     fun expandPlans() { _uiState.update { it.copy(isPlanExpanded = true) } }
 
-    // ── Multi-plan routing: direct + 1-transfer, sorted fastest-first ─────────
 
     private suspend fun computeRoutePlans(dest: LatLng) {
         val userLoc = _uiState.value.userLocation ?: run {
@@ -407,7 +378,6 @@ class MapViewModel @Inject constructor(
             }
             val allStopsById = _uiState.value.stops.associateBy { it.id }
 
-            // ── Collect raw candidates ────────────────────────────────────────
 
             // Direct
             data class RawDirect(val route: Route, val boarding: Stop, val alighting: Stop, val walkIn: Double, val walkOut: Double)
@@ -453,14 +423,12 @@ class MapViewModel @Inject constructor(
                 return
             }
 
-            // ── De-duplicate by routeId set, keep best walk score per combo ──
 
             val directByRoute   = rawDirect.groupBy { it.route.id }
                 .mapValues { (_, v) -> v.minByOrNull { it.walkIn + it.walkOut }!! }
             val transferByCombo = rawTransfer.groupBy { "${it.r1.id}+${it.r2.id}" }
                 .mapValues { (_, v) -> v.minByOrNull { it.walkIn + it.walkOut }!! }
 
-            // ── Fetch arrivals for top candidates (limit DB calls) ────────────
 
             // Score without arrivals first, take top 6 to fetch arrivals for
             data class Scored(val score: Double, val direct: RawDirect? = null, val transfer: RawTransfer? = null)
@@ -497,7 +465,6 @@ class MapViewModel @Inject constructor(
                 }
             }
 
-            // ── Sort by estimated total time (walk + wait for bus + walk out) ─
 
             val sorted = plansWithArrivals
                 .sortedBy { it.estimatedTotalMinutes }
@@ -538,7 +505,6 @@ class MapViewModel @Inject constructor(
         }
     }
 
-    // ── Clear ─────────────────────────────────────────────────────────────────
 
     fun clearSearch() {
         searchJob?.cancel()
@@ -552,7 +518,6 @@ class MapViewModel @Inject constructor(
         ) }
     }
 
-    // ── Maths ─────────────────────────────────────────────────────────────────
 
     private fun haversineM(lat1: Double, lon1: Double, lat2: Double, lon2: Double): Double {
         val R = 6_371_000.0
