@@ -635,6 +635,19 @@ private fun PlanOptionRow(plan: RoutePlan, isSelected: Boolean, onClick: () -> U
     val busMin      = plan.nextBusMinutes
     val aiPred      = plan.aiBoardingPredictions.firstOrNull()
 
+    // Depart = now + wait-for-bus; arrive = now + total trip time. Both derived
+    // only when we have a live boarding arrival; otherwise the row falls back
+    // to the duration-only presentation (handled below).
+    val (departLabel, arriveLabel) = remember(busMin, totalMin) {
+        if (busMin != null) {
+            val now = java.time.LocalTime.now()
+            val depart = now.plusMinutes(busMin)
+            val arrive = now.plusMinutes(totalMin)
+            val fmt = java.time.format.DateTimeFormatter.ofPattern("h:mm a")
+            depart.format(fmt) to arrive.format(fmt)
+        } else null to null
+    }
+
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -643,7 +656,9 @@ private fun PlanOptionRow(plan: RoutePlan, isSelected: Boolean, onClick: () -> U
             .padding(horizontal = 16.dp, vertical = 10.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        // Route badge(s)
+        // Walk → Bus(es) → Walk chip chain (matches Google Maps transit rows)
+        Icon(Icons.Filled.DirectionsWalk, null, tint = Color.Gray, modifier = Modifier.size(14.dp))
+        Spacer(Modifier.width(4.dp))
         Box(modifier = Modifier.size(36.dp).clip(RoundedCornerShape(8.dp)).background(firstColor), contentAlignment = Alignment.Center) {
             Text(plan.firstRoute.shortName.take(3), color = Color.White, fontWeight = FontWeight.Bold, style = MaterialTheme.typography.labelSmall)
         }
@@ -655,22 +670,59 @@ private fun PlanOptionRow(plan: RoutePlan, isSelected: Boolean, onClick: () -> U
                 Text(plan.secondRoute.shortName.take(3), color = Color.White, fontWeight = FontWeight.Bold, style = MaterialTheme.typography.labelSmall)
             }
         }
+        Spacer(Modifier.width(4.dp))
+        Icon(Icons.Filled.DirectionsWalk, null, tint = Color.Gray, modifier = Modifier.size(14.dp))
         Spacer(Modifier.width(12.dp))
         Column(modifier = Modifier.weight(1f)) {
+            // Primary line: clock range (Google-Maps style) or duration fallback + pills
             Row(verticalAlignment = Alignment.CenterVertically) {
-                Text("~${totalMin}min total", style = MaterialTheme.typography.bodyMedium, fontWeight = FontWeight.SemiBold)
+                if (departLabel != null && arriveLabel != null) {
+                    Text("$departLabel — $arriveLabel",
+                        style = MaterialTheme.typography.bodyMedium,
+                        fontWeight = FontWeight.SemiBold)
+                } else {
+                    Text("~${totalMin} min total",
+                        style = MaterialTheme.typography.bodyMedium,
+                        fontWeight = FontWeight.SemiBold)
+                }
+                if (plan.index == 0) {
+                    Spacer(Modifier.width(6.dp))
+                    Box(modifier = Modifier.clip(RoundedCornerShape(4.dp))
+                        .background(Color(0xFFD1F2D0))
+                        .padding(horizontal = 5.dp, vertical = 1.dp)) {
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Icon(Icons.Filled.Bolt, null,
+                                tint = Color(0xFF1B5E20),
+                                modifier = Modifier.size(10.dp))
+                            Text("Fastest",
+                                style = MaterialTheme.typography.labelSmall,
+                                color = Color(0xFF1B5E20),
+                                fontWeight = FontWeight.SemiBold)
+                        }
+                    }
+                }
                 if (plan.isTransfer) {
                     Spacer(Modifier.width(6.dp))
-                    Box(modifier = Modifier.clip(RoundedCornerShape(4.dp)).background(Color(0xFFFFF3CD)).padding(horizontal = 4.dp, vertical = 1.dp)) {
-                        Text("Transfer", style = MaterialTheme.typography.labelSmall, color = Color(0xFF856404))
+                    Box(modifier = Modifier.clip(RoundedCornerShape(4.dp))
+                        .background(Color(0xFFFFF3CD))
+                        .padding(horizontal = 4.dp, vertical = 1.dp)) {
+                        Text("Transfer",
+                            style = MaterialTheme.typography.labelSmall,
+                            color = Color(0xFF856404))
                     }
                 }
             }
-            Text(
-                "Walk ${plan.walkInMinutes}min → ${plan.boardingStop.name.take(22)}",
-                style = MaterialTheme.typography.labelSmall, color = Color.Gray, maxLines = 1
-            )
-            // Inline AI summary — visible on the row without expanding into the detail panel.
+            // Secondary line: "HH:MM from <stop> · Walk N min"
+            val subLine = buildString {
+                departLabel?.let { append("$it from ") }
+                append(plan.boardingStop.name.take(26))
+                append(" · Walk ${plan.walkInMinutes} min")
+            }
+            Text(subLine,
+                style = MaterialTheme.typography.labelSmall,
+                color = Color.Gray,
+                maxLines = 1)
+            // AI summary (unchanged behaviour, kept visible on the row)
             aiPred?.let { p ->
                 val corr = p.correctionSeconds.toInt()
                 val label = when {
@@ -678,41 +730,48 @@ private fun PlanOptionRow(plan: RoutePlan, isSelected: Boolean, onClick: () -> U
                     corr > 0 -> "AI: +${corr}s vs BT"
                     else -> "AI: ${corr}s vs BT"
                 }
-                Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(top = 1.dp)) {
-                    Icon(Icons.Filled.AutoAwesome, null, tint = firstColor, modifier = Modifier.size(10.dp))
+                Row(verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.padding(top = 1.dp)) {
+                    Icon(Icons.Filled.AutoAwesome, null,
+                        tint = firstColor,
+                        modifier = Modifier.size(10.dp))
                     Spacer(Modifier.width(3.dp))
-                    Text(
-                        "$label · ${p.confidence}",
+                    Text("$label · ${p.confidence}",
                         style = MaterialTheme.typography.labelSmall,
                         fontWeight = FontWeight.Medium,
                         color = firstColor,
-                        maxLines = 1,
-                    )
+                        maxLines = 1)
                 }
             }
         }
-        // Bus ETA chip
+        // Right column: total duration (primary) + live bus ETA (secondary)
         Column(horizontalAlignment = Alignment.End) {
+            Text("${totalMin} min",
+                style = MaterialTheme.typography.labelMedium,
+                fontWeight = FontWeight.Bold,
+                color = BtBlue)
             if (busMin != null) {
                 Text(
-                    if (busMin == 0L) "Now" else "${busMin}min",
-                    style = MaterialTheme.typography.labelMedium,
-                    fontWeight = FontWeight.Bold,
+                    if (busMin == 0L) "Bus now" else "Bus in ${busMin}m",
+                    style = MaterialTheme.typography.labelSmall,
                     color = when {
                         busMin == 0L  -> Color(0xFF2ECC71)
                         busMin <= 3L  -> Color(0xFFE74C3C)
                         busMin <= 8L  -> Color(0xFFF39C12)
-                        else          -> BtBlue
+                        else          -> Color.Gray
                     }
                 )
-                Text("Bus ETA", style = MaterialTheme.typography.labelSmall, color = Color.Gray)
             } else {
-                Text("—", style = MaterialTheme.typography.labelSmall, color = Color.Gray)
+                Text("No live ETA",
+                    style = MaterialTheme.typography.labelSmall,
+                    color = Color.Gray)
             }
-        }
-        if (isSelected) {
-            Spacer(Modifier.width(8.dp))
-            Icon(Icons.Filled.CheckCircle, null, tint = BtBlue, modifier = Modifier.size(16.dp))
+            if (isSelected) {
+                Spacer(Modifier.height(2.dp))
+                Icon(Icons.Filled.CheckCircle, null,
+                    tint = BtBlue,
+                    modifier = Modifier.size(14.dp))
+            }
         }
     }
 }
