@@ -12,6 +12,7 @@ import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -135,21 +136,22 @@ fun MapScreen(
         }
     }
 
-    // Closest bus on the FIRST suggested route (nearest boarding stop) — gets the info box
-    val closestSuggestedBusId = remember(uiState.buses, uiState.suggestedRouteIds, uiState.boardingStop) {
-        val routeId = uiState.suggestedRouteIds.firstOrNull() ?: return@remember null
-        val boardingStop = uiState.boardingStop ?: return@remember null
+    // Closest bus on the first route of the active plan — gets the info box
+    val activePlan = uiState.activePlan
+    val closestSuggestedBusId = remember(uiState.buses, uiState.suggestedRouteIds, activePlan?.boardingStop) {
+        val routeId     = uiState.suggestedRouteIds.firstOrNull() ?: return@remember null
+        val boardingStop = activePlan?.boardingStop ?: return@remember null
         uiState.buses
             .filter { it.routeId == routeId }
             .minByOrNull { bus -> haversineMeters(bus.lat, bus.lon, boardingStop.lat, boardingStop.lon) }
             ?.vehicleId
     }
 
-    // Feature 2: stops within 0.5 mile of user (only computed when userLocation changes)
+    // Feature 2: stops within 0.3 mile of user (only computed when userLocation changes)
     val nearbyStops = remember(uiState.stops, uiState.userLocation) {
         val loc = uiState.userLocation ?: return@remember emptyList<com.luddy.bloomington_transit.domain.model.Stop>()
         uiState.stops
-            .filter { stop -> haversineMeters(stop.lat, stop.lon, loc.latitude, loc.longitude) <= 804.67 }
+            .filter { stop -> haversineMeters(stop.lat, stop.lon, loc.latitude, loc.longitude) <= 482.8 }
             .take(150)
     }
 
@@ -163,6 +165,17 @@ fun MapScreen(
             properties = MapProperties(isMyLocationEnabled = hasLocationPermission),
             onMapClick = { focusManager.clearFocus(); viewModel.onSearchFocusChanged(false) }
         ) {
+            // 0.3-mile proximity circle centered on user
+            uiState.userLocation?.let { loc ->
+                Circle(
+                    center = loc,
+                    radius = 482.8,
+                    strokeColor = BtBlue.copy(alpha = 0.6f),
+                    strokeWidth = 2f,
+                    fillColor = BtBlue.copy(alpha = 0.08f)
+                )
+            }
+
             // Route polylines
             uiState.selectedRouteIds.forEach { routeId ->
                 val segments = uiState.shapesByRoute[routeId] ?: return@forEach
@@ -196,13 +209,12 @@ fun MapScreen(
                         onClick = { viewModel.selectBus(bus); false }
                     ) {
                         if (isClosest) {
-                            // CP5: Closest bus on suggested route gets the ETA info box
                             SuggestedBusMarker(
                                 routeShortName = route?.shortName ?: "?",
                                 color = color,
                                 isTracked = isTracked,
-                                boardingArrival = uiState.boardingArrivals.firstOrNull(),
-                                alightingArrival = uiState.alightingArrivals.firstOrNull()
+                                boardingArrival = activePlan?.boardingArrivals?.firstOrNull(),
+                                alightingArrival = activePlan?.alightingArrivals?.firstOrNull()
                             )
                         } else {
                             BusMarker(
@@ -325,26 +337,13 @@ fun MapScreen(
 
                 when {
                     uiState.isRoutingLoading -> RoutingLoadingPanel()
-                    uiState.suggestedRouteIds.isNotEmpty() -> {
-                        val firstRouteId = uiState.suggestedRouteIds.first()
-                        val firstRoute   = uiState.routes.find { it.id == firstRouteId }
-                        RouteSuggestionPanel(
-                            firstRoute       = firstRoute,
-                            isTransfer       = uiState.isTransferRoute,
-                            transferRoute    = uiState.transferRoute,
-                            destinationName  = uiState.destinationName ?: "",
-                            boardingStop     = uiState.boardingStop,
-                            transferStop     = uiState.transferStop,
-                            alightingStop    = uiState.alightingStop,
-                            walkInMeters     = uiState.walkInMeters,
-                            walkOutMeters    = uiState.walkOutMeters,
-                            boardingArrival  = uiState.boardingArrivals.firstOrNull(),
-                            transferArrival  = uiState.transferArrivals.firstOrNull(),
-                            alightingArrival = uiState.alightingArrivals.firstOrNull(),
-                            aiBoardingPrediction = uiState.aiBoardingPredictions.firstOrNull(),
-                            onDismiss        = { viewModel.clearSearch() }
-                        )
-                    }
+                    uiState.routePlans.isNotEmpty() -> RoutePlanListPanel(
+                        plans            = uiState.routePlans,
+                        selectedIndex    = uiState.selectedPlanIndex,
+                        destinationName  = uiState.destinationName ?: "",
+                        onSelectPlan     = { viewModel.selectPlan(it) },
+                        onDismiss        = { viewModel.clearSearch() }
+                    )
                     uiState.routingError != null -> RoutingErrorPanel(
                         message = uiState.routingError!!,
                         onDismiss = { viewModel.clearSearch() }
@@ -559,6 +558,143 @@ private fun RouteFilterBar(
     }
 }
 
+// ── Multi-plan list panel ─────────────────────────────────────────────────────
+
+@Composable
+private fun RoutePlanListPanel(
+    plans: List<RoutePlan>,
+    selectedIndex: Int,
+    destinationName: String,
+    onSelectPlan: (Int) -> Unit,
+    onDismiss: () -> Unit
+) {
+    Column(modifier = Modifier.heightIn(max = 480.dp)) {
+        // Header
+        Row(
+            modifier = Modifier.padding(start = 16.dp, end = 8.dp, top = 10.dp, bottom = 6.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Icon(Icons.Filled.DirectionsBus, null, tint = BtBlue, modifier = Modifier.size(18.dp))
+            Spacer(Modifier.width(8.dp))
+            Column(modifier = Modifier.weight(1f)) {
+                Text(
+                    "${plans.size} route option${if (plans.size > 1) "s" else ""}",
+                    style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold
+                )
+                Text(
+                    "To: $destinationName",
+                    style = MaterialTheme.typography.labelSmall, color = Color.Gray, maxLines = 1
+                )
+            }
+            IconButton(onClick = onDismiss) { Icon(Icons.Filled.Close, "Dismiss") }
+        }
+
+        HorizontalDivider(color = Color.Gray.copy(alpha = 0.1f))
+
+        LazyColumn {
+            itemsIndexed(plans) { i, plan ->
+                PlanOptionRow(
+                    plan = plan,
+                    isSelected = i == selectedIndex,
+                    onClick = { onSelectPlan(i) }
+                )
+                if (i < plans.lastIndex) HorizontalDivider(color = Color.Gray.copy(alpha = 0.08f))
+            }
+
+            // Expanded detail for selected plan
+            item {
+                HorizontalDivider(color = Color.Gray.copy(alpha = 0.15f))
+                plans.getOrNull(selectedIndex)?.let { plan ->
+                    RouteSuggestionPanel(
+                        firstRoute       = plan.firstRoute,
+                        isTransfer       = plan.isTransfer,
+                        transferRoute    = plan.secondRoute,
+                        destinationName  = destinationName,
+                        boardingStop     = plan.boardingStop,
+                        transferStop     = plan.transferStop,
+                        alightingStop    = plan.alightingStop,
+                        walkInMeters     = plan.walkInMeters,
+                        walkOutMeters    = plan.walkOutMeters,
+                        boardingArrival  = plan.boardingArrivals.firstOrNull(),
+                        transferArrival  = plan.transferArrivals.firstOrNull(),
+                        alightingArrival = plan.alightingArrivals.firstOrNull(),
+                        onDismiss        = null  // dismiss handled by header
+                    )
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun PlanOptionRow(plan: RoutePlan, isSelected: Boolean, onClick: () -> Unit) {
+    val firstColor  = routeColor(plan.firstRoute.color)
+    val secondColor = plan.secondRoute?.color?.let { routeColor(it) } ?: BtBlue
+    val totalMin    = plan.estimatedTotalMinutes
+    val busMin      = plan.nextBusMinutes
+
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(if (isSelected) BtBlue.copy(alpha = 0.07f) else Color.Transparent)
+            .clickable { onClick() }
+            .padding(horizontal = 16.dp, vertical = 10.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        // Route badge(s)
+        Box(modifier = Modifier.size(36.dp).clip(RoundedCornerShape(8.dp)).background(firstColor), contentAlignment = Alignment.Center) {
+            Text(plan.firstRoute.shortName.take(3), color = Color.White, fontWeight = FontWeight.Bold, style = MaterialTheme.typography.labelSmall)
+        }
+        if (plan.isTransfer && plan.secondRoute != null) {
+            Spacer(Modifier.width(2.dp))
+            Icon(Icons.Filled.ArrowForward, null, tint = Color.Gray, modifier = Modifier.size(10.dp))
+            Spacer(Modifier.width(2.dp))
+            Box(modifier = Modifier.size(36.dp).clip(RoundedCornerShape(8.dp)).background(secondColor), contentAlignment = Alignment.Center) {
+                Text(plan.secondRoute.shortName.take(3), color = Color.White, fontWeight = FontWeight.Bold, style = MaterialTheme.typography.labelSmall)
+            }
+        }
+        Spacer(Modifier.width(12.dp))
+        Column(modifier = Modifier.weight(1f)) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Text("~${totalMin}min total", style = MaterialTheme.typography.bodyMedium, fontWeight = FontWeight.SemiBold)
+                if (plan.isTransfer) {
+                    Spacer(Modifier.width(6.dp))
+                    Box(modifier = Modifier.clip(RoundedCornerShape(4.dp)).background(Color(0xFFFFF3CD)).padding(horizontal = 4.dp, vertical = 1.dp)) {
+                        Text("Transfer", style = MaterialTheme.typography.labelSmall, color = Color(0xFF856404))
+                    }
+                }
+            }
+            Text(
+                "Walk ${plan.walkInMinutes}min → ${plan.boardingStop.name.take(22)}",
+                style = MaterialTheme.typography.labelSmall, color = Color.Gray, maxLines = 1
+            )
+        }
+        // Bus ETA chip
+        Column(horizontalAlignment = Alignment.End) {
+            if (busMin != null) {
+                Text(
+                    if (busMin == 0L) "Now" else "${busMin}min",
+                    style = MaterialTheme.typography.labelMedium,
+                    fontWeight = FontWeight.Bold,
+                    color = when {
+                        busMin == 0L  -> Color(0xFF2ECC71)
+                        busMin <= 3L  -> Color(0xFFE74C3C)
+                        busMin <= 8L  -> Color(0xFFF39C12)
+                        else          -> BtBlue
+                    }
+                )
+                Text("Bus ETA", style = MaterialTheme.typography.labelSmall, color = Color.Gray)
+            } else {
+                Text("—", style = MaterialTheme.typography.labelSmall, color = Color.Gray)
+            }
+        }
+        if (isSelected) {
+            Spacer(Modifier.width(8.dp))
+            Icon(Icons.Filled.CheckCircle, null, tint = BtBlue, modifier = Modifier.size(16.dp))
+        }
+    }
+}
+
 // ── Route suggestion panel: direct + transfer, with walking distance ──────────
 
 @Composable
@@ -575,14 +711,13 @@ private fun RouteSuggestionPanel(
     boardingArrival: Arrival?,
     transferArrival: Arrival?,
     alightingArrival: Arrival?,
-    aiBoardingPrediction: com.luddy.bloomington_transit.data.ai.dto.PredictionDto? = null,
-    onDismiss: () -> Unit
+    onDismiss: (() -> Unit)? = null   // null = no dismiss button (handled by parent list header)
 ) {
     val firstColor  = firstRoute?.color?.let { routeColor(it) } ?: BtBlue
     val secondColor = transferRoute?.color?.let { routeColor(it) } ?: BtBlue
 
     Column(modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp)) {
-        // Header row
+        // Header row — only shown when used standalone (not inside plan list)
         Row(verticalAlignment = Alignment.CenterVertically) {
             // Route badge(s)
             Box(
@@ -609,11 +744,15 @@ private fun RouteSuggestionPanel(
                     Text(destinationName, style = MaterialTheme.typography.labelSmall, color = Color.Gray, maxLines = 1)
                 }
             }
-            IconButton(onClick = onDismiss) { Icon(Icons.Filled.Close, "Dismiss") }
+            if (onDismiss != null) {
+                IconButton(onClick = onDismiss) { Icon(Icons.Filled.Close, "Dismiss") }
+            }
         }
 
-        Spacer(Modifier.height(10.dp))
-        HorizontalDivider(color = Color.Gray.copy(alpha = 0.12f))
+        if (onDismiss != null) {
+            Spacer(Modifier.height(10.dp))
+            HorizontalDivider(color = Color.Gray.copy(alpha = 0.12f))
+        }
         Spacer(Modifier.height(8.dp))
 
         // Walk to stop
@@ -629,35 +768,6 @@ private fun RouteSuggestionPanel(
             stopName = boardingStop?.name ?: "—",
             arrival = boardingArrival
         )
-
-        // AI-adjusted boarding ETA (from our backend /predictions) — only shown
-        // when we have a refined prediction for the same stop+route.
-        aiBoardingPrediction?.let { p ->
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.padding(start = 32.dp, top = 2.dp, bottom = 2.dp, end = 4.dp),
-            ) {
-                Icon(
-                    Icons.Filled.AutoAwesome,
-                    contentDescription = null,
-                    tint = firstColor,
-                    modifier = Modifier.size(12.dp),
-                )
-                Spacer(Modifier.width(6.dp))
-                val correctionText = p.correctionSeconds.toInt().let { s ->
-                    when {
-                        s == 0 -> "matches BT"
-                        s > 0 -> "+${s}s vs BT"
-                        else -> "${s}s vs BT"
-                    }
-                }
-                Text(
-                    text = "AI-adjusted: $correctionText · ${p.confidence}",
-                    style = MaterialTheme.typography.labelSmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                )
-            }
-        }
 
         if (isTransfer && transferStop != null && transferRoute != null) {
             StepConnector(color = firstColor)
