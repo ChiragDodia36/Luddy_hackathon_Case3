@@ -11,6 +11,9 @@ sealed class Screen(val route: String) {
     object Favourites : Screen("favourites")
     object Ai : Screen("ai")
     object Diagnostics : Screen("diagnostics")
+    object TripEta : Screen("trip-eta/{tripId}") {
+        fun routeFor(tripId: String) = "trip-eta/$tripId"
+    }
 }
 
 fun Screen.routeWithArg(routeId: String): String = when (this) {
