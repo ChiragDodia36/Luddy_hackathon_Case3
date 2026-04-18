@@ -33,6 +33,7 @@ import com.google.maps.android.compose.*
 import com.luddy.bloomington_transit.domain.model.Bus
 import com.luddy.bloomington_transit.domain.model.Stop
 import com.luddy.bloomington_transit.ui.components.ArrivalRow
+import com.luddy.bloomington_transit.ui.components.CountdownChip
 import com.luddy.bloomington_transit.ui.theme.BtBlue
 import com.luddy.bloomington_transit.ui.theme.routeColor
 
@@ -113,9 +114,9 @@ fun MapScreen(
                     }
                 }
 
-            // Stop markers — visible from zoom 13f
-            if (cameraPositionState.position.zoom > 13f) {
-                uiState.stops.take(80).forEach { stop ->
+            // Stop markers — visible from zoom 12f
+            if (cameraPositionState.position.zoom >= 12f) {
+                uiState.stops.take(150).forEach { stop ->
                     MarkerComposable(
                         state = MarkerState(position = LatLng(stop.lat, stop.lon)),
                         title = stop.name,
@@ -380,32 +381,152 @@ private fun StopDetailPanel(
     isLoading: Boolean,
     onDismiss: () -> Unit
 ) {
-    Column(modifier = Modifier.heightIn(max = 300.dp)) {
+    Column(modifier = Modifier.heightIn(max = 360.dp)) {
+        // Header — stop identity
         Row(
-            modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp),
+            modifier = Modifier.padding(start = 16.dp, end = 8.dp, top = 14.dp, bottom = 10.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Icon(Icons.Filled.Place, contentDescription = null, tint = BtBlue)
-            Spacer(Modifier.width(8.dp))
-            Text(stop.name, style = MaterialTheme.typography.titleMedium,
-                fontWeight = FontWeight.SemiBold, modifier = Modifier.weight(1f))
+            Box(
+                modifier = Modifier
+                    .size(36.dp)
+                    .clip(CircleShape)
+                    .background(BtBlue),
+                contentAlignment = Alignment.Center
+            ) {
+                Icon(Icons.Filled.DirectionsBus, contentDescription = null,
+                    tint = Color.White, modifier = Modifier.size(20.dp))
+            }
+            Spacer(Modifier.width(10.dp))
+            Column(modifier = Modifier.weight(1f)) {
+                Text(
+                    text = stop.name,
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold,
+                    maxLines = 1
+                )
+                Text(
+                    text = "Bus Stop · Tap a bus for its full route",
+                    style = MaterialTheme.typography.labelSmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }
             IconButton(onClick = onDismiss) {
                 Icon(Icons.Filled.Close, contentDescription = "Dismiss")
             }
         }
+
         HorizontalDivider(color = Color.Gray.copy(alpha = 0.12f))
+
         if (isLoading) {
             Box(Modifier.fillMaxWidth().height(80.dp), contentAlignment = Alignment.Center) {
                 CircularProgressIndicator(modifier = Modifier.size(24.dp))
             }
         } else if (arrivals.isEmpty()) {
-            Text("No upcoming arrivals", modifier = Modifier.padding(16.dp),
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant)
+            Box(Modifier.fillMaxWidth().padding(20.dp), contentAlignment = Alignment.Center) {
+                Text(
+                    "No buses in the next 2 hours",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }
         } else {
+            // Column header
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f))
+                    .padding(horizontal = 16.dp, vertical = 5.dp)
+            ) {
+                Text("Route", style = MaterialTheme.typography.labelSmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.width(44.dp))
+                Spacer(Modifier.width(10.dp))
+                Text("Direction", style = MaterialTheme.typography.labelSmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.weight(1f))
+                Text("Arrives", style = MaterialTheme.typography.labelSmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant)
+            }
             LazyColumn {
-                items(arrivals.take(5)) { arrival -> ArrivalRow(arrival = arrival) }
+                items(arrivals.take(6)) { arrival ->
+                    DepartureBoardRow(arrival = arrival)
+                    HorizontalDivider(color = Color.Gray.copy(alpha = 0.07f))
+                }
             }
         }
+    }
+}
+
+@Composable
+private fun DepartureBoardRow(arrival: com.luddy.bloomington_transit.domain.model.Arrival) {
+    val color = routeColor(arrival.routeColor)
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp, vertical = 10.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        // Route badge
+        Box(
+            modifier = Modifier
+                .size(40.dp)
+                .clip(RoundedCornerShape(8.dp))
+                .background(color),
+            contentAlignment = Alignment.Center
+        ) {
+            Text(
+                arrival.routeShortName.take(3),
+                color = Color.White,
+                fontWeight = FontWeight.Bold,
+                style = MaterialTheme.typography.labelMedium
+            )
+        }
+        Spacer(Modifier.width(10.dp))
+
+        // Direction info
+        Column(modifier = Modifier.weight(1f)) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Icon(
+                    Icons.Filled.ArrowForward,
+                    contentDescription = null,
+                    tint = color,
+                    modifier = Modifier.size(14.dp)
+                )
+                Spacer(Modifier.width(4.dp))
+                Text(
+                    text = arrival.headsign.ifBlank { "Route ${arrival.routeShortName}" },
+                    style = MaterialTheme.typography.bodyMedium,
+                    fontWeight = FontWeight.SemiBold,
+                    maxLines = 1
+                )
+            }
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                if (arrival.isRealtime) {
+                    // Live pulse dot
+                    val infiniteTransition = rememberInfiniteTransition(label = "live")
+                    val alpha by infiniteTransition.animateFloat(
+                        initialValue = 0.4f, targetValue = 1f,
+                        animationSpec = infiniteRepeatable(tween(700), RepeatMode.Reverse),
+                        label = "live_alpha"
+                    )
+                    Box(
+                        modifier = Modifier
+                            .size(6.dp)
+                            .clip(CircleShape)
+                            .background(Color(0xFF2ECC71).copy(alpha = alpha))
+                    )
+                    Spacer(Modifier.width(4.dp))
+                    Text("Live", style = MaterialTheme.typography.labelSmall,
+                        color = Color(0xFF2ECC71), fontWeight = FontWeight.Medium)
+                } else {
+                    Text("Scheduled", style = MaterialTheme.typography.labelSmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant)
+                }
+            }
+        }
+
+        // Countdown
+        CountdownChip(arrivalMs = arrival.displayArrivalMs, isRealtime = arrival.isRealtime)
     }
 }
