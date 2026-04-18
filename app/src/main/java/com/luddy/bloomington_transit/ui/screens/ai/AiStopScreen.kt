@@ -41,6 +41,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.luddy.bloomington_transit.ui.components.AiArrivalRow
+import com.luddy.bloomington_transit.ui.navigation.Screen
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -150,7 +151,10 @@ fun AiStopScreen(
                 else -> {
                     LazyColumn {
                         items(uiState.predictions!!.predictions) { p ->
-                            AiArrivalRow(prediction = p)
+                            AiArrivalRow(
+                                prediction = p,
+                                onClick = { navController.navigate(Screen.TripEta.routeFor(p.tripId)) },
+                            )
                             Divider(modifier = Modifier.padding(horizontal = 16.dp))
                         }
                     }

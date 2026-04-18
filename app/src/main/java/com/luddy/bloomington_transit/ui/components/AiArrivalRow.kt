@@ -1,6 +1,7 @@
 package com.luddy.bloomington_transit.ui.components
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -36,6 +37,7 @@ fun AiArrivalRow(
     prediction: PredictionDto,
     routeColorHex: String? = null,
     modifier: Modifier = Modifier,
+    onClick: (() -> Unit)? = null,
 ) {
     val nowSec = System.currentTimeMillis() / 1000L
     val scheduledSec = runCatching { OffsetDateTime.parse(prediction.scheduledArrivalUtc).toEpochSecond() }.getOrDefault(0L)
@@ -44,10 +46,11 @@ fun AiArrivalRow(
 
     val color = routeColorHex?.let { routeColor(it) } ?: MaterialTheme.colorScheme.primary
 
+    val rowModifier = modifier.fillMaxWidth().let { m ->
+        if (onClick != null) m.clickable { onClick() } else m
+    }
     Row(
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(horizontal = 16.dp, vertical = 10.dp),
+        modifier = rowModifier.padding(horizontal = 16.dp, vertical = 10.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         // Route badge

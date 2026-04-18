@@ -19,6 +19,7 @@ import com.luddy.bloomington_transit.ui.screens.favourites.FavouritesScreen
 import com.luddy.bloomington_transit.ui.screens.home.HomeScreen
 import com.luddy.bloomington_transit.ui.screens.map.MapScreen
 import com.luddy.bloomington_transit.ui.screens.schedule.ScheduleScreen
+import com.luddy.bloomington_transit.ui.screens.trip.TripEtaScreen
 import com.luddy.bloomington_transit.ui.theme.BtBlue
 import com.luddy.bloomington_transit.ui.theme.TimeGradientBackground
 
@@ -95,6 +96,13 @@ fun BtApp() {
                 composable(Screen.Schedule.route) { ScheduleScreen(navController) }
                 composable(Screen.Favourites.route) { FavouritesScreen(navController) }
                 composable(Screen.Diagnostics.route) { DiagnosticsScreen(navController) }
+                composable(
+                    route = Screen.TripEta.route,
+                    arguments = listOf(navArgument("tripId") {
+                        type = NavType.StringType
+                        nullable = false
+                    })
+                ) { TripEtaScreen(navController) }
             }
         }
     }
