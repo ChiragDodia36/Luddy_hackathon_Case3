@@ -30,6 +30,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -99,7 +100,11 @@ fun DiagnosticsScreen(
                 }
             }
 
-            SectionCard(title = "Vehicles (${ui.vehicles.size})") {
+            SectionCard(
+                title = "Vehicles (${ui.vehicles.size})",
+                subtitle = "Drift = staleness − 30 s (measured median vehicle.timestamp cadence). " +
+                    "Positive = vehicle is lagging BT's own publish schedule.",
+            ) {
                 if (ui.vehicles.isEmpty()) {
                     Text("No live vehicles right now.",
                          style = MaterialTheme.typography.bodySmall,
@@ -107,8 +112,22 @@ fun DiagnosticsScreen(
                 } else {
                     Column {
                         ui.vehicles.forEach { v ->
+                            // Expected cadence median = 30 s (from DATA_REPORT per-vehicle p50).
+                            val drift = v.stalenessSeconds - 30
+                            val driftText = when {
+                                drift <= 0 -> "on schedule"
+                                drift < 20 -> "+${drift}s drift"
+                                else -> "+${drift}s drift ⚡"
+                            }
+                            val driftColor = when {
+                                v.isStale -> MaterialTheme.colorScheme.error
+                                drift > 30 -> MaterialTheme.colorScheme.error
+                                drift > 10 -> Color(0xFF8E4F00)
+                                else -> MaterialTheme.colorScheme.onSurfaceVariant
+                            }
                             Row(
                                 modifier = Modifier.fillMaxWidth().padding(vertical = 2.dp),
+                                verticalAlignment = Alignment.CenterVertically,
                             ) {
                                 Text(
                                     text = "#${v.vehicleId}",
@@ -116,10 +135,11 @@ fun DiagnosticsScreen(
                                     modifier = Modifier.weight(1f),
                                 )
                                 Text(
-                                    text = "rt ${v.routeId ?: "—"}  ${if (v.isStale) "⚠ stale ${v.stalenessSeconds}s" else "${v.stalenessSeconds}s old"}",
+                                    text = "rt ${v.routeId ?: "—"} · " +
+                                        (if (v.isStale) "⚠ stale " else "") +
+                                        "${v.stalenessSeconds}s old · $driftText",
                                     style = MaterialTheme.typography.labelSmall,
-                                    color = if (v.isStale) MaterialTheme.colorScheme.error
-                                            else MaterialTheme.colorScheme.onSurfaceVariant,
+                                    color = driftColor,
                                 )
                             }
                         }
@@ -131,7 +151,11 @@ fun DiagnosticsScreen(
 }
 
 @Composable
-private fun SectionCard(title: String, content: @Composable () -> Unit) {
+private fun SectionCard(
+    title: String,
+    subtitle: String? = null,
+    content: @Composable () -> Unit,
+) {
     Card(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(12.dp),
@@ -139,6 +163,14 @@ private fun SectionCard(title: String, content: @Composable () -> Unit) {
     ) {
         Column(Modifier.padding(16.dp)) {
             Text(title, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
+            subtitle?.let {
+                Spacer(Modifier.height(2.dp))
+                Text(
+                    it,
+                    style = MaterialTheme.typography.labelSmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+            }
             Spacer(Modifier.height(6.dp))
             Divider()
             Spacer(Modifier.height(6.dp))
