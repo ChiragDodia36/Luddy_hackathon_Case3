@@ -136,11 +136,11 @@ fun MapScreen(
         }
     }
 
-    // Closest bus on the first route of the active plan — gets the info box
+    // Closest bus on the boarding route of the active plan — gets the info box
     val activePlan = uiState.activePlan
-    val closestSuggestedBusId = remember(uiState.buses, uiState.suggestedRouteIds, activePlan?.boardingStop) {
-        val routeId     = uiState.suggestedRouteIds.firstOrNull() ?: return@remember null
-        val boardingStop = activePlan?.boardingStop ?: return@remember null
+    val closestSuggestedBusId = remember(uiState.buses, activePlan) {
+        val routeId      = activePlan?.firstRoute?.id ?: return@remember null
+        val boardingStop = activePlan.boardingStop
         uiState.buses
             .filter { it.routeId == routeId }
             .minByOrNull { bus -> haversineMeters(bus.lat, bus.lon, boardingStop.lat, boardingStop.lon) }
@@ -165,15 +165,17 @@ fun MapScreen(
             properties = MapProperties(isMyLocationEnabled = hasLocationPermission),
             onMapClick = { focusManager.clearFocus(); viewModel.onSearchFocusChanged(false) }
         ) {
-            // 0.3-mile proximity circle centered on user
-            uiState.userLocation?.let { loc ->
-                Circle(
-                    center = loc,
-                    radius = 482.8,
-                    strokeColor = BtBlue.copy(alpha = 0.6f),
-                    strokeWidth = 2f,
-                    fillColor = BtBlue.copy(alpha = 0.08f)
-                )
+            // 0.3-mile proximity circle — hidden when a route plan is active
+            if (uiState.activePlan == null) {
+                uiState.userLocation?.let { loc ->
+                    Circle(
+                        center = loc,
+                        radius = 482.8,
+                        strokeColor = BtBlue.copy(alpha = 0.6f),
+                        strokeWidth = 2f,
+                        fillColor = BtBlue.copy(alpha = 0.08f)
+                    )
+                }
             }
 
             // Route polylines
@@ -193,41 +195,72 @@ fun MapScreen(
                 }
             }
 
-            // Bus markers — suggested route gets the info box (CP5)
+            // Bus markers — only buses with a valid known route, suggested gets info box
+            val zoom = cameraPositionState.position.zoom
             uiState.buses
-                .filter { it.routeId in uiState.selectedRouteIds }
+                .filter { bus ->
+                    bus.routeId.isNotBlank() && bus.routeId in uiState.selectedRouteIds
+                }
                 .forEach { bus ->
                     val route = uiState.routes.find { it.id == bus.routeId }
-                    val color = route?.color?.let { routeColor(it) } ?: BtBlue
+                    // Skip buses whose routeId doesn't resolve to a known route
+                    if (route == null) return@forEach
+                    val color = routeColor(route.color)
                     val isTracked = bus.vehicleId in uiState.trackedBusIds
                     val isClosest = bus.vehicleId == closestSuggestedBusId
 
                     MarkerComposable(
                         state = MarkerState(position = LatLng(bus.lat, bus.lon)),
-                        title = "Route ${route?.shortName ?: bus.routeId}",
+                        title = "Route ${route.shortName}",
                         snippet = bus.label,
                         onClick = { viewModel.selectBus(bus); false }
                     ) {
                         if (isClosest) {
                             SuggestedBusMarker(
-                                routeShortName = route?.shortName ?: "?",
+                                routeShortName = activePlan?.firstRoute?.shortName ?: route.shortName,
                                 color = color,
                                 isTracked = isTracked,
+                                zoom = zoom,
                                 boardingArrival = activePlan?.boardingArrivals?.firstOrNull(),
                                 alightingArrival = activePlan?.alightingArrivals?.firstOrNull()
                             )
                         } else {
                             BusMarker(
-                                routeShortName = route?.shortName ?: "?",
+                                routeShortName = route.shortName,
                                 color = color,
-                                isTracked = isTracked
+                                isTracked = isTracked,
+                                zoom = zoom
                             )
                         }
                     }
                 }
 
-            // Stop markers — only stops within 0.5 mile of user, visible from zoom 12f
-            if (cameraPositionState.position.zoom >= 12f) {
+            // Stop markers
+            if (activePlan != null) {
+                // Plan active: show all route stops + highlight key stops
+                val boardingId   = activePlan.boardingStop.id
+                val transferId   = activePlan.transferStop?.id
+                val alightingId  = activePlan.alightingStop.id
+
+                uiState.activePlanStops.forEach { stop ->
+                    val isBoarding  = stop.id == boardingId
+                    val isTransfer  = stop.id == transferId
+                    val isAlighting = stop.id == alightingId
+                    MarkerComposable(
+                        state = MarkerState(position = LatLng(stop.lat, stop.lon)),
+                        title = stop.name,
+                        onClick = { viewModel.selectStop(stop); false }
+                    ) {
+                        when {
+                            isBoarding  -> PlanStopMarker(color = Color(0xFF2ECC71), icon = Icons.Filled.DirectionsBus)
+                            isAlighting -> PlanStopMarker(color = Color(0xFFE74C3C), icon = Icons.Filled.Flag)
+                            isTransfer  -> PlanStopMarker(color = Color(0xFFF39C12), icon = Icons.Filled.SyncAlt)
+                            else        -> StopMarker()
+                        }
+                    }
+                }
+            } else if (cameraPositionState.position.zoom >= 12f) {
+                // No plan: show nearby stops within 0.3-mile radius
                 nearbyStops.forEach { stop ->
                     MarkerComposable(
                         state = MarkerState(position = LatLng(stop.lat, stop.lon)),
@@ -337,13 +370,26 @@ fun MapScreen(
 
                 when {
                     uiState.isRoutingLoading -> RoutingLoadingPanel()
-                    uiState.routePlans.isNotEmpty() -> RoutePlanListPanel(
-                        plans            = uiState.routePlans,
-                        selectedIndex    = uiState.selectedPlanIndex,
-                        destinationName  = uiState.destinationName ?: "",
-                        onSelectPlan     = { viewModel.selectPlan(it) },
-                        onDismiss        = { viewModel.clearSearch() }
-                    )
+                    uiState.routePlans.isNotEmpty() -> {
+                        if (uiState.isPlanExpanded) {
+                            RoutePlanListPanel(
+                                plans           = uiState.routePlans,
+                                selectedIndex   = uiState.selectedPlanIndex,
+                                destinationName = uiState.destinationName ?: "",
+                                onSelectPlan    = { viewModel.selectPlan(it) },
+                                onDismiss       = { viewModel.clearSearch() }
+                            )
+                        } else {
+                            uiState.activePlan?.let { plan ->
+                                CompactPlanStrip(
+                                    plan            = plan,
+                                    destinationName = uiState.destinationName ?: "",
+                                    onExpand        = { viewModel.expandPlans() },
+                                    onDismiss       = { viewModel.clearSearch() }
+                                )
+                            }
+                        }
+                    }
                     uiState.routingError != null -> RoutingErrorPanel(
                         message = uiState.routingError!!,
                         onDismiss = { viewModel.clearSearch() }
@@ -876,6 +922,7 @@ private fun SuggestedBusMarker(
     routeShortName: String,
     color: Color,
     isTracked: Boolean,
+    zoom: Float,
     boardingArrival: Arrival?,
     alightingArrival: Arrival?
 ) {
@@ -889,7 +936,7 @@ private fun SuggestedBusMarker(
     }
 
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
-        BusMarker(routeShortName = routeShortName, color = color, isTracked = isTracked)
+        BusMarker(routeShortName = routeShortName, color = color, isTracked = isTracked, zoom = zoom)
         Spacer(Modifier.height(3.dp))
         // CP5: Info box below the bus icon
         Card(
@@ -961,32 +1008,70 @@ private fun DestinationPin() {
 // ── Existing marker composables (unchanged) ───────────────────────────────────
 
 @Composable
-private fun BusMarker(routeShortName: String, color: Color, isTracked: Boolean) {
+private fun BusMarker(routeShortName: String, color: Color, isTracked: Boolean, zoom: Float = 14f) {
+    // Scale marker size based on zoom level
+    val bubbleW = when {
+        zoom >= 15f -> 44.dp
+        zoom >= 13f -> 34.dp
+        else        -> 24.dp
+    }
+    val bubbleH = when {
+        zoom >= 15f -> 40.dp
+        zoom >= 13f -> 30.dp
+        else        -> 22.dp
+    }
+    val iconSize = when {
+        zoom >= 15f -> 18.dp
+        zoom >= 13f -> 14.dp
+        else        -> 10.dp
+    }
+    val showLabel = zoom >= 13f
+
     Box(contentAlignment = Alignment.Center) {
         if (isTracked) {
             val infiniteTransition = rememberInfiniteTransition(label = "tracked_pulse")
             val scale by infiniteTransition.animateFloat(
-                initialValue = 1f, targetValue = 1.5f,
+                initialValue = 1f, targetValue = 1.6f,
                 animationSpec = infiniteRepeatable(tween(900), RepeatMode.Reverse),
                 label = "pulse_scale"
             )
             Box(
                 modifier = Modifier
-                    .size(52.dp)
+                    .size(bubbleW + 14.dp)
                     .scale(scale)
                     .clip(CircleShape)
                     .background(color.copy(alpha = 0.22f))
             )
         }
-        Box(
-            modifier = Modifier
-                .height(28.dp)
-                .clip(RoundedCornerShape(14.dp))
-                .background(color)
-                .padding(horizontal = 8.dp),
-            contentAlignment = Alignment.Center
-        ) {
-            Text(routeShortName.take(3), color = Color.White, fontWeight = FontWeight.Bold, style = MaterialTheme.typography.labelSmall)
+        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+            Box(
+                modifier = Modifier
+                    .size(width = bubbleW, height = bubbleH)
+                    .clip(RoundedCornerShape(8.dp))
+                    .background(color),
+                contentAlignment = Alignment.Center
+            ) {
+                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                    Icon(
+                        Icons.Filled.DirectionsBus,
+                        contentDescription = null,
+                        tint = Color.White,
+                        modifier = Modifier.size(iconSize)
+                    )
+                    if (showLabel) {
+                        Text(
+                            routeShortName.take(3),
+                            color = Color.White,
+                            fontWeight = FontWeight.Bold,
+                            style = MaterialTheme.typography.labelSmall
+                        )
+                    }
+                }
+            }
+            if (zoom >= 13f) {
+                Box(Modifier.size(width = 3.dp, height = 5.dp).background(color))
+                Box(Modifier.size(3.dp).clip(CircleShape).background(color))
+            }
         }
     }
 }
@@ -998,6 +1083,108 @@ private fun StopMarker() {
         contentAlignment = Alignment.Center
     ) {
         Box(modifier = Modifier.size(10.dp).clip(CircleShape).background(BtBlue.copy(alpha = 0.75f)))
+    }
+}
+
+@Composable
+private fun PlanStopMarker(
+    color: Color,
+    icon: androidx.compose.ui.graphics.vector.ImageVector
+) {
+    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+        Box(
+            modifier = Modifier
+                .size(32.dp)
+                .clip(CircleShape)
+                .background(color),
+            contentAlignment = Alignment.Center
+        ) {
+            Icon(icon, contentDescription = null, tint = Color.White, modifier = Modifier.size(18.dp))
+        }
+        Box(Modifier.size(width = 3.dp, height = 5.dp).background(color))
+        Box(Modifier.size(3.dp).clip(CircleShape).background(color))
+    }
+}
+
+// ── Compact strip shown after a plan is selected ──────────────────────────────
+
+@Composable
+private fun CompactPlanStrip(
+    plan: RoutePlan,
+    destinationName: String,
+    onExpand: () -> Unit,
+    onDismiss: () -> Unit
+) {
+    val firstColor  = routeColor(plan.firstRoute.color)
+    val secondColor = plan.secondRoute?.color?.let { routeColor(it) } ?: BtBlue
+    val busMin      = plan.nextBusMinutes
+
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp, vertical = 12.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        // Route badge(s)
+        Box(
+            modifier = Modifier.size(38.dp).clip(RoundedCornerShape(8.dp)).background(firstColor),
+            contentAlignment = Alignment.Center
+        ) {
+            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                Icon(Icons.Filled.DirectionsBus, null, tint = Color.White, modifier = Modifier.size(16.dp))
+                Text(plan.firstRoute.shortName.take(3), color = Color.White, fontWeight = FontWeight.Bold, style = MaterialTheme.typography.labelSmall)
+            }
+        }
+        if (plan.isTransfer && plan.secondRoute != null) {
+            Spacer(Modifier.width(2.dp))
+            Icon(Icons.Filled.ArrowForward, null, tint = Color.Gray, modifier = Modifier.size(10.dp))
+            Spacer(Modifier.width(2.dp))
+            Box(
+                modifier = Modifier.size(38.dp).clip(RoundedCornerShape(8.dp)).background(secondColor),
+                contentAlignment = Alignment.Center
+            ) {
+                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                    Icon(Icons.Filled.DirectionsBus, null, tint = Color.White, modifier = Modifier.size(16.dp))
+                    Text(plan.secondRoute.shortName.take(3), color = Color.White, fontWeight = FontWeight.Bold, style = MaterialTheme.typography.labelSmall)
+                }
+            }
+        }
+        Spacer(Modifier.width(12.dp))
+        Column(modifier = Modifier.weight(1f)) {
+            Text(
+                "~${plan.estimatedTotalMinutes}min to ${destinationName.take(18)}",
+                style = MaterialTheme.typography.bodyMedium,
+                fontWeight = FontWeight.SemiBold,
+                maxLines = 1
+            )
+            Text(
+                "Walk ${plan.walkInMinutes}min · ${plan.boardingStop.name.take(20)}",
+                style = MaterialTheme.typography.labelSmall,
+                color = Color.Gray,
+                maxLines = 1
+            )
+        }
+        // Bus ETA
+        if (busMin != null) {
+            Text(
+                if (busMin == 0L) "Now" else "${busMin}m",
+                style = MaterialTheme.typography.labelMedium,
+                fontWeight = FontWeight.Bold,
+                color = when {
+                    busMin == 0L -> Color(0xFF2ECC71)
+                    busMin <= 3L -> Color(0xFFE74C3C)
+                    busMin <= 8L -> Color(0xFFF39C12)
+                    else         -> BtBlue
+                }
+            )
+            Spacer(Modifier.width(8.dp))
+        }
+        IconButton(onClick = onExpand, modifier = Modifier.size(32.dp)) {
+            Icon(Icons.Filled.ExpandLess, contentDescription = "Show options", tint = BtBlue, modifier = Modifier.size(20.dp))
+        }
+        IconButton(onClick = onDismiss, modifier = Modifier.size(32.dp)) {
+            Icon(Icons.Filled.Close, contentDescription = "Dismiss", tint = Color.Gray, modifier = Modifier.size(18.dp))
+        }
     }
 }
 
