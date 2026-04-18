@@ -9,6 +9,10 @@ import com.google.android.libraries.places.api.model.RectangularBounds
 import com.google.android.libraries.places.api.net.FetchPlaceRequest
 import com.google.android.libraries.places.api.net.FindAutocompletePredictionsRequest
 import com.google.android.libraries.places.api.net.PlacesClient
+import com.luddy.bloomington_transit.data.ai.AiResult
+import com.luddy.bloomington_transit.data.ai.BtAiRepository
+import com.luddy.bloomington_transit.data.ai.dto.PredictionDto
+import com.luddy.bloomington_transit.data.ai.dto.TripPlanResponseDto
 import com.luddy.bloomington_transit.domain.model.*
 import com.luddy.bloomington_transit.domain.repository.TransitRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -45,7 +49,12 @@ data class RoutePlan(
     val routeIds: Set<String>,
     val boardingArrivals: List<Arrival> = emptyList(),
     val transferArrivals: List<Arrival> = emptyList(),
-    val alightingArrivals: List<Arrival> = emptyList()
+    val alightingArrivals: List<Arrival> = emptyList(),
+    // AI-enriched boarding predictions (A1+A2 adjusted, with confidence tier).
+    // Populated in refreshAllPlanEtas() alongside boardingArrivals when the
+    // AI backend is reachable. Filtered to firstRoute.id so only this plan's
+    // matching predictions show.
+    val aiBoardingPredictions: List<PredictionDto> = emptyList(),
 ) {
     val walkInMinutes: Int  get() = metersToWalkMinutes(walkInMeters)
     val walkOutMinutes: Int get() = metersToWalkMinutes(walkOutMeters)
@@ -103,7 +112,10 @@ data class MapUiState(
     val routePlans: List<RoutePlan> = emptyList(),
     val selectedPlanIndex: Int = 0,
     val isRoutingLoading: Boolean = false,
-    val routingError: String? = null
+    val routingError: String? = null,
+    // Optional Google-Directions-style plan (our /plan endpoint = Google
+    // Directions + AI boarding ETAs). Populated once per destination selection.
+    val aiPlan: TripPlanResponseDto? = null,
 ) {
     // Convenience: the plan currently highlighted on the map
     val activePlan: RoutePlan? get() = routePlans.getOrNull(selectedPlanIndex)
@@ -115,7 +127,8 @@ data class MapUiState(
 @HiltViewModel
 class MapViewModel @Inject constructor(
     private val repository: TransitRepository,
-    private val placesClient: PlacesClient
+    private val placesClient: PlacesClient,
+    private val aiRepo: BtAiRepository,
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(MapUiState())
@@ -174,7 +187,9 @@ class MapViewModel @Inject constructor(
         }
     }
 
-    // Refresh arrivals for every stored plan so ETAs stay live
+    // Refresh arrivals for every stored plan so ETAs stay live.
+    // Also fetches AI-adjusted boarding predictions from our backend for each
+    // plan's boarding stop — best-effort, silently empty if backend is down.
     private suspend fun refreshAllPlanEtas() {
         val plans = _uiState.value.routePlans
         if (plans.isEmpty()) return
@@ -188,10 +203,38 @@ class MapViewModel @Inject constructor(
                 val transferArrivals = if (plan.isTransfer && plan.transferStop != null && plan.secondRoute != null)
                     repository.getArrivalsForStop(plan.transferStop.id).filter { it.routeId == plan.secondRoute.id }
                 else emptyList()
-                plan.copy(boardingArrivals = boardingArrivals, alightingArrivals = alightingArrivals, transferArrivals = transferArrivals)
+
+                // AI backend enrichment — adjusted boarding ETA + confidence tier.
+                val aiPreds: List<PredictionDto> = when (val r = aiRepo.predictionsFor(plan.boardingStop.id, horizonMinutes = 60)) {
+                    is AiResult.Ok -> r.value.predictions.filter { it.routeId == plan.firstRoute.id }
+                    is AiResult.Err -> emptyList()
+                }
+
+                plan.copy(
+                    boardingArrivals = boardingArrivals,
+                    alightingArrivals = alightingArrivals,
+                    transferArrivals = transferArrivals,
+                    aiBoardingPredictions = aiPreds,
+                )
             } catch (_: Exception) { plan }
         }
         _uiState.update { it.copy(routePlans = updated) }
+    }
+
+    // One-shot Google-Directions-style plan via our backend's /plan endpoint.
+    // Populates uiState.aiPlan with Google's transit routes enriched by A1+A2
+    // boarding-ETA adjustments. Best-effort; silently sets null on failure.
+    private fun fetchAiPlanFor(destination: LatLng) {
+        val origin = _uiState.value.userLocation ?: return
+        viewModelScope.launch {
+            when (val r = aiRepo.plan(
+                originLat = origin.latitude, originLng = origin.longitude,
+                destLat = destination.latitude, destLng = destination.longitude,
+            )) {
+                is AiResult.Ok  -> _uiState.update { it.copy(aiPlan = r.value) }
+                is AiResult.Err -> _uiState.update { it.copy(aiPlan = null) }
+            }
+        }
     }
 
     // ── Manual route selection ────────────────────────────────────────────────
@@ -429,6 +472,11 @@ class MapViewModel @Inject constructor(
                 isRoutingLoading  = false,
                 routingError      = null
             ) }
+
+            // Kick off AI enrichment immediately so UI doesn't wait for the 10s poll.
+            viewModelScope.launch { refreshAllPlanEtas() }
+            // One-shot /plan call against our backend for the optional Google-side companion.
+            _uiState.value.destinationLatLng?.let { fetchAiPlanFor(it) }
         } catch (e: Exception) {
             Log.e("MapVM", "Routing error: ${e.message}")
             _uiState.update { it.copy(routingError = "Routing failed — please try again", isRoutingLoading = false) }
@@ -443,7 +491,8 @@ class MapViewModel @Inject constructor(
             searchQuery = "", placeSuggestions = emptyList(), isSearchFocused = false,
             isSearchLoading = false, destinationLatLng = null, destinationName = null,
             routePlans = emptyList(), selectedPlanIndex = 0, selectedRouteIds = emptySet(),
-            isRoutingLoading = false, routingError = null
+            isRoutingLoading = false, routingError = null,
+            aiPlan = null,
         ) }
     }
 
