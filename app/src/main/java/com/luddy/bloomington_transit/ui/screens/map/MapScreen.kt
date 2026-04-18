@@ -857,9 +857,10 @@ private fun RouteSuggestionPanel(
         }
         Spacer(Modifier.height(8.dp))
 
-        // Storytelling pill: Route 6 is BT's most-biased route per our audit.
-        // A2 applies a −154 s intercept on top of BT's prediction. Surface that
-        // to the judge so the "we fix BT's worst case" claim is concrete.
+        // Storytelling pill: Route 6 was our most-biased route. After the Saturday
+        // retrain the sign flipped — BT now *under*-predicts Route-6 lateness, so
+        // A2 adds +82 s to BT's prediction. Keeping the pill on Route-6 rows makes
+        // the "we correct BT's systematic biases" claim concrete for the judges.
         if (firstRoute?.id == "6") {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
@@ -877,7 +878,7 @@ private fun RouteSuggestionPanel(
                 )
                 Spacer(Modifier.width(6.dp))
                 Text(
-                    "Route 6 bias correction: −154 s baked in (BT over-predicts lateness here)",
+                    "Route 6 bias correction: +82 s baked in (BT under-predicts lateness here)",
                     style = MaterialTheme.typography.labelSmall,
                     fontWeight = FontWeight.Medium,
                     color = Color(0xFF8E4F00),
