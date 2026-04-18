@@ -35,40 +35,50 @@ fun CountdownChip(
         mutableLongStateOf(((arrivalMs - System.currentTimeMillis()) / 1000L).coerceAtLeast(0))
     }
 
+    // Adaptive tick rate:
+    //  < 2 min away  → every second (live urgency)
+    //  2–30 min      → every 30 s (minute label)
+    //  > 30 min      → every 60 s (clock time, changes once per minute)
     LaunchedEffect(arrivalMs) {
         while (true) {
             secondsLeft = ((arrivalMs - System.currentTimeMillis()) / 1000L).coerceAtLeast(0)
-            delay(1000L)
+            val tickMs = when {
+                secondsLeft < 120L  -> 1_000L
+                secondsLeft < 1800L -> 30_000L
+                else                -> 60_000L
+            }
+            delay(tickMs)
         }
     }
 
     val minutes = secondsLeft / 60
 
-    // > 60 min away: show 24h clock time (e.g. "06:30")
-    // ≤ 60 min: show countdown (e.g. "14m")
-    // < 1 min: show seconds or "Due"
+    // Display logic:
+    //  > 30 min  → 24h clock time, e.g. "22:45"
+    //  1–30 min  → minute countdown, e.g. "14m"
+    //  < 1 min   → "45s" (realtime) or "Now" (scheduled)
     val label = when {
-        minutes >= 60 -> clockFmt.format(Date(arrivalMs))
+        minutes > 30  -> clockFmt.format(Date(arrivalMs))
         minutes == 0L -> if (isRealtime) "${secondsLeft % 60}s" else "Now"
-        else -> if (isRealtime) "${minutes}m" else "${minutes}m"
+        else          -> "${minutes}m"
     }
 
     val bgColor by animateColorAsState(
         targetValue = when {
-            minutes >= 60 -> MaterialTheme.colorScheme.surfaceVariant
-            !isRealtime -> MaterialTheme.colorScheme.surfaceVariant
-            minutes < 1L -> CountdownRed
-            minutes < 3L -> CountdownAmber
-            else -> CountdownGreen
+            minutes > 30  -> MaterialTheme.colorScheme.surfaceVariant
+            !isRealtime   -> MaterialTheme.colorScheme.surfaceVariant
+            minutes < 1L  -> CountdownRed
+            minutes < 3L  -> CountdownAmber
+            else          -> CountdownGreen
         },
         animationSpec = tween(500),
         label = "countdownColor"
     )
 
     val textColor: Color = when {
-        minutes >= 60 -> MaterialTheme.colorScheme.onSurfaceVariant
-        !isRealtime -> MaterialTheme.colorScheme.onSurfaceVariant
-        else -> Color.White
+        minutes > 30  -> MaterialTheme.colorScheme.onSurfaceVariant
+        !isRealtime   -> MaterialTheme.colorScheme.onSurfaceVariant
+        else          -> Color.White
     }
 
     Box(

@@ -12,6 +12,7 @@ interface TransitRepository {
     fun getStopsForRoute(routeId: String): Flow<List<Stop>>
     fun getShapePointsForRoute(routeId: String): Flow<List<ShapePoint>>
     suspend fun searchStops(query: String): List<Stop>
+    suspend fun getStopById(stopId: String): Stop?
     suspend fun getNearestStops(lat: Double, lon: Double, radiusMeters: Double = 500.0): List<Stop>
 
     // Realtime
@@ -44,6 +45,11 @@ interface TransitRepository {
     // Favourite route (for route picker flow)
     fun getFavouriteRouteId(): Flow<String?>
     suspend fun setFavouriteRouteId(routeId: String?)
+
+    // Pinned routes (multi-pin home screen)
+    fun getPinnedRouteIds(): Flow<Set<String>>
+    suspend fun addPinnedRoute(routeId: String)
+    suspend fun removePinnedRoute(routeId: String)
 
     // Recently viewed stops
     fun getRecentStopIds(): Flow<List<String>>

@@ -25,6 +25,7 @@ class UserPreferencesDataStore @Inject constructor(
         val GTFS_LAST_UPDATED = longPreferencesKey("gtfs_last_updated")
         val FAVOURITE_ROUTE_ID = stringPreferencesKey("favourite_route_id")
         val RECENT_STOP_IDS = stringPreferencesKey("recent_stop_ids")
+        val PINNED_ROUTE_IDS = stringSetPreferencesKey("pinned_route_ids")
     }
 
     val favouriteStopIds: Flow<Set<String>> = context.dataStore.data
@@ -46,6 +47,10 @@ class UserPreferencesDataStore @Inject constructor(
     val favouriteRouteId: Flow<String?> = context.dataStore.data
         .catch { if (it is IOException) emit(emptyPreferences()) else throw it }
         .map { it[Keys.FAVOURITE_ROUTE_ID] }
+
+    val pinnedRouteIds: Flow<Set<String>> = context.dataStore.data
+        .catch { if (it is IOException) emit(emptyPreferences()) else throw it }
+        .map { it[Keys.PINNED_ROUTE_IDS] ?: emptySet() }
 
     val recentStopIds: Flow<List<String>> = context.dataStore.data
         .catch { if (it is IOException) emit(emptyPreferences()) else throw it }
@@ -96,6 +101,20 @@ class UserPreferencesDataStore @Inject constructor(
         context.dataStore.edit {
             if (routeId == null) it.remove(Keys.FAVOURITE_ROUTE_ID)
             else it[Keys.FAVOURITE_ROUTE_ID] = routeId
+        }
+    }
+
+    suspend fun addPinnedRoute(routeId: String) {
+        context.dataStore.edit { prefs ->
+            val current = prefs[Keys.PINNED_ROUTE_IDS] ?: emptySet()
+            prefs[Keys.PINNED_ROUTE_IDS] = current + routeId
+        }
+    }
+
+    suspend fun removePinnedRoute(routeId: String) {
+        context.dataStore.edit { prefs ->
+            val current = prefs[Keys.PINNED_ROUTE_IDS] ?: emptySet()
+            prefs[Keys.PINNED_ROUTE_IDS] = current - routeId
         }
     }
 

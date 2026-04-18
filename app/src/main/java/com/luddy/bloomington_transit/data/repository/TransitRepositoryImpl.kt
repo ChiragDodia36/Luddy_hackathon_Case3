@@ -114,6 +114,9 @@ class TransitRepositoryImpl @Inject constructor(
     override suspend fun searchStops(query: String): List<Stop> =
         db.stopDao().searchStops(query).map { it.toDomain() }
 
+    override suspend fun getStopById(stopId: String): Stop? =
+        db.stopDao().getStopById(stopId)?.toDomain()
+
     override suspend fun getNearestStops(lat: Double, lon: Double, radiusMeters: Double): List<Stop> {
         val all = db.stopDao().getNearestStops(lat, lon)
         // Filter by actual Haversine distance
@@ -239,6 +242,11 @@ class TransitRepositoryImpl @Inject constructor(
     // Favourite route
     override fun getFavouriteRouteId(): Flow<String?> = prefs.favouriteRouteId
     override suspend fun setFavouriteRouteId(routeId: String?) = prefs.setFavouriteRouteId(routeId)
+
+    // Pinned routes
+    override fun getPinnedRouteIds(): Flow<Set<String>> = prefs.pinnedRouteIds
+    override suspend fun addPinnedRoute(routeId: String) = prefs.addPinnedRoute(routeId)
+    override suspend fun removePinnedRoute(routeId: String) = prefs.removePinnedRoute(routeId)
 
     override fun getRecentStopIds(): Flow<List<String>> = prefs.recentStopIds
     override suspend fun addRecentStop(stopId: String) = prefs.addRecentStop(stopId)
