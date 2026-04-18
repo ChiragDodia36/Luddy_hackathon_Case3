@@ -111,6 +111,8 @@ data class MapUiState(
     // Multi-plan routing result
     val routePlans: List<RoutePlan> = emptyList(),
     val selectedPlanIndex: Int = 0,
+    val isPlanExpanded: Boolean = true,
+    val planRouteStopsByIndex: Map<Int, List<Stop>> = emptyMap(),
     val isRoutingLoading: Boolean = false,
     val routingError: String? = null,
     // Optional Google-Directions-style plan (our /plan endpoint = Google
@@ -120,6 +122,7 @@ data class MapUiState(
     // Convenience: the plan currently highlighted on the map
     val activePlan: RoutePlan? get() = routePlans.getOrNull(selectedPlanIndex)
     val suggestedRouteIds: Set<String> get() = activePlan?.routeIds ?: emptySet()
+    val activePlanStops: List<Stop> get() = planRouteStopsByIndex[selectedPlanIndex] ?: emptyList()
 }
 
 // ── ViewModel ─────────────────────────────────────────────────────────────────
@@ -331,8 +334,10 @@ class MapViewModel @Inject constructor(
 
     fun selectPlan(index: Int) {
         val plan = _uiState.value.routePlans.getOrNull(index) ?: return
-        _uiState.update { it.copy(selectedPlanIndex = index, selectedRouteIds = plan.routeIds) }
+        _uiState.update { it.copy(selectedPlanIndex = index, selectedRouteIds = plan.routeIds, isPlanExpanded = false) }
     }
+
+    fun expandPlans() { _uiState.update { it.copy(isPlanExpanded = true) } }
 
     // ── Multi-plan routing: direct + 1-transfer, sorted fastest-first ─────────
 
@@ -465,12 +470,21 @@ class MapViewModel @Inject constructor(
 
             Log.d("MapVM", "✅ ${sorted.size} plans: ${sorted.map { "${if (it.isTransfer) "${it.firstRoute.shortName}→${it.secondRoute?.shortName}" else it.firstRoute.shortName} ~${it.estimatedTotalMinutes}min" }}")
 
+            // Build per-plan stop lists so the map only shows stops for the active plan
+            val planRouteStopsByIndex = sorted.associate { plan ->
+                val stops = mutableListOf<Stop>()
+                stops += routeStopObjs[plan.firstRoute.id] ?: emptyList()
+                plan.secondRoute?.let { stops += routeStopObjs[it.id] ?: emptyList() }
+                plan.index to stops.distinctBy { it.id }
+            }
+
             _uiState.update { it.copy(
-                routePlans        = sorted,
-                selectedPlanIndex = 0,
-                selectedRouteIds  = sorted.first().routeIds,
-                isRoutingLoading  = false,
-                routingError      = null
+                routePlans             = sorted,
+                selectedPlanIndex      = 0,
+                selectedRouteIds       = sorted.first().routeIds,
+                planRouteStopsByIndex  = planRouteStopsByIndex,
+                isRoutingLoading       = false,
+                routingError           = null
             ) }
 
             // Kick off AI enrichment immediately so UI doesn't wait for the 10s poll.
@@ -490,7 +504,8 @@ class MapViewModel @Inject constructor(
         _uiState.update { it.copy(
             searchQuery = "", placeSuggestions = emptyList(), isSearchFocused = false,
             isSearchLoading = false, destinationLatLng = null, destinationName = null,
-            routePlans = emptyList(), selectedPlanIndex = 0, selectedRouteIds = emptySet(),
+            routePlans = emptyList(), selectedPlanIndex = 0, isPlanExpanded = true,
+            planRouteStopsByIndex = emptyMap(), selectedRouteIds = emptySet(),
             isRoutingLoading = false, routingError = null,
             aiPlan = null,
         ) }
