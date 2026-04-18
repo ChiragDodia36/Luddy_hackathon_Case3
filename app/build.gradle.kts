@@ -29,6 +29,7 @@ android {
         }
         val mapsApiKey = localProperties.getProperty("MAPS_API_KEY") ?: ""
         manifestPlaceholders["MAPS_API_KEY"] = mapsApiKey
+        buildConfigField("String", "MAPS_API_KEY", "\"${mapsApiKey}\"")
     }
 
     buildTypes {
@@ -117,6 +118,9 @@ dependencies {
     implementation(libs.androidx.work.runtime)
     implementation(libs.hilt.work)
     ksp(libs.hilt.work.compiler)
+
+    // Google Places
+    implementation(libs.places.sdk)
 
     debugImplementation(libs.androidx.ui.tooling)
 }
