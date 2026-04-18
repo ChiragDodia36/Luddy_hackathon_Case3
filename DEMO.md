@@ -109,7 +109,7 @@ curl -s "$BASE/plan?origin_lat=39.1674&origin_lng=-86.5240&dest_lat=39.2050&dest
 # Live bunching detection (200 m same-route pairs)
 curl -s $BASE/detections/bunching | python3 -m json.tool
 
-# Natural-language query (regex + optional Claude fallback)
+# Natural-language query (regex + optional LLM fallback)
 curl -s "$BASE/nlq?q=when%20does%20the%206%20come" | python3 -m json.tool
 ```
 
