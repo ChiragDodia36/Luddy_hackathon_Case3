@@ -246,7 +246,7 @@ Hilt (`@HiltAndroidApp`, `@AndroidEntryPoint`, `@HiltViewModel`) wires all layer
 - **Stale-vehicle flag (B2)** - the `VehicleDto.isStale` field from the backend is surfaced on the Diagnostics screen.
 - **Diagnostics dashboard (D1)** - `ui/screens/diagnostics/DiagnosticsScreen.kt`, reachable from the Home top-bar action. Shows live BT vs. our A1 CV MAE, fleet size, stale vehicle count, last feed refresh.
 - **Trip ETA propagation (B3)** - tap any AI arrival row → `ui/screens/trip/TripEtaScreen.kt` shows per-stop adjusted ETAs across the remaining stops of that trip.
-- **Natural-language query (C2)** - `BtAiRepository.nlq(query)` is called in parallel with stop-search; recognised intents (e.g. "next 6", "route 3E") show a hint chip under the search bar. Backend uses a regex-based intent parser with an optional LLM fallback for ambiguous queries.
+- **Natural-language query** - `BtAiRepository.nlq(query)` is called in parallel with stop-search; recognised intents (e.g. "next 6", "route 3E") show a hint chip under the search bar. Backend uses a regex-based intent parser.
 
 ---
 

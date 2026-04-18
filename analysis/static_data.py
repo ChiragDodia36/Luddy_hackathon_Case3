@@ -52,7 +52,6 @@ STATIC_URL = (
 LAT_MIN, LAT_MAX =  39.00,  39.35
 LON_MIN, LON_MAX = -86.65, -86.35
 
-# ── GTFS spec: required vs optional files and their required columns ──────────
 GTFS_SCHEMA: dict[str, dict] = {
     "agency.txt": {
         "required": True,
@@ -136,9 +135,7 @@ SEP  = "\n" + "═" * 80
 SEP2 = "\n" + "─" * 60
 
 
-# ─────────────────────────────────────────────────────────────────────────────
 # UTILITIES
-# ─────────────────────────────────────────────────────────────────────────────
 
 def header(title: str):
     print(f"{SEP}\n  {CYN}{title}{RST}")
@@ -168,9 +165,7 @@ def parse_gtfs_time(t: str) -> int | None:
         return None
 
 
-# ─────────────────────────────────────────────────────────────────────────────
 # SECTION 0 — FETCH
-# ─────────────────────────────────────────────────────────────────────────────
 
 def fetch_zip(url: str) -> tuple[bytes, float]:
     header("SECTION 0 · Fetch")
@@ -184,9 +179,7 @@ def fetch_zip(url: str) -> tuple[bytes, float]:
     return resp.content, elapsed
 
 
-# ─────────────────────────────────────────────────────────────────────────────
 # SECTION 1 — SCHEMA VALIDATION
-# ─────────────────────────────────────────────────────────────────────────────
 
 def validate_schema(zf: zipfile.ZipFile, dfs: dict[str, pd.DataFrame]) -> dict[str, list[str]]:
     """Returns dict of file → list of error strings."""
@@ -229,9 +222,7 @@ def validate_schema(zf: zipfile.ZipFile, dfs: dict[str, pd.DataFrame]) -> dict[s
     return schema_errors
 
 
-# ─────────────────────────────────────────────────────────────────────────────
 # SECTION 2 — PER-FILE PROFILING
-# ─────────────────────────────────────────────────────────────────────────────
 
 def profile_files(dfs: dict[str, pd.DataFrame]):
     header("SECTION 2 · Per-File Profiling")
@@ -263,9 +254,7 @@ def profile_files(dfs: dict[str, pd.DataFrame]):
                 lvl(f"{col:<40} {cnt:>6} nulls  ({pct:.1f}%)")
 
 
-# ─────────────────────────────────────────────────────────────────────────────
 # SECTION 3 — REFERENTIAL INTEGRITY
-# ─────────────────────────────────────────────────────────────────────────────
 
 def check_referential_integrity(dfs: dict[str, pd.DataFrame]):
     header("SECTION 3 · Referential Integrity")
@@ -353,9 +342,7 @@ def check_referential_integrity(dfs: dict[str, pd.DataFrame]):
             ok(f"{fname}: no duplicate {pk}")
 
 
-# ─────────────────────────────────────────────────────────────────────────────
 # SECTION 4 — COORDINATE SANITY
-# ─────────────────────────────────────────────────────────────────────────────
 
 def check_coordinates(dfs: dict[str, pd.DataFrame]):
     header("SECTION 4 · Coordinate Sanity")
@@ -403,16 +390,13 @@ def check_coordinates(dfs: dict[str, pd.DataFrame]):
             info(f"  Offending IDs: {list(bad[id_col].head(10))}")
 
 
-# ─────────────────────────────────────────────────────────────────────────────
 # SECTION 5 — TIME & CALENDAR
-# ─────────────────────────────────────────────────────────────────────────────
 
 def check_time_and_calendar(dfs: dict[str, pd.DataFrame]):
     header("SECTION 5 · Time & Calendar")
     today = datetime.date.today()
     today_int = int(today.strftime("%Y%m%d"))
 
-    # ── calendar.txt date range ──
     if "calendar.txt" in dfs:
         subheader("calendar.txt")
         cal = dfs["calendar.txt"].copy()
@@ -440,7 +424,6 @@ def check_time_and_calendar(dfs: dict[str, pd.DataFrame]):
                 n = (cal[day] == "1").sum()
                 info(f"  {day:<12}: {n}")
 
-    # ── calendar_dates.txt ──
     if "calendar_dates.txt" in dfs:
         subheader("calendar_dates.txt")
         cd = dfs["calendar_dates.txt"].copy()
@@ -451,7 +434,6 @@ def check_time_and_calendar(dfs: dict[str, pd.DataFrame]):
         info(f"exception_type=1 (added):   {added}")
         info(f"exception_type=2 (removed): {removed}")
 
-    # ── stop_times time checks ──
     if "stop_times.txt" in dfs:
         subheader("stop_times.txt — time field analysis")
         st = dfs["stop_times.txt"]
@@ -494,9 +476,7 @@ def check_time_and_calendar(dfs: dict[str, pd.DataFrame]):
                 f"  Trips with non-monotonic stop_sequence: {bad_seq}")
 
 
-# ─────────────────────────────────────────────────────────────────────────────
 # SECTION 6 — TRIP / SHAPE COVERAGE
-# ─────────────────────────────────────────────────────────────────────────────
 
 def check_trip_shape_coverage(dfs: dict[str, pd.DataFrame]):
     header("SECTION 6 · Trip & Shape Coverage")
@@ -559,9 +539,7 @@ def check_trip_shape_coverage(dfs: dict[str, pd.DataFrame]):
         info(f"Trips with block_id (through-service): {has_block} / {total_trips}")
 
 
-# ─────────────────────────────────────────────────────────────────────────────
 # SECTION 7 — ROUTE / STOP STATS
-# ─────────────────────────────────────────────────────────────────────────────
 
 def route_and_stop_stats(dfs: dict[str, pd.DataFrame]):
     header("SECTION 7 · Route & Stop Stats")
@@ -631,9 +609,7 @@ def route_and_stop_stats(dfs: dict[str, pd.DataFrame]):
         print(f"\n{tabulate(stp.head(15), headers='keys', tablefmt='simple', showindex=False)}")
 
 
-# ─────────────────────────────────────────────────────────────────────────────
 # SECTION 8 — SUMMARY REPORT
-# ─────────────────────────────────────────────────────────────────────────────
 
 def summary_report(dfs: dict[str, pd.DataFrame], schema_errors: dict, fetch_ms: float):
     header("SECTION 8 · Summary Report")
@@ -693,9 +669,7 @@ def summary_report(dfs: dict[str, pd.DataFrame], schema_errors: dict, fetch_ms: 
     info(f"Static GTFS URL: {STATIC_URL}")
 
 
-# ─────────────────────────────────────────────────────────────────────────────
 # MAIN
-# ─────────────────────────────────────────────────────────────────────────────
 
 def load_dfs(zip_bytes: bytes) -> tuple[zipfile.ZipFile, dict[str, pd.DataFrame]]:
     zf   = zipfile.ZipFile(io.BytesIO(zip_bytes))

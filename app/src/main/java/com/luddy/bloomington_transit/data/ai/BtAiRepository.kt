@@ -13,11 +13,6 @@ import com.luddy.bloomington_transit.data.ai.dto.VehicleDto
 import javax.inject.Inject
 import javax.inject.Singleton
 
-/**
- * Result envelope — keeps call sites honest about the failure path without
- * adding a kotlin.Result shim. Inherits FROM NOTHING: lives only in the AI
- * integration and does not touch Chirag's domain layer.
- */
 sealed class AiResult<out T> {
     data class Ok<T>(val value: T) : AiResult<T>()
     data class Err(val message: String, val cause: Throwable? = null) : AiResult<Nothing>()

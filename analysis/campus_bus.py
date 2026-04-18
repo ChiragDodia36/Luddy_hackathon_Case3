@@ -29,12 +29,10 @@ STATIC_URL = (
     "bloomingtontransit.etaspot.net/gtfs.zip"
 )
 
-# ── IU Campus bounding box (main Bloomington campus) ─────────────────────────
 # Roughly: Jordan Ave corridor, 10th St to 3rd St, Fee Lane to Indiana Ave
 IU_LAT_MIN, IU_LAT_MAX =  39.155,  39.180
 IU_LON_MIN, IU_LON_MAX = -86.535, -86.505
 
-# ── Keywords that suggest campus / IU presence ────────────────────────────────
 CAMPUS_AGENCY_KEYWORDS = [
     "indiana university", "iu", "campus", "iubus", "iubloomington"
 ]
@@ -68,7 +66,6 @@ CAMPUS_HEADSIGN_KEYWORDS = [
 ]
 
 
-# ─────────────────────────────────────────────────────────────────────────────
 def fetch_and_load(url: str) -> dict[str, pd.DataFrame]:
     print(f"Fetching {url} ...")
     resp = requests.get(url, timeout=60)
@@ -99,9 +96,7 @@ def kw_match(value: str, keywords: list[str]) -> bool:
 SEP = "\n" + "═" * 70
 
 
-# ─────────────────────────────────────────────────────────────────────────────
 # CHECK 1 — agency.txt
-# ─────────────────────────────────────────────────────────────────────────────
 def check_agency(dfs):
     print(SEP)
     print("CHECK 1 · agency.txt — how many agencies, any campus-related?")
@@ -127,9 +122,7 @@ def check_agency(dfs):
     return campus_agencies
 
 
-# ─────────────────────────────────────────────────────────────────────────────
 # CHECK 2 — routes.txt
-# ─────────────────────────────────────────────────────────────────────────────
 def check_routes(dfs, campus_agency_ids: dict):
     print(SEP)
     print("CHECK 2 · routes.txt — campus route names / agency_id / colors")
@@ -174,9 +167,7 @@ def check_routes(dfs, campus_agency_ids: dict):
     return campus_route_ids
 
 
-# ─────────────────────────────────────────────────────────────────────────────
 # CHECK 3 — stops.txt (name keywords + coordinates inside IU bbox)
-# ─────────────────────────────────────────────────────────────────────────────
 def check_stops(dfs):
     print(SEP)
     print("CHECK 3 · stops.txt — stop names & coordinates inside IU campus bbox")
@@ -221,9 +212,7 @@ def check_stops(dfs):
     return campus_stop_ids
 
 
-# ─────────────────────────────────────────────────────────────────────────────
 # CHECK 4 — trips.txt headsigns
-# ─────────────────────────────────────────────────────────────────────────────
 def check_trip_headsigns(dfs, campus_route_ids: set):
     print(SEP)
     print("CHECK 4 · trips.txt — headsigns referencing campus landmarks")
@@ -259,9 +248,7 @@ def check_trip_headsigns(dfs, campus_route_ids: set):
     return campus_trip_ids
 
 
-# ─────────────────────────────────────────────────────────────────────────────
 # CHECK 5 — feed_info.txt
-# ─────────────────────────────────────────────────────────────────────────────
 def check_feed_info(dfs):
     print(SEP)
     print("CHECK 5 · feed_info.txt — publisher / feed metadata")
@@ -271,9 +258,7 @@ def check_feed_info(dfs):
     print(f"\n{dfs['feed_info.txt'].to_string(index=False)}")
 
 
-# ─────────────────────────────────────────────────────────────────────────────
 # CHECK 6 — cross-check: do campus stops appear in stop_times for non-campus routes?
-# ─────────────────────────────────────────────────────────────────────────────
 def check_stop_route_overlap(dfs, campus_stop_ids: set, campus_route_ids: set):
     print(SEP)
     print("CHECK 6 · Cross-check — do BT routes serve campus stops? (shared infrastructure)")
@@ -308,9 +293,7 @@ def check_stop_route_overlap(dfs, campus_stop_ids: set, campus_route_ids: set):
         print("  No BT routes found serving campus-flagged stops")
 
 
-# ─────────────────────────────────────────────────────────────────────────────
 # VERDICT
-# ─────────────────────────────────────────────────────────────────────────────
 def verdict(campus_agencies, campus_route_ids, campus_stop_ids, campus_trip_ids):
     print(SEP)
     print("VERDICT")
@@ -339,9 +322,7 @@ def verdict(campus_agencies, campus_route_ids, campus_stop_ids, campus_trip_ids)
     print(f"\n  Run at: {datetime.datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S UTC')}")
 
 
-# ─────────────────────────────────────────────────────────────────────────────
 # MAIN
-# ─────────────────────────────────────────────────────────────────────────────
 def main():
     print("\n" + "═"*70)
     print("  CAMPUS BUS DETECTION — Bloomington Transit GTFS")

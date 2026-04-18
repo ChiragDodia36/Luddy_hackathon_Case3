@@ -22,11 +22,9 @@ import datetime
 from collections import defaultdict
 from typing import Any
 
-# ── pip install these ──────────────────────────────────────────────────────────
 import pandas as pd
 from google.transit import gtfs_realtime_pb2
 from tabulate import tabulate
-# ──────────────────────────────────────────────────────────────────────────────
 
 STATIC_URL = "https://s3.amazonaws.com/etatransit.gtfs/bloomingtontransit.etaspot.net/gtfs.zip"
 RT_URLS = {
@@ -37,9 +35,7 @@ RT_URLS = {
 
 SEP = "\n" + "="*80 + "\n"
 
-# ─────────────────────────────────────────────────────────────────────────────
 # HELPERS
-# ─────────────────────────────────────────────────────────────────────────────
 
 def fetch_with_timing(url: str, label: str) -> tuple[bytes | None, float, float]:
     """Returns (content_bytes, http_latency_ms, total_latency_ms)"""
@@ -75,9 +71,7 @@ def age_seconds(ts: int) -> float | str:
     return round(time.time() - ts, 1)
 
 
-# ─────────────────────────────────────────────────────────────────────────────
 # 1. STATIC GTFS
-# ─────────────────────────────────────────────────────────────────────────────
 
 GTFS_REQUIRED_FILES = {
     "agency.txt":       ["agency_id","agency_name","agency_url","agency_timezone"],
@@ -179,9 +173,7 @@ def analyze_static(content: bytes):
         print(f"  Lon range: {stops['stop_lon'].min():.4f} → {stops['stop_lon'].max():.4f}")
 
 
-# ─────────────────────────────────────────────────────────────────────────────
 # 2. REALTIME: VEHICLE POSITIONS
-# ─────────────────────────────────────────────────────────────────────────────
 
 def analyze_vehicle_positions(content: bytes):
     print(SEP + "REALTIME: VEHICLE POSITIONS (position_updates.pb)")
@@ -257,9 +249,7 @@ def analyze_vehicle_positions(content: bytes):
         print(f"  {k}: {len(v)} entities  {v[:5]}{'...' if len(v)>5 else ''}")
 
 
-# ─────────────────────────────────────────────────────────────────────────────
 # 3. REALTIME: TRIP UPDATES
-# ─────────────────────────────────────────────────────────────────────────────
 
 def analyze_trip_updates(content: bytes):
     print(SEP + "REALTIME: TRIP UPDATES (trip_updates.pb)")
@@ -357,9 +347,7 @@ def analyze_trip_updates(content: bytes):
         print(f"  {k}: {len(v)}  {v[:5]}{'...' if len(v)>5 else ''}")
 
 
-# ─────────────────────────────────────────────────────────────────────────────
 # 4. REALTIME: SERVICE ALERTS
-# ─────────────────────────────────────────────────────────────────────────────
 
 def analyze_alerts(content: bytes):
     print(SEP + "REALTIME: SERVICE ALERTS (alerts.pb)")
@@ -437,9 +425,7 @@ def analyze_alerts(content: bytes):
         print(f"  {k}: {len(v)}  {v[:5]}{'...' if len(v)>5 else ''}")
 
 
-# ─────────────────────────────────────────────────────────────────────────────
 # 5. LATENCY: fetch N times to measure consistency
-# ─────────────────────────────────────────────────────────────────────────────
 
 def measure_latency(n_samples: int = 5):
     print(SEP + f"LATENCY MEASUREMENT ({n_samples} samples each endpoint)")
@@ -474,9 +460,7 @@ def measure_latency(n_samples: int = 5):
     return results
 
 
-# ─────────────────────────────────────────────────────────────────────────────
 # MAIN
-# ─────────────────────────────────────────────────────────────────────────────
 
 def main():
     print("\n" + "="*80)

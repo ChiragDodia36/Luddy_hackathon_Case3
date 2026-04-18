@@ -112,7 +112,7 @@ fun DiagnosticsScreen(
                 } else {
                     Column {
                         ui.vehicles.forEach { v ->
-                            // Expected cadence median = 30 s (from DATA_REPORT per-vehicle p50).
+                            // Expected cadence median = 30 s.
                             val drift = v.stalenessSeconds - 30
                             val driftText = when {
                                 drift <= 0 -> "on schedule"

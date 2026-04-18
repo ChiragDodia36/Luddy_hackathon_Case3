@@ -151,8 +151,6 @@ fun HomeScreen(
             verticalArrangement = Arrangement.spacedBy(14.dp),
             contentPadding = PaddingValues(bottom = 24.dp)
         ) {
-            // Card 0 — Live BT-vs-us scoreboard (pitch headline, fetched once from /stats).
-            // Quietly absent when the backend is unreachable — rest of Home still loads.
             uiState.stats?.let { stats ->
                 val bt = stats.btHeadlineMaeS
                 val us = stats.a1CvHeadlineMaeS

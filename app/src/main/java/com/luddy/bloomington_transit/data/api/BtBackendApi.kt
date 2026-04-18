@@ -4,7 +4,6 @@ import com.google.gson.annotations.SerializedName
 import retrofit2.http.GET
 import retrofit2.http.Path
 
-// ── DTOs ──────────────────────────────────────────────────────────────────────
 
 data class BusDto(
     @SerializedName("vehicle_id") val vehicleId: String,
@@ -37,7 +36,6 @@ data class AlertDto(
     @SerializedName("route_ids") val routeIds: List<String>,
 )
 
-// ── Retrofit interface ────────────────────────────────────────────────────────
 
 interface BtBackendApi {
     @GET("buses")

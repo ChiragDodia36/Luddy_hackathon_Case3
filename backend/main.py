@@ -25,7 +25,6 @@ app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_methods=["*"], all
 GTFS_ZIP_URL = "https://s3.amazonaws.com/etatransit.gtfs/bloomingtontransit.etaspot.net/gtfs.zip"
 RT_BASE = "https://s3.amazonaws.com/etatransit.gtfs/bloomingtontransit.etaspot.net/"
 
-# ── Static caches (populated on startup) ──────────────────────────────────────
 
 routes_cache: dict = {}       # route_id → route dict
 stops_cache: dict = {}        # stop_id → stop dict
@@ -33,7 +32,6 @@ trips_cache: dict = {}        # trip_id → trip dict (has route_id, headsign)
 shapes_cache: dict = {}       # route_id → list of shape points
 stop_times_cache: dict = {}   # stop_id → list of {trip_id, arrival_secs}
 
-# ── RT caches (refreshed on demand with TTL) ──────────────────────────────────
 
 class RtCache:
     def __init__(self, ttl_s: int):
@@ -49,7 +47,6 @@ rt_trips = RtCache(ttl_s=20)
 rt_alerts = RtCache(ttl_s=60)
 
 
-# ── Startup: download and parse GTFS static data ──────────────────────────────
 
 @app.on_event("startup")
 async def load_static_data():
@@ -170,7 +167,6 @@ def _parse_stop_times(text: str):
             pass
 
 
-# ── RT fetch helpers ──────────────────────────────────────────────────────────
 
 async def _fetch_feed(cache: RtCache, filename: str) -> gtfs_realtime_pb2.FeedMessage:
     if not cache.is_fresh():
@@ -184,7 +180,6 @@ async def _fetch_feed(cache: RtCache, filename: str) -> gtfs_realtime_pb2.FeedMe
     return cache.data
 
 
-# ── Endpoints ─────────────────────────────────────────────────────────────────
 
 @app.get("/routes")
 async def get_routes():

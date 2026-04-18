@@ -5,7 +5,6 @@ import com.google.gson.annotations.SerializedName
 import retrofit2.http.GET
 import retrofit2.http.Query
 
-// ── DTOs ──────────────────────────────────────────────────────────────────────
 
 data class DirectionsResponse(
     val status: String,
@@ -27,7 +26,6 @@ data class DirectionsLeg(
 data class DirectionsDuration(val value: Int, val text: String)
 data class DirectionsDistance(val value: Int, val text: String)
 
-// ── Retrofit interface ────────────────────────────────────────────────────────
 
 interface DirectionsApi {
     @GET("maps/api/directions/json")
@@ -39,7 +37,6 @@ interface DirectionsApi {
     ): DirectionsResponse
 }
 
-// ── Polyline decoder (Google encoded polyline algorithm) ──────────────────────
 
 fun decodePolyline(encoded: String): List<LatLng> {
     val result = mutableListOf<LatLng>()
