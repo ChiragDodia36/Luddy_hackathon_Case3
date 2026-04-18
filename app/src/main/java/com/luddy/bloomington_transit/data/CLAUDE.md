@@ -7,7 +7,7 @@ Implements `TransitRepository`. Contains all I/O: network, disk, preferences.
 - `api/GtfsRealtimeApi.kt` — Retrofit interface, 3 `.pb` endpoints, returns raw `ResponseBody`
 - `api/GtfsStaticParser.kt` — Downloads GTFS zip, parses 5 CSV files, returns `GtfsStaticData`
 - `local/AppDatabase.kt` — Room DB with 6 tables
-- `local/UserPreferencesDataStore.kt` — DataStore for favourites, tracked buses, thresholds
+- `local/UserPreferencesDataStore.kt` — DataStore for favourites, tracked buses, thresholds, recent stops
 - `local/entity/` — Room entity classes with `.toDomain()` mappers
 - `local/dao/` — DAOs: RouteDao, StopDao, ShapeDao, TripDao
 - `repository/TransitRepositoryImpl.kt` — Main implementation
@@ -25,6 +25,13 @@ Parse: `GtfsRealtime.FeedMessage.parseFrom(responseBody.byteStream())`
 
 ## Critical: GTFS time parsing
 `parseGtfsTimeToMs("25:30:00", todayBaseMs)` handles post-midnight trips (hours > 24).
+
+## UserPreferencesDataStore keys
+- `favourite_stop_ids` — `Set<String>` (Preferences DataStore)
+- `tracked_bus_ids` — `Set<String>`
+- `notification_threshold_minutes` — `Int` (default 5)
+- `favourite_route_id` — `String?`
+- `recent_stop_ids` — comma-separated string (newest first, max 5) — use `addRecentStop(id)` to prepend+deduplicate
 
 ## Test results
 - APK builds successfully: `gradle assembleDebug` → BUILD SUCCESSFUL

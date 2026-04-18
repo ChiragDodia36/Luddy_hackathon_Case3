@@ -4,7 +4,17 @@
             "outputFile": "com.luddy.bloomington_transit.app-mergeDebugResources-74:/values-v23/values-v23.xml",
             "map": [
                 {
-                    "source": "/Users/chiragdodia/.gradle/caches/transforms-4/998af27aed4996bb4c1d7d72b440e217/transformed/glance-appwidget-1.1.0/res/values-v23/values-v23.xml",
+                    "source": "/Users/chiragdodia/.gradle/caches/9.3.1/transforms/362d085f87ab095a10f89d9828654e35/transformed/work-runtime-2.9.1/res/values-v23/values-v23.xml",
+                    "from": {
+                        "startLines": "2,3",
+                        "startColumns": "4,4",
+                        "startOffsets": "55,121",
+                        "endColumns": "65,62",
+                        "endOffsets": "116,179"
+                    }
+                },
+                {
+                    "source": "/Users/chiragdodia/.gradle/caches/9.3.1/transforms/7bb4fb8a5f185957a9c7e772f0e21ccf/transformed/glance-appwidget-1.1.0/res/values-v23/values-v23.xml",
                     "from": {
                         "startLines": "2",
                         "startColumns": "4",
@@ -18,16 +28,6 @@
                         "startOffsets": "184",
                         "endColumns": "55",
                         "endOffsets": "235"
-                    }
-                },
-                {
-                    "source": "/Users/chiragdodia/.gradle/caches/transforms-4/5e456d57c614095578c91a830b63c4aa/transformed/work-runtime-2.9.1/res/values-v23/values-v23.xml",
-                    "from": {
-                        "startLines": "2,3",
-                        "startColumns": "4,4",
-                        "startOffsets": "55,121",
-                        "endColumns": "65,62",
-                        "endOffsets": "116,179"
                     }
                 }
             ]
