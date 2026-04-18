@@ -4,7 +4,11 @@ import android.content.Context
 import androidx.room.Room
 import com.google.android.libraries.places.api.Places
 import com.google.android.libraries.places.api.net.PlacesClient
+import com.luddy.bloomington_transit.data.api.BtBackendApi
+import com.luddy.bloomington_transit.data.api.DirectionsApi
 import com.luddy.bloomington_transit.data.api.GtfsRealtimeApi
+import com.google.gson.Gson
+import retrofit2.converter.gson.GsonConverterFactory
 import com.luddy.bloomington_transit.data.local.AppDatabase
 import com.luddy.bloomington_transit.data.repository.TransitRepositoryImpl
 import com.luddy.bloomington_transit.domain.repository.TransitRepository
@@ -43,6 +47,26 @@ object AppModule {
             .client(okHttpClient)
             .build()
             .create(GtfsRealtimeApi::class.java)
+
+    @Provides
+    @Singleton
+    fun provideBtBackendApi(okHttpClient: OkHttpClient): BtBackendApi =
+        Retrofit.Builder()
+            .baseUrl("http://10.0.0.52:8000/")
+            .client(okHttpClient)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+            .create(BtBackendApi::class.java)
+
+    @Provides
+    @Singleton
+    fun provideDirectionsApi(okHttpClient: OkHttpClient): DirectionsApi =
+        Retrofit.Builder()
+            .baseUrl("https://maps.googleapis.com/")
+            .client(okHttpClient)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+            .create(DirectionsApi::class.java)
 
     @Provides
     @Singleton

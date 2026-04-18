@@ -22,6 +22,7 @@ coroutines = "1.8.1"
 protobuf = "3.25.3"
 workManager = "2.9.1"
 places = "3.5.0"
+gson = "2.10.1"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -60,6 +61,8 @@ androidx-work-runtime = { group = "androidx.work", name = "work-runtime-ktx", ve
 hilt-work = { group = "androidx.hilt", name = "hilt-work", version = "1.2.0" }
 hilt-work-compiler = { group = "androidx.hilt", name = "hilt-compiler", version = "1.2.0" }
 places-sdk = { group = "com.google.android.libraries.places", name = "places", version.ref = "places" }
+gson = { group = "com.google.code.gson", name = "gson", version.ref = "gson" }
+retrofit-gson = { group = "com.squareup.retrofit2", name = "converter-gson", version.ref = "retrofit" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

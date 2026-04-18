@@ -48,4 +48,7 @@ interface TripDao {
 
     @Query("SELECT COUNT(*) FROM trips")
     suspend fun count(): Int
+
+    @Query("SELECT * FROM trips")
+    suspend fun getAllTrips(): List<TripEntity>
 }
