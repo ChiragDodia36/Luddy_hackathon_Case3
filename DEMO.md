@@ -4,7 +4,7 @@ _IU Luddy Hacks, 2026-04-18. One-pager for the team to glance at before the pitc
 
 ## The one-liner
 
-We rebuilt Bloomington Transit's rider app with a live AI layer that **beats BT's own arrival predictions by 14.5 %** (MAE **80.6 s vs 94.3 s** on the 3–5 min horizon, 5-fold CV on 29,706 live predictions) and exposes that improvement as a deployed public API any client can hit.
+We rebuilt Bloomington Transit's rider app with a live AI layer that **beats BT's own arrival predictions by 31.3 %** (MAE **64.8 s vs 94.3 s** on the 3–5 min horizon, 5-fold CV on 215k live predictions) and exposes that improvement as a deployed public API any client can hit.
 
 ---
 
@@ -13,12 +13,11 @@ We rebuilt Bloomington Transit's rider app with a live AI layer that **beats BT'
 | Metric | Value | How measured |
 |---|---|---|
 | **Baseline (BT) MAE at 3–5 min horizon** | **94.3 s** | Measured in `BASELINE_REPORT.md` — derived from live `position_updates.pb` + `trip_updates.pb` snapshots, ground-truthed via `current_status == STOPPED_AT` + midpoint fallback |
-| **Our A1 LightGBM residual model MAE at 3–5 min horizon** | **80.6 s — +14.5 % improvement** | 5-fold GroupKFold on `trip_id` (no within-trip leakage), 29,706 labelled predictions |
-| **Overall MAE across all horizons** | **86.8 s** vs BT passthrough 114.2 s | Same CV, all horizon buckets |
-| **Bias correction for Route 6** | **−154 s** | `models/route_intercepts.json` — median `(actual − BT_predicted)` over 2,220 samples. Route 6 was the most-biased route we observed (BT over-predicted lateness by ~2.5 min on average) |
-| **Top single-route improvement** | Route 2W: passthrough 138.7 s → A1 58.1 s (**+80.6 s / 58 % better**) | Retrained 5-fold OOF |
-| **Training window** | 7 hours of live GTFS-RT, Friday night → Saturday morning | 1,011 ground-truth labels (122 HIGH confidence `STOPPED_AT`, 339 MEDIUM midpoint) |
-| **Ground-truth trip coverage** | 12 of 16 BT routes | 39 unique `(trip_id, vehicle_id)` instances |
+| **Our A1 LightGBM residual model MAE at 3–5 min horizon** | **64.8 s — +31.3 % improvement** | 5-fold GroupKFold on `trip_id` (no within-trip leakage), ~215k OOF rows in the 3–5 min bucket |
+| **Top per-route A1 wins (CV OOF vs passthrough)** | Route 4S: 106.0 → 56.0 s (**+47 %**) · Route 4W: 106.9 → 58.9 s (**+45 %**) · Route 11: 138.1 → 71.3 s (**+48 %**) · Route 3W: 109.3 → 70.8 s (**+35 %**) | Retrained on Saturday data |
+| **Bias correction for Route 6** | **+82 s** | Saturday retrain flipped the sign — BT now *under*-predicts Route-6 lateness by ~1.4 min. `models/route_intercepts.json` — median `(actual − BT_predicted)` |
+| **Training window** | ~19 hours of live GTFS-RT, Friday night → Saturday AM-peak | 14,063 `.pb` snapshots ingested; 215k OOF prediction rows across all horizons |
+| **Ground-truth trip coverage** | 12 of 16 BT routes (Route 3E already well-calibrated, intercept 0 s) | 157 unique `(trip_id, vehicle_id)` instances |
 | **Inference model** | LightGBM regressor, 13 features | Model trained on Ayan's laptop CPU in <5 min — no GPU/Colab |
 
 ### Why LightGBM residual, not a full transformer?
@@ -95,7 +94,7 @@ curl -s $BASE/healthz | python3 -m json.tool
 
 # Headline accuracy number (updates as model retrains)
 curl -s $BASE/stats | python3 -m json.tool
-#  → bt_headline_mae_s: 94.3, a1_cv_headline_mae_s: 80.6, a1_cv_improvement_pct: 14.5
+#  → bt_headline_mae_s: 94.3, a1_cv_headline_mae_s: 64.8, a1_cv_improvement_pct: 31.3
 
 # All 16 BT routes
 curl -s $BASE/routes | python3 -c "import json,sys;print(len(json.load(sys.stdin)),'routes')"
@@ -139,7 +138,8 @@ Latency:
    - Google Places autocomplete suggests places.
    - Pick one → up to 3 route plans rank-sorted: **direct routes first**, then 1-transfer plans (with transfer-walk penalty).
    - Each plan shows walk-in distance, route badge(s), "next bus in N min" via live trip_updates, and — for the selected plan — a step-by-step view: Walk → Board bus → (Transfer → Board bus) → Get off → Walk.
-   - Under the "Board bus" step: **`✨ AI-adjusted: +159s vs BT · medium`** — this is the A1+A2 correction served via our Railway `/plan` endpoint. When BT's prediction is reliable it says "matches BT"; when it's systematically off (e.g., Route 6) you'll see the correction.
+   - Under the "Board bus" step: **`✨ AI-adjusted: +82s vs BT · medium`** — this is the A1+A2 correction served via our Railway `/plan` endpoint. When BT's prediction is reliable it says "matches BT"; when it's systematically off (e.g., Route 6) you'll see the correction.
+   - On every plan row: a **`✓ Catch it · +N min spare`** / **`⚠ Tight`** / **`✗ Miss by N min`** chip shows whether you can walk to the boarding stop before the bus leaves. Row 0 additionally carries a **`⚡ Fastest`** pill.
    - 0.3-mile proximity circle is drawn around the user's current location; nearby stops filter to that radius.
 
 3. **AI tab** — Ayan's demo surface for `/predictions` directly:
@@ -159,7 +159,7 @@ Latency:
 ## If judges ask "what could BT's app not do"
 
 1. **Adjust predictions per route**: BT emits one `arrival.delay` value per trip, copied to every remaining stop (~91 % of trip-snapshots had identical delays across all stops in our audit). We compute per-stop residuals.
-2. **Flag systematically-biased routes**: Route 6 was +222 s biased in our audit data. Our `/stats` surfaces that; our `/plan` corrects for it.
+2. **Flag systematically-biased routes**: Route 6 was biased by +82 s in our Saturday retrain (BT under-predicts lateness). Routes 4S and 4W have the biggest A1 wins (+47 % and +45 %). Our `/stats` surfaces the headline; `/plan` applies per-route intercepts.
 3. **Detect bus bunching**: same-route vehicles within 200 m → banner. BT's own feed has no bunching field.
 4. **Flag stale vehicles**: we mark vehicles as stale when `vehicle.timestamp` hasn't advanced in 90 s. BT never signals this.
 5. **Full trip planning with live transit delays folded in**: BT's own app doesn't route — riders guess which bus to take.

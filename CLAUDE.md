@@ -2,7 +2,7 @@
 
 Android app + deployed FastAPI AI service that rebuilds Bloomington Transit's rider experience with live AI-adjusted arrival predictions.
 
-**Measured improvement**: BT headline MAE @ 3-5 min = **94.3 s** → our A1 LightGBM residual model = **80.6 s** (**+14.5 %**, 5-fold GroupKFold on `trip_id`, 29,706 labelled predictions). Route-6 intercept = **−154 s** (most-biased route in audit). 12 of 16 BT routes have trained per-route intercepts. See [DEMO.md](DEMO.md) for full numbers.
+**Measured improvement**: BT headline MAE @ 3-5 min = **94.3 s** → our A1 LightGBM residual model = **64.8 s** (**+31.3 %**, 5-fold GroupKFold on `trip_id`, ~215k OOF rows after Saturday retrain on 14,063 `.pb` snapshots). Route-6 intercept now = **+82 s** (BT under-predicts Saturday lateness — sign flipped from Friday). 12 of 16 BT routes considered; 11 have non-zero trained intercepts. See [DEMO.md](DEMO.md) for full numbers.
 
 ## Architecture
 

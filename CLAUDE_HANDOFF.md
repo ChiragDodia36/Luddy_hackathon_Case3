@@ -125,12 +125,11 @@ Verify: `curl $BASE/stats` → new `a1_cv_headline_mae_s` should reflect the ret
 ## 7 · Measured numbers (5-fold GroupKFold on `trip_id`, 29,706 labelled predictions)
 
 - BT baseline MAE @ 3-5 min horizon: **94.3 s**
-- A1 LightGBM residual MAE @ 3-5 min: **80.6 s (+14.5 %)**
-- Overall MAE across all horizons: 86.8 s vs BT passthrough 114.2 s
-- Route 6 bias intercept: **−154 s** (most-biased route; BT over-predicts lateness by ~2.5 min avg)
-- Top single-route improvement: Route 2W — passthrough 138.7 s → A1 58.1 s (+80.6 s / 58 %)
-- Training window: ~7 h Friday-night → Saturday-morning live GTFS
-- 1,011 ground-truth labels · 39 unique `(trip_id, vehicle_id)` instances · 12 of 16 routes covered
+- A1 LightGBM residual MAE @ 3-5 min: **64.8 s (+31.3 %)** after Saturday retrain
+- Top per-route A1 wins: Route 4S 106→56 s (+47 %), Route 4W 107→59 s (+45 %), Route 11 138→71 s (+48 %), Route 3W 109→71 s (+35 %)
+- Route 6 intercept: **+82 s** — Saturday data flipped the sign (Friday was −154 s). BT now *under*-predicts Route-6 lateness.
+- Training window: ~19 h Fri-night + Sat-AM-peak on 14,063 `.pb` snapshots
+- 215k OOF prediction rows · 157 unique `(trip_id, vehicle_id)` instances · 12 of 16 routes covered (Route 3E calibrated to 0 s)
 
 ## 8 · Where to look next
 
