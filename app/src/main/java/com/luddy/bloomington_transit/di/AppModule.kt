@@ -2,6 +2,8 @@ package com.luddy.bloomington_transit.di
 
 import android.content.Context
 import androidx.room.Room
+import com.google.android.libraries.places.api.Places
+import com.google.android.libraries.places.api.net.PlacesClient
 import com.luddy.bloomington_transit.data.api.GtfsRealtimeApi
 import com.luddy.bloomington_transit.data.local.AppDatabase
 import com.luddy.bloomington_transit.data.repository.TransitRepositoryImpl
@@ -41,6 +43,11 @@ object AppModule {
             .client(okHttpClient)
             .build()
             .create(GtfsRealtimeApi::class.java)
+
+    @Provides
+    @Singleton
+    fun providePlacesClient(@ApplicationContext context: Context): PlacesClient =
+        Places.createClient(context)
 
     @Provides
     @Singleton
