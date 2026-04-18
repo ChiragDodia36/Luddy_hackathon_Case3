@@ -24,8 +24,6 @@ data class AiStopUiState(
     val selectedStop: StopDto? = null,
     val predictions: PredictionsResponseDto? = null,
     val nlqResult: NlqResponseDto? = null,
-    // Live scoreboard header: BT MAE vs A1 MAE + improvement %.
-    // Fetched once per screen entry from /stats.
     val stats: StatsResponseDto? = null,
     val isSearching: Boolean = false,
     val isLoadingPredictions: Boolean = false,
@@ -43,11 +41,10 @@ class AiStopViewModel @Inject constructor(
     private var pollJob: Job? = null
 
     init {
-        // One-shot stats fetch on screen entry for the scoreboard header.
         viewModelScope.launch {
             when (val r = repo.stats()) {
                 is AiResult.Ok  -> _uiState.update { it.copy(stats = r.value) }
-                is AiResult.Err -> Unit // silently hide scoreboard if unreachable
+                is AiResult.Err -> Unit
             }
         }
     }
@@ -60,7 +57,6 @@ class AiStopViewModel @Inject constructor(
         }
         _uiState.update { it.copy(isSearching = true) }
         viewModelScope.launch {
-            // Fire stop-name search and NL intent in parallel; both are cheap.
             val stopJob = launch {
                 when (val r = repo.searchStops(query)) {
                     is AiResult.Ok -> _uiState.update {

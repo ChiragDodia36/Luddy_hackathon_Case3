@@ -73,7 +73,6 @@ fun MapScreen(
         position = CameraPosition.fromLatLngZoom(BLOOMINGTON_CENTER, 13f)
     }
 
-    // ── CP3: Location permission + fetch ─────────────────────────────────────
     val focusManager = LocalFocusManager.current
 
     var hasLocationPermission by remember {
@@ -158,7 +157,6 @@ fun MapScreen(
 
     Box(modifier = Modifier.fillMaxSize()) {
 
-        // ── Full-screen Google Map ─────────────────────────────────────────────
         GoogleMap(
             modifier = Modifier.fillMaxSize(),
             cameraPositionState = cameraPositionState,
@@ -310,7 +308,6 @@ fun MapScreen(
             }
         }
 
-        // ── Loading overlay ───────────────────────────────────────────────────
         if (uiState.isInitializing) {
             Box(
                 modifier = Modifier
@@ -327,7 +324,6 @@ fun MapScreen(
             return@Box
         }
 
-        // ── Top section: search bar + dropdown + filter chips ─────────────────
         Column(
             modifier = Modifier
                 .fillMaxWidth()
@@ -370,7 +366,6 @@ fun MapScreen(
             }
         }
 
-        // ── Bottom panel ──────────────────────────────────────────────────────
         Card(
             modifier = Modifier
                 .align(Alignment.BottomCenter)
@@ -463,7 +458,6 @@ fun MapScreen(
     }
 }
 
-// ── CP2: Places search bar ─────────────────────────────────────────────────────
 
 @Composable
 private fun PlacesSearchBar(
@@ -527,7 +521,6 @@ private fun PlacesSearchBar(
     }
 }
 
-// ── CP2: Autocomplete dropdown ────────────────────────────────────────────────
 
 @Composable
 private fun AutocompleteDropdown(
@@ -581,7 +574,6 @@ private fun AutocompleteDropdown(
     }
 }
 
-// ── Route filter chips (unchanged behaviour) ──────────────────────────────────
 
 @Composable
 private fun RouteFilterBar(
@@ -633,7 +625,6 @@ private fun RouteFilterBar(
     }
 }
 
-// ── Multi-plan list panel ─────────────────────────────────────────────────────
 
 @Composable
 private fun RoutePlanListPanel(
@@ -710,9 +701,6 @@ private fun PlanOptionRow(plan: RoutePlan, isSelected: Boolean, onClick: () -> U
     val busMin      = plan.nextBusMinutes
     val aiPred      = plan.aiBoardingPredictions.firstOrNull()
 
-    // Depart = now + wait-for-bus; arrive = now + total trip time. Both derived
-    // only when we have a live boarding arrival; otherwise the row falls back
-    // to the duration-only presentation (handled below).
     val (departLabel, arriveLabel) = remember(busMin, totalMin) {
         if (busMin != null) {
             val now = java.time.LocalTime.now()
@@ -731,7 +719,6 @@ private fun PlanOptionRow(plan: RoutePlan, isSelected: Boolean, onClick: () -> U
             .padding(horizontal = 16.dp, vertical = 10.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        // Walk → Bus(es) → Walk chip chain (matches Google Maps transit rows)
         Icon(Icons.Filled.DirectionsWalk, null, tint = Color.Gray, modifier = Modifier.size(14.dp))
         Spacer(Modifier.width(4.dp))
         Box(modifier = Modifier.size(36.dp).clip(RoundedCornerShape(8.dp)).background(firstColor), contentAlignment = Alignment.Center) {
@@ -749,7 +736,6 @@ private fun PlanOptionRow(plan: RoutePlan, isSelected: Boolean, onClick: () -> U
         Icon(Icons.Filled.DirectionsWalk, null, tint = Color.Gray, modifier = Modifier.size(14.dp))
         Spacer(Modifier.width(12.dp))
         Column(modifier = Modifier.weight(1f)) {
-            // Primary line: clock range (Google-Maps style) or duration fallback + pills
             Row(verticalAlignment = Alignment.CenterVertically) {
                 if (departLabel != null && arriveLabel != null) {
                     Text("$departLabel — $arriveLabel",
@@ -787,7 +773,6 @@ private fun PlanOptionRow(plan: RoutePlan, isSelected: Boolean, onClick: () -> U
                     }
                 }
             }
-            // Secondary line: "HH:MM from <stop> · Walk N min"
             val subLine = buildString {
                 departLabel?.let { append("$it from ") }
                 append(plan.boardingStop.name.take(26))
@@ -797,8 +782,6 @@ private fun PlanOptionRow(plan: RoutePlan, isSelected: Boolean, onClick: () -> U
                 style = MaterialTheme.typography.labelSmall,
                 color = Color.Gray,
                 maxLines = 1)
-            // "Can you catch it?" — derived from nextBusMinutes vs walkInMinutes.
-            // Signals: green if >=2 min spare, amber if 0-1 min, red if you'd miss it.
             busMin?.let { bm ->
                 val spare = bm - plan.walkInMinutes.toLong()
                 val (icon, label, color) = when {
@@ -817,7 +800,6 @@ private fun PlanOptionRow(plan: RoutePlan, isSelected: Boolean, onClick: () -> U
                         maxLines = 1)
                 }
             }
-            // AI summary (unchanged behaviour, kept visible on the row)
             aiPred?.let { p ->
                 val corr = p.correctionSeconds.toInt()
                 val label = when {
@@ -839,7 +821,6 @@ private fun PlanOptionRow(plan: RoutePlan, isSelected: Boolean, onClick: () -> U
                 }
             }
         }
-        // Right column: total duration (primary) + live bus ETA (secondary)
         Column(horizontalAlignment = Alignment.End) {
             Text("${totalMin} min",
                 style = MaterialTheme.typography.labelMedium,
@@ -871,7 +852,6 @@ private fun PlanOptionRow(plan: RoutePlan, isSelected: Boolean, onClick: () -> U
     }
 }
 
-// ── Route suggestion panel: direct + transfer, with walking distance ──────────
 
 @Composable
 private fun RouteSuggestionPanel(
@@ -932,10 +912,6 @@ private fun RouteSuggestionPanel(
         }
         Spacer(Modifier.height(8.dp))
 
-        // Storytelling pill: Route 6 was our most-biased route. After the Saturday
-        // retrain the sign flipped — BT now *under*-predicts Route-6 lateness, so
-        // A2 adds +82 s to BT's prediction. Keeping the pill on Route-6 rows makes
-        // the "we correct BT's systematic biases" claim concrete for the judges.
         if (firstRoute?.id == "6") {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
@@ -976,8 +952,6 @@ private fun RouteSuggestionPanel(
             arrival = boardingArrival
         )
 
-        // AI-adjusted boarding ETA (from our backend /predictions) — only shown
-        // when we have a refined prediction for the same stop+route.
         aiBoardingPrediction?.let { p ->
             Row(
                 verticalAlignment = Alignment.CenterVertically,
@@ -1104,7 +1078,6 @@ private fun RoutingErrorPanel(message: String, onDismiss: () -> Unit) {
     }
 }
 
-// ── CP5: Bus marker with ETA info box ─────────────────────────────────────────
 
 @Composable
 private fun SuggestedBusMarker(
@@ -1171,7 +1144,6 @@ private fun SuggestedBusMarker(
     }
 }
 
-// ── Destination pin marker (CP3) ──────────────────────────────────────────────
 
 @Composable
 private fun DestinationPin() {
@@ -1194,7 +1166,6 @@ private fun DestinationPin() {
     }
 }
 
-// ── Existing marker composables (unchanged) ───────────────────────────────────
 
 @Composable
 private fun BusMarker(routeShortName: String, color: Color, isTracked: Boolean, zoom: Float = 14f) {
@@ -1295,7 +1266,6 @@ private fun PlanStopMarker(
     }
 }
 
-// ── Compact strip shown after a plan is selected ──────────────────────────────
 
 @Composable
 private fun CompactPlanStrip(
@@ -1377,7 +1347,6 @@ private fun CompactPlanStrip(
     }
 }
 
-// ── Existing detail panels (unchanged) ───────────────────────────────────────
 
 @Composable
 private fun BusDetailPanel(
@@ -1448,7 +1417,6 @@ private fun StopDetailPanel(
             IconButton(onClick = onDismiss) { Icon(Icons.Filled.Close, contentDescription = "Dismiss") }
         }
 
-        // ── Reachability card ──────────────────────────────────────────────────
         when {
             isLoadingReachability -> {
                 Row(
@@ -1530,7 +1498,6 @@ private fun DepartureBoardRow(arrival: Arrival) {
     }
 }
 
-// ── Reachability verdict card ─────────────────────────────────────────────────
 
 @Composable
 private fun ReachabilityCard(r: com.luddy.bloomington_transit.domain.model.Reachability) {
