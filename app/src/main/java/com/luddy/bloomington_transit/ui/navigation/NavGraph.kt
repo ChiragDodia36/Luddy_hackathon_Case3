@@ -9,6 +9,11 @@ sealed class Screen(val route: String) {
     object Map : Screen("map?routeId={routeId}")
     object Schedule : Screen("schedule")
     object Favourites : Screen("favourites")
+    object Ai : Screen("ai")
+    object Diagnostics : Screen("diagnostics")
+    object TripEta : Screen("trip-eta/{tripId}") {
+        fun routeFor(tripId: String) = "trip-eta/$tripId"
+    }
 }
 
 fun Screen.routeWithArg(routeId: String): String = when (this) {
@@ -25,6 +30,7 @@ data class BottomNavItem(
 val bottomNavItems = listOf(
     BottomNavItem(Screen.Home, "Home", Icons.Filled.Home),
     BottomNavItem(Screen.Map, "Map", Icons.Filled.Map),
+    BottomNavItem(Screen.Ai, "AI", Icons.Filled.Insights),
     BottomNavItem(Screen.Schedule, "Schedule", Icons.Filled.Schedule),
     BottomNavItem(Screen.Favourites, "Favourites", Icons.Filled.Favorite)
 )
