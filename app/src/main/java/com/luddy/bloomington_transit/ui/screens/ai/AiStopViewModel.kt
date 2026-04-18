@@ -6,6 +6,7 @@ import com.luddy.bloomington_transit.data.ai.AiResult
 import com.luddy.bloomington_transit.data.ai.BtAiRepository
 import com.luddy.bloomington_transit.data.ai.dto.NlqResponseDto
 import com.luddy.bloomington_transit.data.ai.dto.PredictionsResponseDto
+import com.luddy.bloomington_transit.data.ai.dto.StatsResponseDto
 import com.luddy.bloomington_transit.data.ai.dto.StopDto
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
@@ -23,6 +24,9 @@ data class AiStopUiState(
     val selectedStop: StopDto? = null,
     val predictions: PredictionsResponseDto? = null,
     val nlqResult: NlqResponseDto? = null,
+    // Live scoreboard header: BT MAE vs A1 MAE + improvement %.
+    // Fetched once per screen entry from /stats.
+    val stats: StatsResponseDto? = null,
     val isSearching: Boolean = false,
     val isLoadingPredictions: Boolean = false,
     val errorMessage: String? = null,
@@ -37,6 +41,16 @@ class AiStopViewModel @Inject constructor(
     val uiState: StateFlow<AiStopUiState> = _uiState.asStateFlow()
 
     private var pollJob: Job? = null
+
+    init {
+        // One-shot stats fetch on screen entry for the scoreboard header.
+        viewModelScope.launch {
+            when (val r = repo.stats()) {
+                is AiResult.Ok  -> _uiState.update { it.copy(stats = r.value) }
+                is AiResult.Err -> Unit // silently hide scoreboard if unreachable
+            }
+        }
+    }
 
     fun onQueryChange(query: String) {
         _uiState.update { it.copy(searchQuery = query) }
