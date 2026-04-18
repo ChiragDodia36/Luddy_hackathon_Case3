@@ -5,6 +5,7 @@ import android.content.pm.PackageManager
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.BugReport
 import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -18,6 +19,7 @@ import androidx.core.content.ContextCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.google.android.gms.location.LocationServices
+import com.luddy.bloomington_transit.ui.components.BunchingBanner
 import com.luddy.bloomington_transit.ui.components.ContextCard
 import com.luddy.bloomington_transit.ui.components.CountdownHeroCard
 import com.luddy.bloomington_transit.ui.components.NearestStopCard
@@ -68,6 +70,13 @@ fun HomeScreen(
                 fontWeight = FontWeight.SemiBold,
                 modifier = Modifier.weight(1f)
             )
+            IconButton(onClick = { navController.navigate(Screen.Diagnostics.route) }) {
+                Icon(
+                    Icons.Filled.BugReport,
+                    contentDescription = "Diagnostics",
+                    tint = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }
             IconButton(onClick = { /* future: notification settings */ }) {
                 Icon(
                     Icons.Filled.Notifications,
@@ -77,7 +86,12 @@ fun HomeScreen(
             }
         }
 
-        Spacer(Modifier.height(16.dp))
+        Spacer(Modifier.height(12.dp))
+
+        // Bunching alerts (AI-driven) — quietly hidden when no events
+        BunchingBanner()
+
+        Spacer(Modifier.height(4.dp))
 
         if (uiState.isLoading) {
             Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
