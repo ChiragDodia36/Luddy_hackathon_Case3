@@ -618,6 +618,7 @@ private fun RoutePlanListPanel(
                         boardingArrival  = plan.boardingArrivals.firstOrNull(),
                         transferArrival  = plan.transferArrivals.firstOrNull(),
                         alightingArrival = plan.alightingArrivals.firstOrNull(),
+                        aiBoardingPrediction = plan.aiBoardingPredictions.firstOrNull(),
                         onDismiss        = null  // dismiss handled by header
                     )
                 }
@@ -711,6 +712,7 @@ private fun RouteSuggestionPanel(
     boardingArrival: Arrival?,
     transferArrival: Arrival?,
     alightingArrival: Arrival?,
+    aiBoardingPrediction: com.luddy.bloomington_transit.data.ai.dto.PredictionDto? = null,
     onDismiss: (() -> Unit)? = null   // null = no dismiss button (handled by parent list header)
 ) {
     val firstColor  = firstRoute?.color?.let { routeColor(it) } ?: BtBlue
@@ -768,6 +770,34 @@ private fun RouteSuggestionPanel(
             stopName = boardingStop?.name ?: "—",
             arrival = boardingArrival
         )
+
+        // AI-adjusted boarding ETA (from our backend /predictions) — only shown
+        // when we have a refined prediction for the same stop+route.
+        aiBoardingPrediction?.let { p ->
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.padding(start = 32.dp, top = 2.dp, bottom = 2.dp, end = 4.dp),
+            ) {
+                Icon(
+                    Icons.Filled.AutoAwesome,
+                    contentDescription = null,
+                    tint = firstColor,
+                    modifier = Modifier.size(12.dp),
+                )
+                Spacer(Modifier.width(6.dp))
+                val corr = p.correctionSeconds.toInt()
+                val corrText = when {
+                    corr == 0 -> "matches BT"
+                    corr > 0 -> "+${corr}s vs BT"
+                    else -> "${corr}s vs BT"
+                }
+                Text(
+                    text = "AI-adjusted: $corrText · ${p.confidence}",
+                    style = MaterialTheme.typography.labelSmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+            }
+        }
 
         if (isTransfer && transferStop != null && transferRoute != null) {
             StepConnector(color = firstColor)
